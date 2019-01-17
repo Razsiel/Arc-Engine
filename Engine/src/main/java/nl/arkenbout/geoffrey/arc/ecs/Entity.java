@@ -1,4 +1,14 @@
 package nl.arkenbout.geoffrey.arc.ecs;
 
-public interface Entity {
+public class Entity {
+
+    private Integer id;
+
+    public Entity(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
 }

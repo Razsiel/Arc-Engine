@@ -9,12 +9,7 @@ public class TestGame implements nl.arkenbout.geoffrey.arc.engine.Game {
     }
 
     @Override
-    public void render(Window window) {
+    public void input(Window window) {
 
-    }
-
-    @Override
-    public void update(float interval) {
-        System.out.println("Game update");
     }
 }
