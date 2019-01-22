@@ -104,4 +104,12 @@ public class Window {
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }

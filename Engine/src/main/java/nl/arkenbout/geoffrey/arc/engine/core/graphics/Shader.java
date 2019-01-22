@@ -1,5 +1,12 @@
 package nl.arkenbout.geoffrey.arc.engine.core.graphics;
 
+import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
@@ -9,6 +16,7 @@ public class Shader {
     private final int vertexShaderId;
     private final int fragmentShaderId;
 
+    private final Map<String, Integer> uniforms;
 
     public Shader(String vertexShaderCode, String fragmentShaderCode) throws Exception {
         if (vertexShaderCode == null || vertexShaderCode.isEmpty())
@@ -19,6 +27,8 @@ public class Shader {
 
         programId = glCreateProgram();
 
+        uniforms = new HashMap<>();
+
         if (programId == 0) {
             throw new RuntimeException("Could not create shader");
         }
@@ -27,6 +37,9 @@ public class Shader {
         fragmentShaderId = createShader(fragmentShaderCode, GL_FRAGMENT_SHADER);
 
         this.link();
+
+        createUniform("projectionMatrix");
+        createUniform("worldMatrix");
     }
 
     protected int createShader(String shaderCode, int shaderType) throws Exception {
@@ -43,6 +56,14 @@ public class Shader {
         glAttachShader(programId, shaderId);
 
         return shaderId;
+    }
+
+    protected void createUniform(String uniformName) throws Exception {
+        int uniformLocation = glGetUniformLocation(programId, uniformName);
+        if (uniformLocation < 0) {
+            throw new Exception("Could not find uniform:" + uniformName);
+        }
+        uniforms.put(uniformName, uniformLocation);
     }
 
     private void link() throws Exception {
@@ -72,8 +93,20 @@ public class Shader {
         glUseProgram(0);
     }
 
-    public void render(Mesh mesh) {
+    public void setUniform(String uniformName, Matrix4f value) {
+        // Dump the matrix into a float buffer
+        try (var stack = MemoryStack.stackPush()) {
+            var fb = stack.mallocFloat(16);
+            value.get(fb);
+            glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
+        }
+    }
+
+    public void render(Mesh mesh, Matrix4f projectionMatrix, Matrix4f worldMatrix) {
         this.bind();
+
+        setUniform("projectionMatrix", projectionMatrix);
+        setUniform("worldMatrix", worldMatrix);
 
         // Bind to the VAO
         glBindVertexArray(mesh.getVaoId());
