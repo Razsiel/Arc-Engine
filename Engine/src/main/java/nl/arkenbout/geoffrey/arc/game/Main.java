@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         Game game = new TestGame();
-        ArcEngine engine = new ArcEngine("TestGame", 600, 480, true, game);
+        ArcEngine engine = new ArcEngine("TestGame", 800, 600, true, game);
         engine.start();
     }
 }

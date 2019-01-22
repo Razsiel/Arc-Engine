@@ -1,9 +1,9 @@
 package nl.arkenbout.geoffrey.arc.engine;
 
+import nl.arkenbout.geoffrey.arc.ecs.ComponentSystem;
 import nl.arkenbout.geoffrey.arc.ecs.GameContext;
-import nl.arkenbout.geoffrey.arc.ecs.System;
 import nl.arkenbout.geoffrey.arc.engine.core.GameTimer;
-import nl.arkenbout.geoffrey.arc.engine.system.RenderSystem;
+import nl.arkenbout.geoffrey.arc.engine.system.RenderComponentSystem;
 
 public class ArcEngine implements Runnable {
 
@@ -16,16 +16,16 @@ public class ArcEngine implements Runnable {
     private final GameContext context;
     private Game game;
 
-    private RenderSystem renderSystem;
+    private RenderComponentSystem renderSystem;
 
     public ArcEngine(String windowTitle, int width, int height, boolean vSync, Game game) {
         this.game = game;
-        //System.out.println("Hello LWJGL" + Version.getVersion() + "!");
+        //ComponentSystem.out.println("Hello LWJGL" + Version.getVersion() + "!");
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         timer = new GameTimer();
-        context = new GameContext();
+        context = GameContext.getInstance();
         window = new Window(windowTitle, width, height, vSync);
-        renderSystem = context.registerSystem(new RenderSystem(window));
+        renderSystem = context.registerSystem(new RenderComponentSystem(window));
     }
 
     public void start() {
@@ -49,7 +49,6 @@ public class ArcEngine implements Runnable {
         window.init();
         timer.init();
         game.init();
-        renderSystem.init();
     }
 
     private void gameLoop() {
@@ -81,9 +80,9 @@ public class ArcEngine implements Runnable {
 
     private void update(float interval) {
         // game logic update
-        var systems = context.getSystems();
-        for (System system : systems) {
-            system.update();
+        var systems = context.getComponentSystems();
+        for (ComponentSystem componentSystem : systems) {
+            componentSystem.update();
         }
     }
 

@@ -1,9 +1,5 @@
 package nl.arkenbout.geoffrey.arc.engine.core.graphics;
 
-import org.lwjgl.system.MemoryUtil;
-
-import java.nio.FloatBuffer;
-
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
@@ -13,8 +9,6 @@ public class Shader {
     private final int vertexShaderId;
     private final int fragmentShaderId;
 
-    private int vaoId;
-    private int vboId;
 
     public Shader(String vertexShaderCode, String fragmentShaderCode) throws Exception {
         if (vertexShaderCode == null || vertexShaderCode.isEmpty())
@@ -78,37 +72,16 @@ public class Shader {
         glUseProgram(0);
     }
 
-    public void render(float[] vertices) {
-        FloatBuffer verticesBuffer = null;
-        try {
-            verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
-            verticesBuffer.put(vertices).flip();
-
-            //create VAO
-            vaoId = glGenVertexArrays();
-            glBindVertexArray(vaoId);
-
-            //Create VBO and bind to it
-            vboId = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, vboId);
-            glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        } finally {
-            if (verticesBuffer != null)
-                MemoryUtil.memFree(verticesBuffer);
-        }
-
+    public void render(Mesh mesh) {
         this.bind();
 
         // Bind to the VAO
-        glBindVertexArray(vaoId);
+        glBindVertexArray(mesh.getVaoId());
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
 
         // Draw the vertices
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // Restore state
         glDisableVertexAttribArray(0);
@@ -122,15 +95,5 @@ public class Shader {
         if (programId != 0) {
             glDeleteProgram(programId);
         }
-
-        glDisableVertexAttribArray(0);
-
-        // Delete the VBO
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDeleteBuffers(vboId);
-
-        // Delete the VAO
-        glBindVertexArray(0);
-        glDeleteVertexArrays(vaoId);
     }
 }

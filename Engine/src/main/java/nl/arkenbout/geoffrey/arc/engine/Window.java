@@ -15,9 +15,9 @@ public class Window {
     private final boolean vSync;
 
     private long windowHandle;
+    private boolean resized;
 
     public Window(String windowTitle, int width, int height, boolean vSync) {
-
         this.windowTitle = windowTitle;
         this.width = width;
         this.height = height;
@@ -26,7 +26,7 @@ public class Window {
 
     public void init() {
         // Setup an error callback. The default implementation
-        // will print the error message in System.err.
+        // will print the error message in ComponentSystem.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
@@ -43,7 +43,7 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
         // Create the window
-        windowHandle = glfwCreateWindow(300, 300, windowTitle, NULL, NULL);
+        windowHandle = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
         if ( windowHandle == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -51,7 +51,7 @@ public class Window {
         glfwSetFramebufferSizeCallback(windowHandle, (window, width, height) -> {
             this.width = width;
             this.height = height;
-            //this.setResized(true);
+            this.resized = true;
         });
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
@@ -97,6 +97,10 @@ public class Window {
     }
 
     public void update() {
+        if (this.resized) {
+            glViewport(0, 0, width, height);
+            resized = false;
+        }
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();
     }

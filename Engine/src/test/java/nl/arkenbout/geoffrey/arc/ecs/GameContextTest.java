@@ -2,12 +2,10 @@ package nl.arkenbout.geoffrey.arc.ecs;
 
 import nl.arkenbout.geoffrey.arc.ecs.test.*;
 import org.junit.jupiter.api.*;
-import org.mockito.Mock;
 
-import java.util.Objects;
-
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class GameContextTest {
 
@@ -15,7 +13,7 @@ public class GameContextTest {
 
     @BeforeEach
     void init() {
-        context = new GameContext();
+        context = GameContext.getInstance();
     }
 
     //---------------------------------------------------------
@@ -24,17 +22,17 @@ public class GameContextTest {
 
     @Test
     void registerSystem_toEmptySet_returnsSystemAdded() {
-        var systemToAdd = new TestSystem();
+        var systemToAdd = new TestComponentSystem();
 
         var added = context.registerSystem(systemToAdd);
 
         assertNotNull(added);
-        assertTrue(context.getSystems().contains(systemToAdd));
+        assertTrue(context.getComponentSystems().contains(systemToAdd));
     }
 
     @Test
     void registerSystem_alreadyAdded_returnsAlreadyExistingSystem() {
-        var systemToAdd = new TestSystem();
+        var systemToAdd = new TestComponentSystem();
         var addedBefore = context.registerSystem(systemToAdd);
         assertNotNull(addedBefore);
 
@@ -44,9 +42,9 @@ public class GameContextTest {
 
     @Test
     void registerSystemGeneric_toEmptySet_returnsTrue() {
-        var systemToAdd = TestSystem.class;
+        var systemToAdd = TestComponentSystem.class;
 
-        TestSystem added = null;
+        TestComponentSystem added = null;
         try {
             added = context.registerSystem(systemToAdd);
         } catch (Exception e) {
@@ -54,19 +52,19 @@ public class GameContextTest {
         }
 
         assertNotNull(added);
-        assertEquals(1, context.getSystems().size());
+        assertEquals(1, context.getComponentSystems().size());
     }
 
     @Test
     void registerSystemGeneric_withPrivateConstructor_throwsIllegalAccessException() {
-        var systemToAdd = PrivateConstructorTestSystem.class;
+        var systemToAdd = PrivateConstructorTestComponentSystem.class;
 
         assertThrows(IllegalAccessException.class, () -> context.registerSystem(systemToAdd));
     }
 
     @Test
     void registerSystemGeneric_withoutDefaultConstructor_throwsNoSuchMethodException() {
-        var systemToAdd = NoDefaultConstructorTestSystem.class;
+        var systemToAdd = NoDefaultConstructorTestComponentSystem.class;
 
         assertThrows(NoSuchMethodException.class, () -> context.registerSystem(systemToAdd));
     }
@@ -83,7 +81,7 @@ public class GameContextTest {
 
         var added = context.addComponent(entityId, componentToAdd);
 
-        assertTrue(added);
+        assertNotNull(added);
         assertTrue(context.getComponents(entityId).contains(componentToAdd));
     }
 
@@ -98,5 +96,40 @@ public class GameContextTest {
         var components = context.getComponents(TestComponent.class);
 
         assertEquals(3, components.size());
+    }
+
+    @Test
+    void getComponents_withSingleComponentClassInComponentMatcher_returnsComponentOfType() {
+        context.addComponent(0, new TestComponent());
+        context.addComponent(0, new AnotherTestComponent());
+        context.addComponent(0, new YetAnotherTestComponent());
+
+        var matcher = new ComponentMatcher(TestComponent.class);
+
+        var matches = context.getComponents(matcher);
+
+        assertThat(matches, hasSize(1));
+        for (var match : matches) {
+            var component = match.getComponent(TestComponent.class);
+            assertNotNull(component);
+        }
+    }
+
+    @Test
+    void getComponents_withMultipleComponentClassInComponentMatcher_returnsComponentOfType() {
+        context.addComponent(0, new TestComponent());
+        context.addComponent(0, new AnotherTestComponent());
+        context.addComponent(0, new YetAnotherTestComponent());
+
+        var matcher = new ComponentMatcher(TestComponent.class, AnotherTestComponent.class);
+
+        var matches = context.getComponents(matcher);
+
+        assertThat(matches, hasSize(1));
+        var match = matches.get(0);
+        assertNotNull(match);
+        assertThat(match.getMatchedComponents(), hasSize(2));
+        assertNotNull(match.getComponent(TestComponent.class));
+        assertNotNull(match.getComponent(AnotherTestComponent.class));
     }
 }
