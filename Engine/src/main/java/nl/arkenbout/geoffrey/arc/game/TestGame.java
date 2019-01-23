@@ -4,39 +4,34 @@ import nl.arkenbout.geoffrey.arc.ecs.GameContext;
 import nl.arkenbout.geoffrey.arc.engine.Window;
 import nl.arkenbout.geoffrey.arc.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.arc.engine.component.TransformComponent;
-import nl.arkenbout.geoffrey.arc.engine.core.graphics.Mesh;
 import nl.arkenbout.geoffrey.arc.engine.core.graphics.Shader;
+import nl.arkenbout.geoffrey.arc.engine.core.graphics.util.PrimitiveMesh;
+import nl.arkenbout.geoffrey.arc.engine.core.graphics.util.Vector3u;
 import nl.arkenbout.geoffrey.arc.engine.util.Utils;
+import nl.arkenbout.geoffrey.arc.game.components.BounceComponent;
+import nl.arkenbout.geoffrey.arc.game.components.ScalePingPongComponent;
+import nl.arkenbout.geoffrey.arc.game.systems.BounceSystem;
+import nl.arkenbout.geoffrey.arc.game.systems.ScalePingPongSystem;
 import org.joml.Vector3f;
 
 public class TestGame implements nl.arkenbout.geoffrey.arc.engine.Game {
     @Override
     public void init() throws Exception {
         var gameContext = GameContext.getInstance();
-        var entity = gameContext.createEntity();
-        var vertices = new float[]{
-                -0.5f,  0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                0.5f,  0.5f, 0.5f,
-        };
-        var indices = new int[]{
-                0, 1, 3,
-                3, 1, 2
-        };
-        var colours = new float[]{
-                0.5f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f,
-                0.0f, 0.0f, 0.5f,
-                0.0f, 0.5f, 0.5f
-        };
-        var mesh = new Mesh(vertices, indices, colours);
+        gameContext.registerSystem(new ScalePingPongSystem());
+        gameContext.registerSystem(new BounceSystem());
+
+        var mesh = PrimitiveMesh.createCube(1f);
         var shader = new Shader(Utils.loadResource("/vertex.vs"), Utils.loadResource("/fragment.fs"));
-        var renderComponent = new RenderComponent(mesh, shader);
-        var transform = new TransformComponent();
-        transform.setPosition(new Vector3f(0, 0, -2));
-        entity.addComponent(renderComponent);
-        entity.addComponent(transform);
+        var renderer = new RenderComponent(mesh, shader);
+
+        for (int i = 0; i < 3; i++) {
+            var offset = (i + 1f) * 10f;
+            var transform = new TransformComponent(new Vector3f((i - 1f) * 2f, 0, -4f), Vector3u.zero(), 1f);
+            var scalePingPong = new ScalePingPongComponent(0.1f, 0.25f, 0.5f);
+            var bouncer = new BounceComponent(-4f, 1.75f);
+            var entity = gameContext.createEntity(transform, renderer, scalePingPong, bouncer);
+        }
     }
 
     @Override

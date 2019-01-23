@@ -85,6 +85,9 @@ public class Window {
         // Set the clear color
         GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
+        // Enable depth based rendering
+        glEnable(GL_DEPTH_TEST);
+
         System.out.println(glfwGetVersionString());
     }
 

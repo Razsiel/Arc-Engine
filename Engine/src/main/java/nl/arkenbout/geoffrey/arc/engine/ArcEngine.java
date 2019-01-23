@@ -4,6 +4,7 @@ import nl.arkenbout.geoffrey.arc.ecs.ComponentSystem;
 import nl.arkenbout.geoffrey.arc.ecs.GameContext;
 import nl.arkenbout.geoffrey.arc.engine.core.GameTimer;
 import nl.arkenbout.geoffrey.arc.engine.system.RenderComponentSystem;
+import org.lwjgl.Version;
 
 public class ArcEngine implements Runnable {
 
@@ -19,13 +20,13 @@ public class ArcEngine implements Runnable {
     private RenderComponentSystem renderSystem;
 
     public ArcEngine(String windowTitle, int width, int height, boolean vSync, Game game) {
+        System.out.println("Hello LWJGL" + Version.getVersion() + "!");
         this.game = game;
-        //ComponentSystem.out.println("Hello LWJGL" + Version.getVersion() + "!");
-        gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-        timer = new GameTimer();
-        context = GameContext.getInstance();
-        window = new Window(windowTitle, width, height, vSync);
-        renderSystem = context.registerSystem(new RenderComponentSystem(window));
+        this.gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
+        this.timer = GameTimer.getInstance();
+        this.context = GameContext.getInstance();
+        this.window = new Window(windowTitle, width, height, vSync);
+        this.renderSystem = context.registerSystem(new RenderComponentSystem(window));
     }
 
     public void start() {
@@ -47,7 +48,6 @@ public class ArcEngine implements Runnable {
 
     private void init() throws Exception {
         window.init();
-        timer.init();
         game.init();
     }
 

@@ -1,9 +1,19 @@
 package nl.arkenbout.geoffrey.arc.engine.core;
 
 public class GameTimer {
+
     private double lastLoopTime;
 
-    public void init() {
+    private static GameTimer instance;
+
+    public static GameTimer getInstance() {
+        if (instance == null) {
+            instance = new GameTimer();
+        }
+        return instance;
+    }
+
+    private GameTimer() {
         lastLoopTime = getTime();
     }
 

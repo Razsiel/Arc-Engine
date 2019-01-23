@@ -1,5 +1,7 @@
 package nl.arkenbout.geoffrey.arc.ecs;
 
+import org.joml.Vector3f;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,6 +12,8 @@ public class GameContext {
     private Map<Integer, Entity> entities = new HashMap<>();
     private HashSet<ComponentSystem> componentSystems = new HashSet<>();
     private Map<Integer, List<Component>> components = new HashMap<>();
+
+    private int nextEntityId;
 
     public static GameContext getInstance() {
         if (instance == null) {
@@ -114,11 +118,13 @@ public class GameContext {
     }
 
     public Entity createEntity(Component... components) {
-        var entity = new Entity(0);
+        var entity = new Entity(nextEntityId++);
         entity.setContext(this);
-        entities.put(entity.getId(), entity);
+        this.entities.put(entity.getId(), entity);
+        this.components.put(entity.getId(), new ArrayList<>());
         for (var component : components) {
-            this.components.get(entity.getId()).add(component);
+            var entityComponents = this.components.get(entity.getId());
+            entityComponents.add(component);
         }
         return entity;
     }

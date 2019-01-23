@@ -4,13 +4,18 @@ import nl.arkenbout.geoffrey.arc.ecs.Component;
 import org.joml.Vector3f;
 
 public class TransformComponent implements Component {
-    private Vector3f position = new Vector3f(0, 0, 0);
-    private Vector3f rotation = new Vector3f(0, 0, 0);
-    private float scale = 1;
+    private Vector3f position;
+    private Vector3f rotation;
+    private float scale;
 
-    @Override
-    public void cleanup() {
-        
+    public TransformComponent() {
+        this(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 1f);
+    }
+
+    public TransformComponent(Vector3f position, Vector3f rotation, float scale) {
+        this.position = position;
+        this.rotation = rotation;
+        this.scale = scale;
     }
 
     public Vector3f getPosition() {
