@@ -26,7 +26,7 @@ public class ArcEngine implements Runnable {
         this.timer = GameTimer.getInstance();
         this.context = GameContext.getInstance();
         this.window = new Window(windowTitle, width, height, vSync);
-        this.renderSystem = context.registerSystem(new RenderComponentSystem(window));
+        this.renderSystem = context.getComponentSystemRegistery().registerSystem(new RenderComponentSystem(window));
     }
 
     public void start() {
@@ -79,8 +79,8 @@ public class ArcEngine implements Runnable {
     }
 
     private void update(float interval) {
-        // game logic update
-        var systems = context.getComponentSystems();
+        // nl.arkenbout.geoffrey.arc.game logic update
+        var systems = context.getComponentSystemRegistery().getComponentSystems();
         for (ComponentSystem componentSystem : systems) {
             componentSystem.update();
         }

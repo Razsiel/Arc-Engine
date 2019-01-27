@@ -8,6 +8,7 @@ import nl.arkenbout.geoffrey.arc.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.arc.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.arc.engine.core.graphics.Transformation;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.List;
 

@@ -18,6 +18,6 @@ public class Entity {
     }
 
     public void addComponent(Component component) {
-        this.context.addComponent(this.id, component);
+        this.context.getComponentRegistry().addComponent(this.id, component);
     }
 }

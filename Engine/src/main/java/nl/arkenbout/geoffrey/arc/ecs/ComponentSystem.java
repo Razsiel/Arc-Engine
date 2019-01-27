@@ -2,22 +2,22 @@ package nl.arkenbout.geoffrey.arc.ecs;
 
 import java.util.List;
 
-public abstract class ComponentSystem<C extends Component> {
+public abstract class ComponentSystem {
 
-    private GameContext context;
+    private ComponentRegistry componentRegistry;
 
     public abstract void update();
 
-    void setContext(GameContext context) {
-        this.context = context;
+    void setComponentRegistry(ComponentRegistry componentRegistry) {
+        this.componentRegistry = componentRegistry;
     }
 
-    protected final List<C> getComponents(Class<C> type) {
-        return context.getComponents(type);
+    protected final <C extends Component> List<C> getComponents(Class<C> type) {
+        return componentRegistry.getComponents(type);
     }
 
     protected final List<ComponentMatch> getComponents(ComponentMatcher matcher) {
-        return context.getComponents(matcher);
+        return componentRegistry.getComponents(matcher);
     }
 
     public void cleanup() {}

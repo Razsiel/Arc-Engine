@@ -10,10 +10,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameContextTest {
 
     private GameContext context;
+    private ComponentSystemRegistry systemRegistry;
+    private ComponentRegistry componentRegistry;
 
     @BeforeEach
     void init() {
         context = GameContext.getInstance();
+        systemRegistry = context.getComponentSystemRegistery();
+        componentRegistry = context.getComponentRegistry();
     }
 
     //---------------------------------------------------------
@@ -24,19 +28,19 @@ public class GameContextTest {
     void registerSystem_toEmptySet_returnsSystemAdded() {
         var systemToAdd = new TestComponentSystem();
 
-        var added = context.registerSystem(systemToAdd);
+        var added = systemRegistry.registerSystem(systemToAdd);
 
         assertNotNull(added);
-        assertTrue(context.getComponentSystems().contains(systemToAdd));
+        assertTrue(systemRegistry.getComponentSystems().contains(systemToAdd));
     }
 
     @Test
     void registerSystem_alreadyAdded_returnsAlreadyExistingSystem() {
         var systemToAdd = new TestComponentSystem();
-        var addedBefore = context.registerSystem(systemToAdd);
+        var addedBefore = systemRegistry.registerSystem(systemToAdd);
         assertNotNull(addedBefore);
 
-        var system = context.registerSystem(systemToAdd);
+        var system = systemRegistry.registerSystem(systemToAdd);
         assertEquals(addedBefore, system);
     }
 
@@ -46,27 +50,27 @@ public class GameContextTest {
 
         TestComponentSystem added = null;
         try {
-            added = context.registerSystem(systemToAdd);
+            added = systemRegistry.registerSystem(systemToAdd);
         } catch (Exception e) {
             fail("failed");
         }
 
         assertNotNull(added);
-        assertEquals(1, context.getComponentSystems().size());
+        assertEquals(1, systemRegistry.getComponentSystems().size());
     }
 
     @Test
     void registerSystemGeneric_withPrivateConstructor_throwsIllegalAccessException() {
         var systemToAdd = PrivateConstructorTestComponentSystem.class;
 
-        assertThrows(IllegalAccessException.class, () -> context.registerSystem(systemToAdd));
+        assertThrows(IllegalAccessException.class, () -> systemRegistry.registerSystem(systemToAdd));
     }
 
     @Test
     void registerSystemGeneric_withoutDefaultConstructor_throwsNoSuchMethodException() {
         var systemToAdd = NoDefaultConstructorTestComponentSystem.class;
 
-        assertThrows(NoSuchMethodException.class, () -> context.registerSystem(systemToAdd));
+        assertThrows(NoSuchMethodException.class, () -> systemRegistry.registerSystem(systemToAdd));
     }
 
 
@@ -79,34 +83,34 @@ public class GameContextTest {
         var entityId = 0;
         var componentToAdd = new TestComponent();
 
-        var added = context.addComponent(entityId, componentToAdd);
+        var added = componentRegistry.addComponent(entityId, componentToAdd);
 
         assertNotNull(added);
-        assertTrue(context.getComponents(entityId).contains(componentToAdd));
+        assertTrue(componentRegistry.getComponents(entityId).contains(componentToAdd));
     }
 
     @Test
     void getComponents_returnsListOfComponentsOfType() {
-        context.addComponent(0, new TestComponent());
-        context.addComponent(0, new AnotherTestComponent());
-        context.addComponent(1, new AnotherTestComponent());
-        context.addComponent(1, new TestComponent());
-        context.addComponent(6, new TestComponent());
+        componentRegistry.addComponent(0, new TestComponent());
+        componentRegistry.addComponent(0, new AnotherTestComponent());
+        componentRegistry.addComponent(1, new AnotherTestComponent());
+        componentRegistry.addComponent(1, new TestComponent());
+        componentRegistry.addComponent(6, new TestComponent());
 
-        var components = context.getComponents(TestComponent.class);
+        var components = componentRegistry.getComponents(TestComponent.class);
 
         assertEquals(3, components.size());
     }
 
     @Test
     void getComponents_withSingleComponentClassInComponentMatcher_returnsComponentOfType() {
-        context.addComponent(0, new TestComponent());
-        context.addComponent(0, new AnotherTestComponent());
-        context.addComponent(0, new YetAnotherTestComponent());
+        componentRegistry.addComponent(0, new TestComponent());
+        componentRegistry.addComponent(0, new AnotherTestComponent());
+        componentRegistry.addComponent(0, new YetAnotherTestComponent());
 
         var matcher = new ComponentMatcher(TestComponent.class);
 
-        var matches = context.getComponents(matcher);
+        var matches = componentRegistry.getComponents(matcher);
 
         assertThat(matches, hasSize(1));
         for (var match : matches) {
@@ -117,13 +121,13 @@ public class GameContextTest {
 
     @Test
     void getComponents_withMultipleComponentClassInComponentMatcher_returnsComponentOfType() {
-        context.addComponent(0, new TestComponent());
-        context.addComponent(0, new AnotherTestComponent());
-        context.addComponent(0, new YetAnotherTestComponent());
+        componentRegistry.addComponent(0, new TestComponent());
+        componentRegistry.addComponent(0, new AnotherTestComponent());
+        componentRegistry.addComponent(0, new YetAnotherTestComponent());
 
         var matcher = new ComponentMatcher(TestComponent.class, AnotherTestComponent.class);
 
-        var matches = context.getComponents(matcher);
+        var matches = componentRegistry.getComponents(matcher);
 
         assertThat(matches, hasSize(1));
         var match = matches.get(0);

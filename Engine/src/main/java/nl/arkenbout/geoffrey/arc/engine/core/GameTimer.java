@@ -3,6 +3,7 @@ package nl.arkenbout.geoffrey.arc.engine.core;
 public class GameTimer {
 
     private double lastLoopTime;
+    private double startTime;
 
     private static GameTimer instance;
 
@@ -15,6 +16,7 @@ public class GameTimer {
 
     private GameTimer() {
         lastLoopTime = getTime();
+        startTime = getTime();
     }
 
     public double getTime() {
@@ -30,5 +32,9 @@ public class GameTimer {
 
     public double getLastLoopTime() {
         return lastLoopTime;
+    }
+
+    public double getTimeSinceStart() {
+        return getTime() - startTime;
     }
 }
