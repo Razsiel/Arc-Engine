@@ -2,14 +2,14 @@ package nl.arkenbout.geoffrey.angel.ecs;
 
 public class Entity {
 
-    private Integer id;
+    private String id;
     private GameContext context;
 
-    Entity(Integer id) {
+    Entity(String id) {
         this.id = id;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 

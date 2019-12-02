@@ -85,7 +85,7 @@ public class GameContextTest {
 
     @Test
     void addComponent_toEmptySet_returnsTrue() {
-        var entityId = 0;
+        var entityId = "BjH2U7dq";
         var componentToAdd = new TestComponent();
 
         var added = componentRegistry.addComponent(entityId, componentToAdd);
@@ -96,11 +96,11 @@ public class GameContextTest {
 
     @Test
     void getComponents_returnsListOfComponentsOfType() {
-        componentRegistry.addComponent(0, new TestComponent());
-        componentRegistry.addComponent(0, new AnotherTestComponent());
-        componentRegistry.addComponent(1, new AnotherTestComponent());
-        componentRegistry.addComponent(1, new TestComponent());
-        componentRegistry.addComponent(6, new TestComponent());
+        componentRegistry.addComponent("BjH2U7dq", new TestComponent());
+        componentRegistry.addComponent("BjH2U7dq", new AnotherTestComponent());
+        componentRegistry.addComponent("Jfvd7Mue", new AnotherTestComponent());
+        componentRegistry.addComponent("Jfvd7Mue", new TestComponent());
+        componentRegistry.addComponent("bqJKi62V", new TestComponent());
 
         var components = componentRegistry.getComponents(TestComponent.class);
 
@@ -109,9 +109,9 @@ public class GameContextTest {
 
     @Test
     void getComponents_withSingleComponentClassInComponentMatcher_returnsComponentOfType() {
-        componentRegistry.addComponent(0, new TestComponent());
-        componentRegistry.addComponent(0, new AnotherTestComponent());
-        componentRegistry.addComponent(0, new YetAnotherTestComponent());
+        componentRegistry.addComponent("BjH2U7dq", new TestComponent());
+        componentRegistry.addComponent("BjH2U7dq", new AnotherTestComponent());
+        componentRegistry.addComponent("BjH2U7dq", new YetAnotherTestComponent());
 
         var matcher = new ComponentMatcher(TestComponent.class);
 
@@ -134,9 +134,9 @@ public class GameContextTest {
 
     @Test
     void getComponents_withMultipleComponentClassInComponentMatcher_returnsComponentOfType() {
-        componentRegistry.addComponent(0, new TestComponent());
-        componentRegistry.addComponent(0, new AnotherTestComponent());
-        componentRegistry.addComponent(0, new YetAnotherTestComponent());
+        componentRegistry.addComponent("BjH2U7dq", new TestComponent());
+        componentRegistry.addComponent("BjH2U7dq", new AnotherTestComponent());
+        componentRegistry.addComponent("BjH2U7dq", new YetAnotherTestComponent());
 
         var matcher = new ComponentMatcher(TestComponent.class, AnotherTestComponent.class);
 

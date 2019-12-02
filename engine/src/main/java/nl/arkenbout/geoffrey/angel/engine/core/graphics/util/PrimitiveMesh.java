@@ -49,4 +49,26 @@ public class PrimitiveMesh {
         };
         return new Mesh(vertices, indices, colours);
     }
+
+    public static Mesh createPlane(float width, float depth) {
+        width /= 2;
+        depth /= 2;
+        var vertices = new float[]{
+                -width, 0, -depth,
+                width, 0, -depth,
+                width, 0, depth,
+                -width, 0, depth
+        };
+        var indices = new int[]{
+                0, 1, 3,
+                3, 1, 2
+        };
+        var colours = new float[]{
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f,
+                0.0f, 0.0f, 0.5f,
+                0.5f, 0.5f, 0.5f
+        };
+        return new Mesh(vertices, indices, colours);
+    }
 }

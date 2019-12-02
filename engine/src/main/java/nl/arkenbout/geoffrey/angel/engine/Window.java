@@ -87,6 +87,8 @@ public class Window {
 
         // Enable depth based rendering
         glEnable(GL_DEPTH_TEST);
+        glDepthMask(true);
+        glDepthFunc(GL_LESS);
 
         System.out.println(glfwGetVersionString());
     }

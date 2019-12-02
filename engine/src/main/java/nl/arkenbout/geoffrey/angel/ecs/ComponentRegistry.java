@@ -7,13 +7,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ComponentRegistry {
-    private Map<Integer, List<Component>> components = new HashMap<>();
+    private Map<String, List<Component>> components = new HashMap<>();
 
     Component addComponent(Entity entity, Component newComponent) {
         return addComponent(entity.getId(), newComponent);
     }
 
-    Component addComponent(int entityId, Component newComponent) {
+    Component addComponent(String entityId, Component newComponent) {
         if (newComponent == null) {
             throw new IllegalArgumentException("A component must be passed to add it");
         }
@@ -26,7 +26,7 @@ public class ComponentRegistry {
         return newComponent;
     }
 
-    public List<Component> getComponents(int entityId) {
+    public List<Component> getComponents(String entityId) {
         return Collections.unmodifiableList(components.get(entityId));
     }
 
@@ -47,19 +47,23 @@ public class ComponentRegistry {
     public List<ComponentMatch> getComponents(ComponentMatcher matcher) {
         List<ComponentMatch> matched = new ArrayList<>();
         var match = matcher.getMatchTypes();
-
+        var matchSize = match.size();
         for (var componentsByEntity : this.components.entrySet()) {
             var components = componentsByEntity.getValue();
-            if (components.size() < match.size()) {
-                break;
+            boolean matchesAll = false;
+            List<Component> matchedComponents = new ArrayList<>();
+            for (var component : components) {
+                var matches = match.contains(component.getClass());
+                if (matches) {
+                    matchedComponents.add(component);
+                    if (matchedComponents.size() == matchSize) {
+                        matchesAll = true;
+                        break;
+                    }
+                }
             }
-
-            List<Component> matchedComponents = components.stream()
-                    .filter(component -> match.contains(component.getClass()))
-                    .collect(Collectors.toList());
-
-            ComponentMatch componentMatch = new ComponentMatch(componentsByEntity.getKey(), matchedComponents);
-            matched.add(componentMatch);
+            if (matchesAll)
+                matched.add(new ComponentMatch(componentsByEntity.getKey(), matchedComponents));
         }
         return matched;
     }

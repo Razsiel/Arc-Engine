@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class ComponentMatch {
-    private final int entityId;
-    private List<? extends Component> matchedComponents;
+    private final String entityId;
+    private final List<? extends Component> matchedComponents;
 
-    public ComponentMatch(int entityId, List<Component> matchedComponents) {
+    public ComponentMatch(String entityId, List<Component> matchedComponents) {
         this.entityId = entityId;
         this.matchedComponents = matchedComponents;
     }
@@ -22,7 +22,7 @@ public class ComponentMatch {
         return (T) component.orElse(null);
     }
 
-    public int getEntityId() {
+    public String getEntityId() {
         return entityId;
     }
 
