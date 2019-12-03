@@ -22,6 +22,6 @@ public class EntityRegistry {
     }
 
     public String getNextEntityId() {
-        return hashids.encode(System.currentTimeMillis());
+        return hashids.encode(System.nanoTime());
     }
 }

@@ -3,13 +3,16 @@ package nl.arkenbout.geoffrey.angel.engine;
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
 import nl.arkenbout.geoffrey.angel.engine.system.RenderComponentSystem;
+import org.joml.Vector3f;
 import org.lwjgl.Version;
 
 public class ArcEngine implements Runnable {
 
-    public static final int TARGET_FPS = 60;
-    public static final int TARGET_UPS = 30;
+    private static final int TARGET_FPS = 60;
+    private static final int TARGET_UPS = 30;
 
     private final Window window;
     private final Thread gameLoopThread;
@@ -48,6 +51,11 @@ public class ArcEngine implements Runnable {
     private void init() throws Exception {
         window.init();
         game.init();
+        if (Cameras.main() == null) {
+            Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, 5f), new Vector3f(0f, 0f, 0f));
+            Cameras.addCamera(mainCamera);
+            Cameras.setMainCamera(mainCamera);
+        }
     }
 
     private void gameLoop() {
@@ -68,7 +76,24 @@ public class ArcEngine implements Runnable {
                 accumulator -= interval;
             }
 
-            renderSystem.render();
+            window.updateFps(timer);
+
+            renderSystem.render(Cameras.main());
+
+            if (!window.isvSync()) {
+                sync();
+            }
+        }
+    }
+
+    private void sync() {
+        float loopSlot = 1f / TARGET_FPS;
+        double endTime = timer.getLastLoopTime() + loopSlot;
+        while (timer.getTime() < endTime) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+            }
         }
     }
 

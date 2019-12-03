@@ -1,5 +1,6 @@
 package nl.arkenbout.geoffrey.angel.engine;
 
+import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -10,12 +11,14 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private final String windowTitle;
     private final boolean vSync;
+    private String windowTitle;
     private int width;
     private int height;
     private long windowHandle;
     private boolean resized;
+    private double lastUpdateFps;
+    private int fps;
 
     public Window(String windowTitle, int width, int height, boolean vSync) {
         this.windowTitle = windowTitle;
@@ -91,6 +94,16 @@ public class Window {
         glDepthFunc(GL_LESS);
 
         System.out.println(glfwGetVersionString());
+    }
+
+    public void updateFps(GameTimer timer) {
+        if (timer.getLastLoopTime() - lastUpdateFps > 1) {
+            lastUpdateFps = timer.getLastLoopTime();
+            // set fps in window
+            glfwSetWindowTitle(windowHandle, windowTitle + " - " + fps + " FPS");
+            fps = 0;
+        }
+        fps++;
     }
 
     public boolean isvSync() {

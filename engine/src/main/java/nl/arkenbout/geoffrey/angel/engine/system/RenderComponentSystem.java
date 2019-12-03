@@ -6,6 +6,7 @@ import nl.arkenbout.geoffrey.angel.ecs.system.DualComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.Window;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Transformation;
 import org.joml.Matrix4f;
 
@@ -30,7 +31,7 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
         // ignore because of render
     }
 
-    public void render() {
+    public void render(Camera mainCamera) {
         var matcher = new ComponentMatcher(RenderComponent.class, TransformComponent.class);
         List<ComponentMatch> components = getComponents(matcher);
 
@@ -38,16 +39,18 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
 
         Matrix4f projectionMatrix = Transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
 
+        Matrix4f viewMatrix = Transformation.getViewMatrix(mainCamera);
+
         for (var match : components) {
             var renderComponent = match.getComponent(RenderComponent.class);
-            var transform = match.getComponent(TransformComponent.class);
+            var transformComponent = match.getComponent(TransformComponent.class);
 
             var shader = renderComponent.getShader();
             var mesh = renderComponent.getMesh();
 
-            var worldMatrix = Transformation.getWorldMatrix(transform.getPosition(), transform.getRotation(), transform.getScale());
+            Matrix4f modelViewMatrix = Transformation.getModelViewMatrix(transformComponent, viewMatrix);
 
-            shader.render(mesh, projectionMatrix, worldMatrix);
+            shader.render(mesh, projectionMatrix, modelViewMatrix);
         }
 
         // update the window render buffer

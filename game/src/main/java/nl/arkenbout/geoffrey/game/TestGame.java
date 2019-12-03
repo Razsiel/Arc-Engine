@@ -29,7 +29,7 @@ public class TestGame implements Game {
 
         for (int i = 0; i < 5; i++) {
             var x = MathUtils.remap(i, 0, 4, -2.5f, 2.5f);
-            var transform = new TransformComponent(new Vector3f(x, 0, -5f), Vector3u.zero(), 1f);
+            var transform = new TransformComponent(new Vector3f(x, 0f, 0f), Vector3u.zero(), 1f);
             var scalePingPong = new ScalePingPongComponent(1f, 0.3f, 0.7f);
             var bouncer = new BounceComponent(-3f, 2f);
 
@@ -43,7 +43,7 @@ public class TestGame implements Game {
         }
 
         var planeMesh = PrimitiveMesh.createPlane(4, 4);
-        var transform = new TransformComponent(new Vector3f(-0.1f, -0.5f, -6f), Vector3u.zero(), 1f);
+        var transform = new TransformComponent(new Vector3f(-0.1f, -0.5f, 0f), Vector3u.zero(), 1f);
         var planeRenderer = new RenderComponent(planeMesh, shader);
         var plane = gameContext.createEntity(transform, planeRenderer);
         System.out.println("planeId = " + plane.getId());

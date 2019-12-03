@@ -1,5 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 
+import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -21,5 +23,34 @@ public class Transformation {
                 .rotateZ((float) Math.toRadians(rotation.z))
                 .scale(scale);
         return worldMatrix;
+    }
+
+    public static Matrix4f getViewMatrix(Camera camera) {
+        var cameraPosition = camera.getPosition();
+        var cameraRotation = camera.getRotation();
+
+        var viewMatrix = new Matrix4f();
+        double cameraRotationXRadians = Math.toRadians(cameraRotation.x());
+        double cameraRotationYRadians = Math.toRadians(cameraRotation.y());
+        viewMatrix.identity()
+                .rotate((float) cameraRotationXRadians, Vector3u.right())
+                .rotate((float) cameraRotationYRadians, Vector3u.up())
+                .translate(-cameraPosition.x(), -cameraPosition.y(), -cameraPosition.z());
+        return viewMatrix;
+    }
+
+    public static Matrix4f getModelViewMatrix(TransformComponent transformComponent, Matrix4f viewMatrix) {
+        var componentRotation = transformComponent.getRotation();
+        var componentPosition = transformComponent.getPosition();
+        var modelViewMatrix = new Matrix4f();
+        modelViewMatrix.identity()
+                .translate(componentPosition)
+                .rotateX((float) Math.toRadians(-componentRotation.x()))
+                .rotateY((float) Math.toRadians(-componentRotation.y()))
+                .rotateZ((float) Math.toRadians(-componentRotation.z()))
+                .scale(transformComponent.getScale());
+        var viewCurrent = new Matrix4f(viewMatrix);
+        return viewCurrent.mul(modelViewMatrix);
+
     }
 }

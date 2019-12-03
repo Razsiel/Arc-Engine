@@ -38,7 +38,7 @@ public class Shader {
         this.link();
 
         createUniform("projectionMatrix");
-        createUniform("worldMatrix");
+        createUniform("modelViewMatrix");
     }
 
     protected int createShader(String shaderCode, int shaderType) throws Exception {
@@ -101,11 +101,11 @@ public class Shader {
         }
     }
 
-    public void render(Mesh mesh, Matrix4f projectionMatrix, Matrix4f worldMatrix) {
+    public void render(Mesh mesh, Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
         this.bind();
 
         setUniform("projectionMatrix", projectionMatrix);
-        setUniform("worldMatrix", worldMatrix);
+        setUniform("modelViewMatrix", modelViewMatrix);
 
         // Bind to the VAO
         glBindVertexArray(mesh.getVaoId());
