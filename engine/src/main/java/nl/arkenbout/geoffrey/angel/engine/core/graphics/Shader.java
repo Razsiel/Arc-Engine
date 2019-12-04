@@ -41,7 +41,7 @@ public class Shader {
         createUniform("modelViewMatrix");
     }
 
-    protected int createShader(String shaderCode, int shaderType) throws Exception {
+    private int createShader(String shaderCode, int shaderType) throws Exception {
         int shaderId = glCreateShader(shaderType);
         if (shaderId == 0)
             throw new Exception("Error creating shader. Type: " + shaderType);
@@ -57,7 +57,7 @@ public class Shader {
         return shaderId;
     }
 
-    protected void createUniform(String uniformName) throws Exception {
+    public void createUniform(String uniformName) throws Exception {
         int uniformLocation = glGetUniformLocation(programId, uniformName);
         if (uniformLocation < 0) {
             throw new Exception("Could not find uniform:" + uniformName);
@@ -101,23 +101,25 @@ public class Shader {
         }
     }
 
+    public void setUniform(String uniformName, int value) {
+        glUniform1i(uniforms.get(uniformName), value);
+    }
+
     public void render(Mesh mesh, Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
+        if (mesh.hasTexture()) {
+            try {
+                createUniform("texture_sampler");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         this.bind();
 
         setUniform("projectionMatrix", projectionMatrix);
         setUniform("modelViewMatrix", modelViewMatrix);
 
-        // Bind to the VAO
-        glBindVertexArray(mesh.getVaoId());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        // Draw the vertices
-        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        // Restore state
-        glDisableVertexAttribArray(0);
-        glBindVertexArray(0);
+        mesh.render(this);
 
         this.unbind();
     }

@@ -1,42 +1,14 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.util;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
+
+import java.util.stream.Stream;
 
 public class PrimitiveMesh {
     public static Mesh createCube(float size) {
-        size /= 2f;
-        var vertices = new float[]{
-                // VO
-                -size, size, size,
-                // V1
-                -size, -size, size,
-                // V2
-                size, -size, size,
-                // V3
-                size, size, size,
-                // V4
-                -size, size, -size,
-                // V5
-                size, size, -size,
-                // V6
-                -size, -size, -size,
-                // V7
-                size, -size, -size,
-        };
-        var indices = new int[]{
-                // Front face
-                0, 1, 3, 3, 1, 2,
-                // Top Face
-                4, 0, 3, 5, 4, 3,
-                // Right face
-                3, 2, 7, 5, 3, 7,
-                // Left face
-                6, 1, 0, 6, 0, 4,
-                // Bottom face
-                2, 1, 6, 2, 6, 7,
-                // Back face
-                7, 6, 4, 7, 4, 5,
-        };
+        var vertices = getCubeVertices(size);
+        var indices = getCubeIndices();
         var colours = new float[]{
                 0.5f, 0.0f, 0.0f,
                 0.0f, 0.5f, 0.0f,
@@ -47,7 +19,135 @@ public class PrimitiveMesh {
                 0.0f, 0.0f, 0.5f,
                 0.0f, 0.5f, 0.5f,
         };
-        return new Mesh(vertices, indices, colours);
+        return Mesh.builder(vertices, indices)
+                .vertexShaded(colours)
+                .build();
+    }
+
+    public static Mesh createTexturedCube(float size, Texture texture) {
+        var vertices = getCubeVertices(size);
+        var indices = getCubeIndices();
+        var texCoords = new float[]{
+                0f, 0f,
+                1f, 0f,
+                1f, 1f,
+                0f, 1f,
+
+                0f, 0f,
+                1f, 0f,
+                1f, 1f,
+                0f, 1f,
+
+                0f, 0f,
+                1f, 0f,
+                1f, 1f,
+                0f, 1f,
+
+                0f, 0f,
+                1f, 0f,
+                1f, 1f,
+                0f, 1f,
+
+                0f, 0f,
+                1f, 0f,
+                1f, 1f,
+                0f, 1f,
+
+                0f, 0f,
+                1f, 0f,
+                1f, 1f,
+                0f, 1f
+        };
+        return Mesh.builder(vertices, indices)
+                .textured(texCoords, texture)
+                .build();
+    }
+
+    private static int[] getCubeIndices() {
+        return new int[]{
+                // Front face
+                0, 1, 3, 3, 1, 2,
+                // Left face
+                4, 5, 7, 7, 5, 6,
+                // Right face
+                8, 9, 11, 11, 9, 10,
+                // Top Face
+                12, 13, 15, 15, 13, 14,
+                // Bottom face
+                16, 17, 19, 19, 17, 18,
+                // Back face
+                20, 21, 23, 23, 21, 22
+        };
+    }
+
+    private static float[] getCubeVertices(float size) {
+        size /= 2f;
+        return new float[]{
+                // FRONT FACE
+                // F0VO
+                -size, size, size,
+                // F0V1
+                -size, -size, size,
+                // F0V2
+                size, -size, size,
+                // F0V3
+                size, size, size,
+
+
+                // LEFT FACE
+                // F1V0
+                -size, size, -size,
+                // F1V1
+                -size, -size, -size,
+                // F1V2
+                -size, -size, size,
+                // F1V3
+                -size, size, size,
+
+
+                // RIGHT FACE
+                // F2V0
+                size, size, size,
+                // F2V1
+                size, -size, size,
+                // F2V2
+                size, -size, -size,
+                // F2V3
+                size, size, -size,
+
+
+                // TOP FACE
+                // F3V0
+                -size, size, -size,
+                // F3V1
+                -size, size, size,
+                // F3V2
+                size, size, size,
+                // F3V3
+                size, size, -size,
+
+
+                // BOTTOM FACE
+                // F4V0
+                size, -size, size,
+                // F4V1
+                size, -size, -size,
+                // F4V2
+                -size, -size, -size,
+                // F4V3
+                -size, -size, size,
+
+
+                // BACK FACE
+                // F6V0
+                -size, size, -size,
+                // F6V1
+                -size, -size, -size,
+                // F6V2
+                size, -size, -size,
+                // F6V3
+                size, size, -size,
+        };
     }
 
     public static Mesh createPlane(float width, float depth) {
@@ -69,6 +169,8 @@ public class PrimitiveMesh {
                 0.0f, 0.0f, 0.5f,
                 0.5f, 0.5f, 0.5f
         };
-        return new Mesh(vertices, indices, colours);
+        return Mesh.builder(vertices, indices)
+                .vertexShaded(colours)
+                .build();
     }
 }
