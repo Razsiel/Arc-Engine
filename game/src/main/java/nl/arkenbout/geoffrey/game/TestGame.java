@@ -5,6 +5,7 @@ import nl.arkenbout.geoffrey.angel.ecs.GameContext;
 import nl.arkenbout.geoffrey.angel.engine.Game;
 import nl.arkenbout.geoffrey.angel.engine.Window;
 import nl.arkenbout.geoffrey.angel.engine.component.*;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.PrimitiveMesh;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Shaders;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
@@ -22,10 +23,14 @@ public class TestGame implements Game {
         systemRegistry.registerSystem(new BounceSystem());
         systemRegistry.registerSystem(new RotatorSystem());
 
-        var shader = Shaders.defaultShader();
+        var texturedShader = Shaders.getTexturedShader();
 
-        var mesh = PrimitiveMesh.createCube(1f);
-        var cubeRenderer = new RenderComponent(mesh, shader);
+        var mesh = PrimitiveMesh.createTexturedCube(1f, new Texture("/textures/grid.png"));
+        var cubeRenderer = new RenderComponent(mesh, texturedShader);
+
+        TransformComponent t = new TransformComponent(Vector3u.zero(), Vector3u.up().mul(180), 1f);
+        Entity e = gameContext.createEntity(t, cubeRenderer);
+        System.out.println("eId = " + e.getId());
 
         for (int i = 0; i < 5; i++) {
             var x = MathUtils.remap(i, 0, 4, -2.5f, 2.5f);
@@ -42,9 +47,11 @@ public class TestGame implements Game {
             System.out.println("cubeId = " + cube.getId());
         }
 
+        var vertexColoredShader = Shaders.getVertexColouredShader();
+
         var planeMesh = PrimitiveMesh.createPlane(4, 4);
         var transform = new TransformComponent(new Vector3f(-0.1f, -0.5f, 0f), Vector3u.zero(), 1f);
-        var planeRenderer = new RenderComponent(planeMesh, shader);
+        var planeRenderer = new RenderComponent(planeMesh, vertexColoredShader);
         var plane = gameContext.createEntity(transform, planeRenderer);
         System.out.println("planeId = " + plane.getId());
     }

@@ -3,8 +3,6 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.util;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
 
-import java.util.stream.Stream;
-
 public class PrimitiveMesh {
     public static Mesh createCube(float size) {
         var vertices = getCubeVertices(size);
