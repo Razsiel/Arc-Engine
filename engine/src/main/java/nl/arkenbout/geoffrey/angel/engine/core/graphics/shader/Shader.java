@@ -1,21 +1,24 @@
-package nl.arkenbout.geoffrey.angel.engine.core.graphics;
+package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
+import nl.arkenbout.geoffrey.angel.engine.util.Utils;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.util.Color;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
-public class Shader {
+public abstract class Shader {
 
     private final int programId;
     private final int vertexShaderId;
     private final int fragmentShaderId;
 
     private final Map<String, Integer> uniforms;
+    protected Map<String, Object> properties = new HashMap<>();
 
     public Shader(String vertexShaderCode, String fragmentShaderCode) throws Exception {
         if (vertexShaderCode == null || vertexShaderCode.isEmpty())
@@ -39,6 +42,13 @@ public class Shader {
 
         createUniform("projectionMatrix");
         createUniform("modelViewMatrix");
+    }
+
+    public Shader(String name) throws Exception {
+        this(
+                Utils.loadResource(String.format("/shaders/%s/vertex.vs", name)),
+                Utils.loadResource(String.format("/shaders/%s/fragment.fs", name))
+        );
     }
 
     private int createShader(String shaderCode, int shaderType) throws Exception {
@@ -84,11 +94,11 @@ public class Shader {
         }
     }
 
-    private void bind() {
+    protected void bind() {
         glUseProgram(programId);
     }
 
-    private void unbind() {
+    protected void unbind() {
         glUseProgram(0);
     }
 
@@ -105,24 +115,24 @@ public class Shader {
         glUniform1i(uniforms.get(uniformName), value);
     }
 
-    public void render(Mesh mesh, Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
-        if (mesh.hasTexture()) {
-            try {
-                createUniform("texture_sampler");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    public void setUniform(String uniformName, Color color) {
+        Integer colorLocation = uniforms.get(uniformName);
+        float red = color.getRed() / 255f;
+        float green = color.getGreen() / 255f;
+        float blue = color.getBlue() / 255f;
+        float alpha = color.getAlpha() / 255f;
+        glUniform4f(colorLocation, red, green, blue, alpha);
+    }
 
-        this.bind();
+    protected void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Runnable shaderRenderer) {
 
+        // set uniform data
         setUniform("projectionMatrix", projectionMatrix);
         setUniform("modelViewMatrix", modelViewMatrix);
 
-        mesh.render(this);
-
-        this.unbind();
+        shaderRenderer.run();
     }
+
 
     public void cleanup() {
         this.unbind();
@@ -130,4 +140,21 @@ public class Shader {
             glDeleteProgram(programId);
         }
     }
+
+    public <T> void setProperty(String propertyName, T value) {
+        this.properties.put(propertyName, value);
+    }
+
+    <T> T getProperty(String propertyName) {
+        return (T) properties.get(propertyName);
+    }
+
+    public abstract void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix);
+
+    public abstract Map<VboType, Integer> prepareVertexBufferObjects();
+
+    public abstract void postRender(int vboLastIndex);
+
+    public abstract void preRender(int vboLastIndex);
 }
+

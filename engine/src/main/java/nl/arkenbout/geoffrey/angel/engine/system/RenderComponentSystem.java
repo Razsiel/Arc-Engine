@@ -38,19 +38,18 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         Matrix4f projectionMatrix = Transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
-
         Matrix4f viewMatrix = Transformation.getViewMatrix(mainCamera);
 
         for (var match : components) {
             var renderComponent = match.getComponent(RenderComponent.class);
             var transformComponent = match.getComponent(TransformComponent.class);
 
-            var shader = renderComponent.getShader();
+            var material = renderComponent.getMaterial();
             var mesh = renderComponent.getMesh();
 
             Matrix4f modelViewMatrix = Transformation.getModelViewMatrix(transformComponent, viewMatrix);
 
-            shader.render(mesh, projectionMatrix, modelViewMatrix);
+            mesh.render(material, projectionMatrix, modelViewMatrix);
         }
 
         // update the window render buffer

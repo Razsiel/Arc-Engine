@@ -1,10 +1,8 @@
 package nl.arkenbout.geoffrey.angel.engine;
 
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.*;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -86,7 +84,7 @@ public class Window {
         GL.createCapabilities();
 
         // Set the clear color
-        GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        GL11.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 
         // Enable depth based rendering
         glEnable(GL_DEPTH_TEST);

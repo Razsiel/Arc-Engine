@@ -32,14 +32,14 @@ public class ArcEngine implements Runnable {
         this.renderSystem = context.getComponentSystemRegistery().registerSystem(new RenderComponentSystem(window));
     }
 
-    public void start() {
-        gameLoopThread.start();
+    public void start() throws Exception {
+        init();
+        run();
     }
 
     @Override
     public void run() {
         try {
-            init();
             gameLoop();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -111,6 +111,8 @@ public class ArcEngine implements Runnable {
     }
 
     private void cleanup() {
-        renderSystem.cleanup();
+        context.getComponentSystemRegistery()
+                .getComponentSystems()
+                .forEach(ComponentSystem::cleanup);
     }
 }

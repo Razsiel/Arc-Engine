@@ -1,6 +1,6 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.util;
 
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Mesh;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
 
 public class PrimitiveMesh {
@@ -17,9 +17,7 @@ public class PrimitiveMesh {
                 0.0f, 0.0f, 0.5f,
                 0.0f, 0.5f, 0.5f,
         };
-        return Mesh.builder(vertices, indices)
-                .vertexShaded(colours)
-                .build();
+        return new Mesh(vertices, indices);
     }
 
     public static Mesh createTexturedCube(float size, Texture texture) {
@@ -56,9 +54,7 @@ public class PrimitiveMesh {
                 1f, 1f,
                 0f, 1f
         };
-        return Mesh.builder(vertices, indices)
-                .textured(texCoords, texture)
-                .build();
+        return new Mesh(vertices, indices);
     }
 
     private static int[] getCubeIndices() {
@@ -161,14 +157,6 @@ public class PrimitiveMesh {
                 0, 1, 3,
                 3, 1, 2
         };
-        var colours = new float[]{
-                0.5f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f,
-                0.0f, 0.0f, 0.5f,
-                0.5f, 0.5f, 0.5f
-        };
-        return Mesh.builder(vertices, indices)
-                .vertexShaded(colours)
-                .build();
+        return new Mesh(vertices, indices);
     }
 }

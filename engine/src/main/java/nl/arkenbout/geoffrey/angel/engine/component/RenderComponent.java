@@ -1,20 +1,17 @@
 package nl.arkenbout.geoffrey.angel.engine.component;
 
 import nl.arkenbout.geoffrey.angel.ecs.Component;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.Shader;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Mesh;
 
 public class RenderComponent implements Component {
     private Mesh mesh;
-    private Shader shader;
+    private Material material;
 
-    public RenderComponent(Mesh mesh, Shader shader) {
+    public RenderComponent(Mesh mesh, Material material) {
         this.mesh = mesh;
-        this.shader = shader;
-    }
-
-    public Shader getShader() {
-        return shader;
+        this.material = material;
+        mesh.prepare(material);
     }
 
     public Mesh getMesh() {
@@ -24,6 +21,10 @@ public class RenderComponent implements Component {
     @Override
     public void cleanup() {
         mesh.cleanup();
-        shader.cleanup();
+        material.cleanup();
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 }
