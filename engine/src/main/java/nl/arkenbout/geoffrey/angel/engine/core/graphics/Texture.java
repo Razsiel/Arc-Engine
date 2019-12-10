@@ -1,7 +1,6 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
-import org.lwjgl.system.MemoryUtil;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -45,10 +44,8 @@ public class Texture {
         // upload texture data
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
+        // speaks for itself
         glGenerateMipmap(GL_TEXTURE_2D);
-
-        // release the buffer
-        MemoryUtil.memFree(buffer);
 
         return textureId;
     }

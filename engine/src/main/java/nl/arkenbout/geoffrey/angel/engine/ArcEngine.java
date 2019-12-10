@@ -114,5 +114,6 @@ public class ArcEngine implements Runnable {
         context.getComponentSystemRegistery()
                 .getComponentSystems()
                 .forEach(ComponentSystem::cleanup);
+        window.cleanup();
     }
 }

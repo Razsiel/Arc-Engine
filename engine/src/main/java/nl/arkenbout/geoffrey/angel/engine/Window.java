@@ -2,8 +2,10 @@ package nl.arkenbout.geoffrey.angel.engine;
 
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -27,7 +29,7 @@ public class Window {
 
     public void init() {
         // Setup an error callback. The default implementation
-        // will print the error message in ComponentSystem.err.
+        // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
@@ -45,8 +47,9 @@ public class Window {
 
         // Create the window
         windowHandle = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
-        if (windowHandle == NULL)
+        if (windowHandle == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
+        }
 
         // Setup resize callback
         glfwSetFramebufferSizeCallback(windowHandle, (window, width, height) -> {
@@ -56,13 +59,17 @@ public class Window {
         });
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
-            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+        glfwSetKeyCallback(windowHandle, (window, key, scancode, action, modifiers) -> {
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+            }
         });
 
         // Get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        if (vidmode == null) {
+            throw new IllegalStateException("Could not get the GLFW Video of the primary monitor");
+        }
         // Center our window
         glfwSetWindowPos(
                 windowHandle,
@@ -127,5 +134,13 @@ public class Window {
 
     public int getHeight() {
         return height;
+    }
+
+    public void cleanup() {
+        GL.setCapabilities(null);
+        glfwFreeCallbacks(windowHandle);
+        glfwDestroyWindow(windowHandle);
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 }

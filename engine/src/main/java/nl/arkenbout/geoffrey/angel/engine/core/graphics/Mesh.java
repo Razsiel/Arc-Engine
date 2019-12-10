@@ -22,6 +22,7 @@ public class Mesh {
 
     private int vaoId;
     private Map<VboType, Integer> vboIds = new HashMap<>();
+    private int vertexAttributesSize = 0;
 
     public Mesh(float[] vertices, int[] indices, float[] textureCoords) {
         this.indices = indices;
@@ -45,7 +46,9 @@ public class Mesh {
             glBindBuffer(GL_ARRAY_BUFFER, positionVbo);
             glBufferData(GL_ARRAY_BUFFER, positionBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+
             vboIds.put(VERTEX, positionVbo);
+            vertexAttributesSize = 0;
 
             //INDEX
             int indexVboId = glGenBuffers();
@@ -53,6 +56,7 @@ public class Mesh {
             indicesBuffer.put(indices).flip();
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVboId);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+
             vboIds.put(INDEX, indexVboId);
 
             //TEXTURE COORDINATES
@@ -62,11 +66,15 @@ public class Mesh {
             glBindBuffer(GL_ARRAY_BUFFER, texCoordsVboId);
             glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+
             vboIds.put(TEXTURE_COORDS, texCoordsVboId);
+            vertexAttributesSize += 1;
 
             //MATERIAL SPECIFIC BUFFERS
             Map<VboType, Integer> materialVboIds = material.prepare(2);
+
             vboIds.putAll(materialVboIds);
+            this.vertexAttributesSize += materialVboIds.values().size();
         } finally {
             if (positionBuffer != null) {
                 MemoryUtil.memFree(positionBuffer);
@@ -98,26 +106,21 @@ public class Mesh {
     public void render(Material material, Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
         glBindVertexArray(vaoId);
 
-        var vboIdSize = (int) this.vboIds.keySet()
-                .stream()
-                .filter(vboType -> vboType != INDEX)
-                .count();
-
-        for (int i = 0; i < vboIdSize; i++) {
+        for (int i = 0; i < vertexAttributesSize; i++) {
             // if indices, skip
             glEnableVertexAttribArray(i);
         }
-        material.preRender(vboIdSize);
+        material.preRender(vertexAttributesSize);
 
         material.render(projectionMatrix, modelViewMatrix);
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
 
-        for (int i = 0; i < vboIdSize; i++) {
+        for (int i = 0; i < vertexAttributesSize; i++) {
             // if indices, skip
             glDisableVertexAttribArray(i);
         }
-        material.postRender(vboIdSize);
+        material.postRender(vertexAttributesSize);
 
         glBindVertexArray(0);
     }
