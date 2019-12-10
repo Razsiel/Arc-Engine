@@ -21,8 +21,8 @@ public final class Material {
         shader.cleanup();
     }
 
-    public Map<VboType, Integer> prepare() {
-        return shader.prepareVertexBufferObjects();
+    public Map<VboType, Integer> prepare(int vboIdIndex) {
+        return shader.prepareVertexBufferObjects(vboIdIndex);
     }
 
     public void preRender(int vboLastIndex) {

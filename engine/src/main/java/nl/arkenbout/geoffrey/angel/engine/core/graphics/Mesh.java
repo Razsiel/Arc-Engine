@@ -1,6 +1,5 @@
-package nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh;
+package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL15;
@@ -18,19 +17,22 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh {
     private final float[] vertices;
+    private final float[] textureCoords;
     private final int[] indices;
 
     private int vaoId;
     private Map<VboType, Integer> vboIds = new HashMap<>();
 
-    public Mesh(float[] vertices, int[] indices) {
+    public Mesh(float[] vertices, int[] indices, float[] textureCoords) {
         this.indices = indices;
         this.vertices = vertices;
+        this.textureCoords = textureCoords;
     }
 
     public void prepare(Material material) {
         FloatBuffer positionBuffer = null;
         IntBuffer indicesBuffer = null;
+        FloatBuffer texCoordsBuffer = null;
 
         try {
             vaoId = glGenVertexArrays();
@@ -53,8 +55,17 @@ public class Mesh {
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
             vboIds.put(INDEX, indexVboId);
 
+            //TEXTURE COORDINATES
+            int texCoordsVboId = glGenBuffers();
+            texCoordsBuffer = MemoryUtil.memAllocFloat(textureCoords.length);
+            texCoordsBuffer.put(textureCoords).flip();
+            glBindBuffer(GL_ARRAY_BUFFER, texCoordsVboId);
+            glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+            vboIds.put(TEXTURE_COORDS, texCoordsVboId);
+
             //MATERIAL SPECIFIC BUFFERS
-            Map<VboType, Integer> materialVboIds = material.prepare();
+            Map<VboType, Integer> materialVboIds = material.prepare(2);
             vboIds.putAll(materialVboIds);
         } finally {
             if (positionBuffer != null) {
@@ -62,6 +73,9 @@ public class Mesh {
             }
             if (indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer);
+            }
+            if (texCoordsBuffer != null) {
+                MemoryUtil.memFree(texCoordsBuffer);
             }
         }
 

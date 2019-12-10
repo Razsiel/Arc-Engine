@@ -24,6 +24,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.lwjglx</groupId>
+            <artifactId>lwjglx-debug</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>/home/garkenbout/Documents/Quintor/Projects/angel/Arc-Engine/engine/lwjglx-debug-1.0.0.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
             <version>${lwjgl.version}</version>

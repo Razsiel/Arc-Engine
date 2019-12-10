@@ -3,7 +3,6 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.util.Utils;
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.Color;
 
@@ -149,12 +148,10 @@ public abstract class Shader {
         return (T) properties.get(propertyName);
     }
 
-    public abstract void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix);
-
-    public abstract Map<VboType, Integer> prepareVertexBufferObjects();
-
-    public abstract void postRender(int vboLastIndex);
+    public abstract Map<VboType, Integer> prepareVertexBufferObjects(int vboIdIndex);
 
     public abstract void preRender(int vboLastIndex);
+    public abstract void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix);
+    public abstract void postRender(int vboLastIndex);
 }
 

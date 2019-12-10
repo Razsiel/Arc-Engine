@@ -18,7 +18,7 @@ public class VertexColouredShader extends Shader {
     }
 
     @Override
-    public Map<VboType, Integer> prepareVertexBufferObjects() {
+    public Map<VboType, Integer> prepareVertexBufferObjects(int vboIdIndex) {
         Map<VboType, Integer> vbos = new HashMap<>();
 
         FloatBuffer colorBuffer = null;
@@ -31,7 +31,7 @@ public class VertexColouredShader extends Shader {
             colorBuffer.put(colors).flip();
             glBindBuffer(GL_ARRAY_BUFFER, colorVboId);
             glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(vboIdIndex, 3, GL_FLOAT, false, 0, 0);
         } finally {
             if (colorBuffer != null) {
                 MemoryUtil.memFree(colorBuffer);

@@ -32,7 +32,7 @@ public class FlatColouredShader extends Shader {
     }
 
     @Override
-    public Map<VboType, Integer> prepareVertexBufferObjects() {
+    public Map<VboType, Integer> prepareVertexBufferObjects(int vboIdIndex) {
         return Collections.emptyMap();
     }
 

@@ -2,7 +2,7 @@ package nl.arkenbout.geoffrey.angel.engine.component;
 
 import nl.arkenbout.geoffrey.angel.ecs.Component;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Mesh;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
 
 public class RenderComponent implements Component {
     private Mesh mesh;
