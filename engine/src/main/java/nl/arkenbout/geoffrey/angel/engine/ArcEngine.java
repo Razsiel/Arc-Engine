@@ -5,6 +5,7 @@ import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
+import nl.arkenbout.geoffrey.angel.engine.core.input.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.system.RenderComponentSystem;
 import org.joml.Vector3f;
 import org.lwjgl.Version;
@@ -18,6 +19,7 @@ public class ArcEngine implements Runnable {
     private final Thread gameLoopThread;
     private final GameTimer timer;
     private final GameContext context;
+    private final MouseInput mouseInput;
     private Game game;
 
     private RenderComponentSystem renderSystem;
@@ -25,6 +27,7 @@ public class ArcEngine implements Runnable {
     public ArcEngine(String windowTitle, int width, int height, boolean vSync, Game game) {
         System.out.println("Hello LWJGL" + Version.getVersion() + "!");
         this.game = game;
+        this.mouseInput = new MouseInput();
         this.gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         this.timer = GameTimer.getInstance();
         this.context = GameContext.getInstance();
@@ -50,7 +53,8 @@ public class ArcEngine implements Runnable {
 
     private void init() throws Exception {
         window.init();
-        game.init();
+        mouseInput.init(window);
+        game.init(mouseInput);
         if (Cameras.main() == null) {
             Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, 5f), new Vector3f(0f, 0f, 0f));
             Cameras.addCamera(mainCamera);
@@ -99,11 +103,11 @@ public class ArcEngine implements Runnable {
 
     private void input() {
         // handle input
-        game.input(window);
+        mouseInput.input();
+        game.input(window, mouseInput);
     }
 
     private void update(float interval) {
-        // nl.arkenbout.geoffrey.arc.game logic update
         var systems = context.getComponentSystemRegistery().getComponentSystems();
         for (ComponentSystem componentSystem : systems) {
             componentSystem.update();

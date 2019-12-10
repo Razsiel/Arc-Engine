@@ -136,6 +136,10 @@ public class Window {
         return height;
     }
 
+    public long getWindowHandle() {
+        return windowHandle;
+    }
+
     public void cleanup() {
         GL.setCapabilities(null);
         glfwFreeCallbacks(windowHandle);

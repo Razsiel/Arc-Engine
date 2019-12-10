@@ -1,36 +1,43 @@
 package nl.arkenbout.geoffrey.game;
 
-import nl.arkenbout.geoffrey.angel.ecs.Entity;
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
 import nl.arkenbout.geoffrey.angel.engine.Game;
 import nl.arkenbout.geoffrey.angel.engine.Window;
 import nl.arkenbout.geoffrey.angel.engine.component.*;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.PrimitiveMesh;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Shaders;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.*;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.*;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
+import nl.arkenbout.geoffrey.angel.engine.core.input.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.util.MathUtils;
 import nl.arkenbout.geoffrey.game.components.*;
 import nl.arkenbout.geoffrey.game.systems.*;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.util.Color;
 
 public class TestGame implements Game {
+    static final float MOUSE_SENSITIVITY = 0.2f;
+
     @Override
-    public void init() throws Exception {
+    public void init(MouseInput mouseInput) throws Exception {
         var gameContext = GameContext.getInstance();
         var systemRegistry = gameContext.getComponentSystemRegistery();
         systemRegistry.registerSystem(new ScalePingPongSystem());
         systemRegistry.registerSystem(new BounceSystem());
         systemRegistry.registerSystem(new RotatorSystem());
 
-        var texturedShader = Shaders.getTexturedShader();
+        var gridTexture = new Texture("/textures/grid.png");
+        var texturedShader = new TexturedShader(gridTexture);
+        var texturedCubeMaterial = new Material(texturedShader);
+        var mesh = PrimitiveMesh.createCube(1);
 
-        var mesh = PrimitiveMesh.createTexturedCube(1f, new Texture("/textures/grid.png"));
-        var cubeRenderer = new RenderComponent(mesh, texturedShader);
+        var cubeRenderer = new RenderComponent(mesh, texturedCubeMaterial);
 
-        TransformComponent t = new TransformComponent(Vector3u.zero(), Vector3u.up().mul(180), 1f);
-        Entity e = gameContext.createEntity(t, cubeRenderer);
-        System.out.println("eId = " + e.getId());
+//        TransformComponent t = new TransformComponent(Vector3u.zero(), Vector3u.up().mul(180), 1f);
+//        gameContext.createEntity(cubeRenderer);
+//        Entity e = gameContext.createEntity(t, cubeRenderer);
+//        System.out.println("eId = " + e.getId());
 
         for (int i = 0; i < 5; i++) {
             var x = MathUtils.remap(i, 0, 4, -2.5f, 2.5f);
@@ -47,18 +54,24 @@ public class TestGame implements Game {
             System.out.println("cubeId = " + cube.getId());
         }
 
-        var vertexColoredShader = Shaders.getVertexColouredShader();
-
         var planeMesh = PrimitiveMesh.createPlane(4, 4);
-        var transform = new TransformComponent(new Vector3f(-0.1f, -0.5f, 0f), Vector3u.zero(), 1f);
-        var planeRenderer = new RenderComponent(planeMesh, vertexColoredShader);
+        var vertexColoredShader = new FlatColouredShader(Color.DKGREY);
+        var planeMaterial = new Material(vertexColoredShader);
+
+        var transform = new TransformComponent(new Vector3f(0f, -0.5f, 0f), Vector3u.zero(), 1f);
+        var planeRenderer = new RenderComponent(planeMesh, planeMaterial);
         var plane = gameContext.createEntity(transform, planeRenderer);
         System.out.println("planeId = " + plane.getId());
     }
 
     @Override
-    public void input(Window window) {
-
+    public void input(Window window, MouseInput mouse) {
+        if (mouse.isLeftButtonPressed()) {
+            Vector2f mouseDelta = mouse.getMouseDelta();
+            // update camera here!
+            Camera mainCamera = Cameras.main();
+            mainCamera.rotate( (mouseDelta.x() * MOUSE_SENSITIVITY), (mouseDelta.y() * MOUSE_SENSITIVITY), 0);
+        }
     }
 
     @Override

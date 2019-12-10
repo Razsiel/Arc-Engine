@@ -26,4 +26,10 @@ public class Camera {
             position.z += Math.cos(Math.toRadians(rotation.y)) * offset;
         }
     }
+
+    public void rotate(float x, float y, int z) {
+        rotation.x += x;
+        rotation.y += y;
+        rotation.z += z;
+    }
 }

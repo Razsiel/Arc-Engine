@@ -1,9 +1,11 @@
 package nl.arkenbout.geoffrey.angel.engine;
 
-public interface Game {
-    void init() throws Exception;
+import nl.arkenbout.geoffrey.angel.engine.core.input.MouseInput;
 
-    void input(Window window);
+public interface Game {
+    void init(MouseInput mouse) throws Exception;
+
+    void input(Window window, MouseInput mouse);
 
     void cleanup();
 }
