@@ -9,7 +9,7 @@ public interface MouseListener {
     void onRightButtonDown(Vector2f mouseDelta);
     void onRightUp();
 
-    void onScroll(double scrollDelta);
+    void onScroll(float scrollDelta);
 
     void onMouseMove(Vector2f mouseDelta);
 }

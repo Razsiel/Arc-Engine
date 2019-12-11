@@ -1,16 +1,19 @@
 package nl.arkenbout.geoffrey.angel.engine;
 
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
+import nl.arkenbout.geoffrey.angel.engine.core.input.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class Window {
+public class Window implements KeyboardListener {
     private final boolean vSync;
     private String windowTitle;
     private int width;
@@ -58,12 +61,8 @@ public class Window {
             this.resized = true;
         });
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(windowHandle, (window, key, scancode, action, modifiers) -> {
-            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-            }
-        });
+        // Setup a key callback to close the window on key ESCAPE released
+        KeyboardInput.registerKeyboardListener(this);
 
         // Get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -146,5 +145,22 @@ public class Window {
         glfwDestroyWindow(windowHandle);
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+    }
+
+    @Override
+    public void onKeyDown(Key key, List<KeyModifier> modifiers) {
+
+    }
+
+    @Override
+    public void onKeyUp(Key key, List<KeyModifier> modifiers) {
+        if (key == Key.ESCAPE) {
+            glfwSetWindowShouldClose(windowHandle, true);
+        }
+    }
+
+    @Override
+    public void onKeys(List<Key> keys, List<KeyModifier> modifiers) {
+
     }
 }

@@ -5,30 +5,31 @@ import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
+import nl.arkenbout.geoffrey.angel.engine.core.input.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.system.RenderComponentSystem;
 import org.joml.Vector3f;
 import org.lwjgl.Version;
 
-public class ArcEngine implements Runnable {
+public class ArcEngine {
 
     private static final int TARGET_FPS = 60;
     private static final int TARGET_UPS = 30;
 
     private final Window window;
-    private final Thread gameLoopThread;
     private final GameTimer timer;
     private final GameContext context;
     private final MouseInput mouseInput;
-    private Game game;
+    private final KeyboardInput keyboardInput;
+    private final Game game;
 
-    private RenderComponentSystem renderSystem;
+    private final RenderComponentSystem renderSystem;
 
     public ArcEngine(String windowTitle, int width, int height, boolean vSync, Game game) {
         System.out.println("Hello LWJGL" + Version.getVersion() + "!");
         this.game = game;
         this.mouseInput = new MouseInput();
-        this.gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
+        this.keyboardInput = new KeyboardInput();
         this.timer = GameTimer.getInstance();
         this.context = GameContext.getInstance();
         this.window = new Window(windowTitle, width, height, vSync);
@@ -40,8 +41,7 @@ public class ArcEngine implements Runnable {
         run();
     }
 
-    @Override
-    public void run() {
+    private void run() {
         try {
             gameLoop();
         } catch (Exception ex) {
@@ -54,7 +54,8 @@ public class ArcEngine implements Runnable {
     private void init() throws Exception {
         window.init();
         mouseInput.init(window);
-        game.init(mouseInput);
+        keyboardInput.init(window);
+        game.init();
         if (Cameras.main() == null) {
             Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, 5f), new Vector3f(0f, 0f, 0f));
             Cameras.addCamera(mainCamera);
@@ -104,7 +105,7 @@ public class ArcEngine implements Runnable {
     private void input() {
         // handle input
         mouseInput.input();
-        game.input(window);
+        keyboardInput.input();
     }
 
     private void update(float interval) {
@@ -119,6 +120,7 @@ public class ArcEngine implements Runnable {
                 .getComponentSystems()
                 .forEach(ComponentSystem::cleanup);
         mouseInput.cleanup(window);
+        keyboardInput.cleanup(window);
         window.cleanup();
     }
 }

@@ -44,7 +44,7 @@ public class MouseInput {
             rightButtonReleased = rightButton && released;
         });
         glfwSetScrollCallback(handle, (windowHandle, scrollX, scrollY) -> {
-            mouseListeners.forEach(mouseListener -> mouseListener.onScroll(scrollY));
+            mouseListeners.forEach(mouseListener -> mouseListener.onScroll((float) scrollY));
         });
     }
 
@@ -80,7 +80,7 @@ public class MouseInput {
         previousPosition.set(currentPosition);
     }
 
-    public static boolean registerMouseCallback(MouseListener mouseListener) {
+    public static boolean registerMouseListener(MouseListener mouseListener) {
         return mouseListeners.add(mouseListener);
     }
 
