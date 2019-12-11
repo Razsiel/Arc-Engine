@@ -104,7 +104,7 @@ public class ArcEngine implements Runnable {
     private void input() {
         // handle input
         mouseInput.input();
-        game.input(window, mouseInput);
+        game.input(window);
     }
 
     private void update(float interval) {
@@ -118,6 +118,7 @@ public class ArcEngine implements Runnable {
         context.getComponentSystemRegistery()
                 .getComponentSystems()
                 .forEach(ComponentSystem::cleanup);
+        mouseInput.cleanup(window);
         window.cleanup();
     }
 }

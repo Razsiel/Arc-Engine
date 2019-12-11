@@ -4,6 +4,9 @@ import nl.arkenbout.geoffrey.angel.engine.Window;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 
+import java.util.*;
+
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
@@ -11,8 +14,13 @@ public class MouseInput {
     private final Vector2d previousPosition = new Vector2d(0, 0);
     private final Vector2f mouseDelta = new Vector2f();
     private boolean inWindow;
+
     private boolean leftButtonPressed;
+    private boolean leftButtonReleased;
     private boolean rightButtonPressed;
+    private boolean rightButtonReleased;
+
+    private static List<MouseListener> mouseListeners = new ArrayList<>();
 
     public void init(Window window) {
         long handle = window.getWindowHandle();
@@ -20,16 +28,45 @@ public class MouseInput {
             this.currentPosition.set(x, y);
         });
         glfwSetCursorEnterCallback(handle, (windowHandle, entered) -> {
-            this.inWindow = true;
+            this.inWindow = entered;
         });
         glfwSetMouseButtonCallback(handle, (windowHandle, button, action, mode) -> {
-            leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
-            rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
+            var leftButton = button == GLFW_MOUSE_BUTTON_1;
+            var rightButton = button == GLFW_MOUSE_BUTTON_2;
+
+            var pressed = action == GLFW_PRESS;
+            var released = action == GLFW_RELEASE;
+
+            leftButtonPressed = leftButton && pressed;
+            leftButtonReleased = leftButton && released;
+
+            rightButtonPressed = rightButton && pressed;
+            rightButtonReleased = rightButton && released;
+        });
+        glfwSetScrollCallback(handle, (windowHandle, scrollX, scrollY) -> {
+            mouseListeners.forEach(mouseListener -> mouseListener.onScroll(scrollY));
         });
     }
 
     public void input() {
         updateMouseDelta();
+        updateMouseListeners();
+    }
+
+    private void updateMouseListeners() {
+        if (leftButtonPressed) {
+            mouseListeners.forEach(mouseListener -> mouseListener.onLeftButtonDown(mouseDelta));
+        }
+        if (leftButtonReleased) {
+            mouseListeners.forEach(MouseListener::onLeftUp);
+        }
+
+        if (rightButtonPressed) {
+            mouseListeners.forEach(mouseListener -> mouseListener.onRightButtonDown(mouseDelta));
+        }
+        if (rightButtonReleased) {
+            mouseListeners.forEach(MouseListener::onRightUp);
+        }
     }
 
     private void updateMouseDelta() {
@@ -43,15 +80,15 @@ public class MouseInput {
         previousPosition.set(currentPosition);
     }
 
-    public Vector2f getMouseDelta() {
-        return new Vector2f(mouseDelta);
+    public static boolean registerMouseCallback(MouseListener mouseListener) {
+        return mouseListeners.add(mouseListener);
     }
 
-    public boolean isLeftButtonPressed() {
-        return leftButtonPressed;
+    public static boolean unregisterMouseListener(MouseListener mouseListener) {
+        return mouseListeners.remove(mouseListener);
     }
 
-    public boolean isRightButtonPressed() {
-        return rightButtonPressed;
+    public void cleanup(Window window) {
+        glfwFreeCallbacks(window.getWindowHandle());
     }
 }

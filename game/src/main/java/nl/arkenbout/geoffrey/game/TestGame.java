@@ -3,9 +3,11 @@ package nl.arkenbout.geoffrey.game;
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
 import nl.arkenbout.geoffrey.angel.engine.Game;
 import nl.arkenbout.geoffrey.angel.engine.Window;
-import nl.arkenbout.geoffrey.angel.engine.component.*;
+import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
+import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.*;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.*;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.FlatColouredShader;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.TexturedShader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
 import nl.arkenbout.geoffrey.angel.engine.core.input.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.util.MathUtils;
@@ -13,11 +15,9 @@ import nl.arkenbout.geoffrey.game.components.*;
 import nl.arkenbout.geoffrey.game.systems.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Color;
 
 public class TestGame implements Game {
-    static final float MOUSE_SENSITIVITY = 0.2f;
 
     @Override
     public void init(MouseInput mouseInput) throws Exception {
@@ -62,16 +62,14 @@ public class TestGame implements Game {
         var planeRenderer = new RenderComponent(planeMesh, planeMaterial);
         var plane = gameContext.createEntity(transform, planeRenderer);
         System.out.println("planeId = " + plane.getId());
+
+        CameraControl cameraControl = new CameraControl();
+        MouseInput.registerMouseCallback(cameraControl);
     }
 
     @Override
-    public void input(Window window, MouseInput mouse) {
-        if (mouse.isLeftButtonPressed()) {
-            Vector2f mouseDelta = mouse.getMouseDelta();
-            // update camera here!
-            Camera mainCamera = Cameras.main();
-            mainCamera.rotate( (mouseDelta.x() * MOUSE_SENSITIVITY), (mouseDelta.y() * MOUSE_SENSITIVITY), 0);
-        }
+    public void input(Window window) {
+
     }
 
     @Override
