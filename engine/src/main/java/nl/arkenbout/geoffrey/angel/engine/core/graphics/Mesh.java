@@ -17,6 +17,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh {
     private final float[] vertices;
+    private final float[] normals;
     private final float[] textureCoords;
     private final int[] indices;
 
@@ -24,9 +25,10 @@ public class Mesh {
     private Map<VboType, Integer> vboIds = new HashMap<>();
     private int vertexAttributesSize = 0;
 
-    public Mesh(float[] vertices, int[] indices, float[] textureCoords) {
+    public Mesh(float[] vertices, int[] indices, float[] normals, float[] textureCoords) {
         this.indices = indices;
         this.vertices = vertices;
+        this.normals = normals;
         this.textureCoords = textureCoords;
     }
 
@@ -34,20 +36,20 @@ public class Mesh {
         FloatBuffer positionBuffer = null;
         IntBuffer indicesBuffer = null;
         FloatBuffer texCoordsBuffer = null;
+        FloatBuffer normalsBuffer = null;
 
         try {
             vaoId = glGenVertexArrays();
             glBindVertexArray(vaoId);
 
             //VERTEX
-            int positionVbo = glGenBuffers();
+            int positionVboId = glGenBuffers();
             positionBuffer = MemoryUtil.memAllocFloat(vertices.length);
             positionBuffer.put(vertices).flip();
-            glBindBuffer(GL_ARRAY_BUFFER, positionVbo);
+            glBindBuffer(GL_ARRAY_BUFFER, positionVboId);
             glBufferData(GL_ARRAY_BUFFER, positionBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-
-            vboIds.put(VERTEX, positionVbo);
+            vboIds.put(VERTEX, positionVboId);
             vertexAttributesSize = 0;
 
             //INDEX
@@ -56,7 +58,6 @@ public class Mesh {
             indicesBuffer.put(indices).flip();
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVboId);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-
             vboIds.put(INDEX, indexVboId);
 
             //TEXTURE COORDINATES
@@ -66,13 +67,21 @@ public class Mesh {
             glBindBuffer(GL_ARRAY_BUFFER, texCoordsVboId);
             glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
-
             vboIds.put(TEXTURE_COORDS, texCoordsVboId);
             vertexAttributesSize += 1;
 
-            //MATERIAL SPECIFIC BUFFERS
-            Map<VboType, Integer> materialVboIds = material.prepare(2);
+            //NORMALS
+            int normalsVboId = glGenBuffers();
+            normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
+            normalsBuffer.put(normals).flip();
+            glBindBuffer(GL_ARRAY_BUFFER, normalsVboId);
+            glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+            vboIds.put(NORMAL, normalsVboId);
+            vertexAttributesSize += 1;
 
+            //MATERIAL SPECIFIC BUFFERS
+            Map<VboType, Integer> materialVboIds = material.prepare(normalsVboId);
             vboIds.putAll(materialVboIds);
             this.vertexAttributesSize += materialVboIds.values().size();
         } finally {
@@ -84,6 +93,9 @@ public class Mesh {
             }
             if (texCoordsBuffer != null) {
                 MemoryUtil.memFree(texCoordsBuffer);
+            }
+            if (normalsBuffer != null) {
+                MemoryUtil.memFree(normalsBuffer);
             }
         }
 

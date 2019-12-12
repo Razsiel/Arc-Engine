@@ -43,7 +43,7 @@ public class PrimitiveMesh {
                 // F3V2
                 -1, 1, 1,
                 // F3V3
-                -1 ,1, -1,
+                -1, 1, -1,
 
 
                 // BOTTOM FACE
@@ -83,6 +83,20 @@ public class PrimitiveMesh {
                 // Back face
                 20, 21, 23, 23, 21, 22
         };
+        var normals = new float[]{
+                0, 0, -1,
+                0, 0, -1,
+                -1, 0, 0,
+                -1, 0, 0,
+                1, 0, 0,
+                1, 0, 0,
+                0, 1, 0,
+                0, 1, 0,
+                0, -1, 0,
+                0, -1, 0,
+                0, 0, 1,
+                0, 0, 1
+        };
         var texCoords = new float[]{
                 // Front face
                 0, 0,
@@ -115,7 +129,7 @@ public class PrimitiveMesh {
                 1, 1,
                 0, 1,
         };
-        return new Mesh(vertices, indices, texCoords);
+        return new Mesh(vertices, indices, normals, texCoords);
     }
 
     public static Mesh createPlane(float width, float depth) {
@@ -131,12 +145,16 @@ public class PrimitiveMesh {
                 0, 1, 3,
                 3, 1, 2
         };
-        var texCoords = new float[] {
+        var normals = new float[]{
+                0, 0, -1,
+                0, 0, -1
+        };
+        var texCoords = new float[]{
                 0, 0,
                 0, 1,
                 1, 1,
                 1, 0
         };
-        return new Mesh(vertices, indices, texCoords);
+        return new Mesh(vertices, indices, normals, texCoords);
     }
 }
