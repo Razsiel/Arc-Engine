@@ -1,5 +1,6 @@
 package nl.arkenbout.geoffrey.game;
 
+import nl.arkenbout.geoffrey.angel.ecs.Entity;
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
 import nl.arkenbout.geoffrey.angel.engine.Game;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
@@ -35,10 +36,10 @@ public class TestGame implements Game {
 
         var cubeRenderer = new RenderComponent(mesh, texturedCubeMaterial);
 
-//        TransformComponent t = new TransformComponent(Vector3u.zero(), Vector3u.up().mul(180), 1f);
-//        gameContext.createEntity(cubeRenderer);
-//        Entity e = gameContext.createEntity(t, cubeRenderer);
-//        System.out.println("eId = " + e.getId());
+        TransformComponent t = new TransformComponent(Vector3u.up().mul(2f), Vector3u.zero(), 1f);
+        gameContext.createEntity(cubeRenderer);
+        Entity e = gameContext.createEntity(t, cubeRenderer);
+        System.out.println("eId = " + e.getId());
 
         for (int i = 0; i < 5; i++) {
             var x = MathUtils.remap(i, 0, 4, -2.5f, 2.5f);

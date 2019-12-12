@@ -22,6 +22,7 @@ public class Window implements KeyboardListener {
     private boolean resized;
     private double lastUpdateFps;
     private int fps;
+    private boolean isMaximized;
 
     public Window(String windowTitle, int width, int height, boolean vSync) {
         this.windowTitle = windowTitle;
@@ -48,6 +49,10 @@ public class Window implements KeyboardListener {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
+        if (width == 0 || height == 0) {
+            glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE); // Maximizes the window on creation if either the width or height is 0
+        }
+
         // Create the window
         windowHandle = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
         if (windowHandle == NULL) {
@@ -59,6 +64,10 @@ public class Window implements KeyboardListener {
             this.width = width;
             this.height = height;
             this.resized = true;
+        });
+
+        glfwSetWindowMaximizeCallback(windowHandle, (window, maximized) -> {
+            this.isMaximized = maximized;
         });
 
         // Setup a key callback to close the window on key ESCAPE released
@@ -92,7 +101,11 @@ public class Window implements KeyboardListener {
         // Set the clear color
         GL11.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 
-        // Enable depth based rendering
+        // Enable face-culling
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+
+        // Enable Z-buffer
         glEnable(GL_DEPTH_TEST);
         glDepthMask(true);
         glDepthFunc(GL_LESS);
@@ -156,6 +169,13 @@ public class Window implements KeyboardListener {
     public void onKeyUp(Key key, List<KeyModifier> modifiers) {
         if (key == Key.ESCAPE) {
             glfwSetWindowShouldClose(windowHandle, true);
+        }
+        if (key == Key.F11) {
+            if (isMaximized) {
+                glfwRestoreWindow(windowHandle);
+            } else {
+                glfwMaximizeWindow(windowHandle);
+            }
         }
     }
 

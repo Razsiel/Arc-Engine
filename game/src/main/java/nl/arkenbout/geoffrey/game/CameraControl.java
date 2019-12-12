@@ -43,8 +43,11 @@ public class CameraControl implements MouseListener, KeyboardListener {
     @Override
     public void onScroll(float scrollDelta) {
         CAMERA_MOVE_SENSITIVITY = Math.abs(CAMERA_MOVE_SENSITIVITY + scrollDelta * 0.1f);
-        if (CAMERA_MOVE_SENSITIVITY < 0.1f) {
-            CAMERA_MOVE_SENSITIVITY = 0.1f;
+        if (CAMERA_MOVE_SENSITIVITY < 0.05f) {
+            CAMERA_MOVE_SENSITIVITY = 0.05f;
+        }
+        if (CAMERA_MOVE_SENSITIVITY > 1f) {
+            CAMERA_MOVE_SENSITIVITY = 1f;
         }
         System.out.println("CAMERA SPEED = " + CAMERA_MOVE_SENSITIVITY);
     }

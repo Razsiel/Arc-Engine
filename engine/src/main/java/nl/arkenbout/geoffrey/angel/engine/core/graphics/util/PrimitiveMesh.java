@@ -4,73 +4,71 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
 
 public class PrimitiveMesh {
     public static Mesh createCube(float size) {
-        size /= 2f;
         var vertices = new float[]{
                 // FRONT FACE
                 // F0VO
-                -size, size, size,
+                -1, 1, -1,
                 // F0V1
-                -size, -size, size,
+                -1, -1, -1,
                 // F0V2
-                size, -size, size,
+                1, -1, -1,
                 // F0V3
-                size, size, size,
-
+                1, 1, -1,
 
                 // LEFT FACE
                 // F1V0
-                -size, size, -size,
+                -1, 1, 1,
                 // F1V1
-                -size, -size, -size,
+                -1, -1, 1,
                 // F1V2
-                -size, -size, size,
+                -1, -1, -1,
                 // F1V3
-                -size, size, size,
-
+                -1, 1, -1,
 
                 // RIGHT FACE
                 // F2V0
-                size, size, size,
+                1, 1, -1,
                 // F2V1
-                size, -size, size,
+                1, -1, -1,
                 // F2V2
-                size, -size, -size,
+                1, -1, 1,
                 // F2V3
-                size, size, -size,
-
+                1, 1, 1,
 
                 // TOP FACE
                 // F3V0
-                -size, size, -size,
+                1, 1, -1,
                 // F3V1
-                -size, size, size,
+                1, 1, 1,
                 // F3V2
-                size, size, size,
+                -1, 1, 1,
                 // F3V3
-                size, size, -size,
+                -1 ,1, -1,
 
 
                 // BOTTOM FACE
                 // F4V0
-                size, -size, size,
+                -1, -1, -1,
                 // F4V1
-                size, -size, -size,
+                -1, -1, 1,
                 // F4V2
-                -size, -size, -size,
+                1, -1, 1,
                 // F4V3
-                -size, -size, size,
-
+                1, -1, -1,
 
                 // BACK FACE
-                // F6V0
-                -size, size, -size,
-                // F6V1
-                -size, -size, -size,
-                // F6V2
-                size, -size, -size,
-                // F6V3
-                size, size, -size,
+                // F5VO
+                1, 1, 1,
+                // F5V1
+                1, -1, 1,
+                // F5V2
+                -1, -1, 1,
+                // F5V3
+                -1, 1, 1,
         };
+        for (int i = 0; i < vertices.length; i++) {
+            vertices[i] = (vertices[i] / 2) * size;
+        }
         var indices = new int[]{
                 // Front face
                 0, 1, 3, 3, 1, 2,
@@ -86,35 +84,36 @@ public class PrimitiveMesh {
                 20, 21, 23, 23, 21, 22
         };
         var texCoords = new float[]{
-                0f, 0f,
-                1f, 0f,
-                1f, 1f,
-                0f, 1f,
-
-                0f, 0f,
-                1f, 0f,
-                1f, 1f,
-                0f, 1f,
-
-                0f, 0f,
-                1f, 0f,
-                1f, 1f,
-                0f, 1f,
-
-                0f, 0f,
-                1f, 0f,
-                1f, 1f,
-                0f, 1f,
-
-                0f, 0f,
-                1f, 0f,
-                1f, 1f,
-                0f, 1f,
-
-                0f, 0f,
-                1f, 0f,
-                1f, 1f,
-                0f, 1f
+                // Front face
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1,
+                // Left face
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1,
+                // Right face
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1,
+                // Top Face
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1,
+                // Bottom face
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1,
+                // Back face
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1,
         };
         return new Mesh(vertices, indices, texCoords);
     }

@@ -5,6 +5,7 @@ import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import nl.arkenbout.geoffrey.angel.engine.core.input.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.system.RenderComponentSystem;
@@ -57,7 +58,7 @@ public class ArcEngine {
         keyboardInput.init(window);
         game.init();
         if (Cameras.main() == null) {
-            Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, 5f), new Vector3f(0f, 0f, 0f));
+            Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, -5f), Vector3u.up().mul(180));
             Cameras.addCamera(mainCamera);
             Cameras.setMainCamera(mainCamera);
         }
