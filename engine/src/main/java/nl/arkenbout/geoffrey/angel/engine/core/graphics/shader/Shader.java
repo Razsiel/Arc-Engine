@@ -3,6 +3,7 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.util.Utils;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.Color;
 
@@ -108,6 +109,10 @@ public abstract class Shader {
             value.get(fb);
             glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
         }
+    }
+
+    public void setUniform(String uniformName, Vector2f value) {
+        glUniform2f(uniforms.get(uniformName), value.x(), value.y());
     }
 
     public void setUniform(String uniformName, int value) {

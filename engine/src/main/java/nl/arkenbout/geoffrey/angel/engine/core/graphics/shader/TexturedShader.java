@@ -2,7 +2,9 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector2u;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,12 +13,19 @@ import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
 
 public class TexturedShader extends Shader {
-    private Texture texture;
+    private final Vector2f repeat;
+    private final Texture texture;
 
     public TexturedShader(Texture texture) throws Exception {
+        this(texture, Vector2u.one());
+    }
+
+    public TexturedShader(Texture texture, Vector2f repeat) throws Exception {
         super("textured");
         this.texture = texture;
+        this.repeat = repeat;
         createUniform("texture_sampler");
+        createUniform("texture_repeat");
     }
 
     @Override
@@ -26,6 +35,12 @@ public class TexturedShader extends Shader {
 
     @Override
     public void preRender(int vboLastIndex) {
+        if (repeat.x() > 0f) {
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        }
+        if (repeat.y() > 0f) {
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        }
         bind();
         glEnableVertexAttribArray(vboLastIndex);
     }
@@ -37,6 +52,7 @@ public class TexturedShader extends Shader {
 
     private void render() {
         setUniform("texture_sampler", 0);
+        setUniform("texture_repeat", this.repeat);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture.getId());
     }
