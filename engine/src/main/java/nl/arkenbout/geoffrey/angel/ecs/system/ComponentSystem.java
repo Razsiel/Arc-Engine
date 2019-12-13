@@ -26,9 +26,9 @@ public abstract class ComponentSystem {
 
     public void update() {
         List<ComponentMatch> components = getComponents(componentMatcher);
-        for (ComponentMatch match : components) {
-            doEachComponent(match);
-        }
+        components.stream()
+                .parallel()
+                .forEach(this::doEachComponent);
     }
 
     protected final List<ComponentMatch> getComponents(ComponentMatcher matcher) {

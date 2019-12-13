@@ -110,15 +110,18 @@ public class ArcEngine {
     }
 
     private void update(float interval) {
-        var systems = context.getComponentSystemRegistery().getComponentSystems();
-        for (ComponentSystem componentSystem : systems) {
-            componentSystem.update();
-        }
+        var systems = context.getComponentSystemRegistery()
+                .getComponentSystems();
+        systems.stream()
+                .parallel()
+                .forEach(ComponentSystem::update);
     }
 
     private void cleanup() {
         context.getComponentSystemRegistery()
                 .getComponentSystems()
+                .stream()
+                .parallel()
                 .forEach(ComponentSystem::cleanup);
         mouseInput.cleanup(window);
         keyboardInput.cleanup(window);

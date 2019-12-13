@@ -17,10 +17,6 @@ public class ComponentMatcher {
         }
     }
 
-    public <T extends Component> boolean hasMatch(Class<T> type) {
-        return matchedComponents.containsKey(type);
-    }
-
     public Set<Class<? extends Component>> getMatchTypes() {
         return matchedComponents.keySet();
     }

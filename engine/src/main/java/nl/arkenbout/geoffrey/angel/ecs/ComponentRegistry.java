@@ -41,6 +41,7 @@ public class ComponentRegistry {
         var matcher = new ComponentMatcher(type);
         return getComponents(matcher).stream()
                 .map(componentMatch -> componentMatch.getComponent(type))
+                .parallel()
                 .collect(Collectors.toList());
     }
 
