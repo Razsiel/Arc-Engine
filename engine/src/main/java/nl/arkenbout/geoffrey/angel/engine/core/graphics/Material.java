@@ -13,8 +13,8 @@ public final class Material {
         this.shader = shader;
     }
 
-    public void render(Matrix4f projectionMatrix, Matrix4f modelViewProjection) {
-        shader.render(projectionMatrix, modelViewProjection);
+    public void render(Matrix4f projectionMatrix, Matrix4f modelViewProjection, Matrix4f viewMatrix) {
+        shader.render(projectionMatrix, modelViewProjection, viewMatrix);
     }
 
     public void cleanup() {

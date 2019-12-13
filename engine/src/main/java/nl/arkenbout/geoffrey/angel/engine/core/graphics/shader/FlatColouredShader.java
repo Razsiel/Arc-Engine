@@ -27,7 +27,7 @@ public class FlatColouredShader extends Shader {
     }
 
     @Override
-    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
+    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
         super.render(projectionMatrix, modelViewMatrix, this::render);
     }
 

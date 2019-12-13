@@ -115,7 +115,7 @@ public class Mesh {
         glDeleteVertexArrays(vaoId);
     }
 
-    public void render(Material material, Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
+    public void render(Material material, Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
         glBindVertexArray(vaoId);
 
         for (int i = 0; i < vertexAttributesSize; i++) {
@@ -124,7 +124,7 @@ public class Mesh {
         }
         material.preRender(vertexAttributesSize);
 
-        material.render(projectionMatrix, modelViewMatrix);
+        material.render(projectionMatrix, modelViewMatrix, viewMatrix);
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
 

@@ -34,7 +34,7 @@ public class TestGame implements Game {
 
         var cubeRenderer = new RenderComponent(cubeMesh, texturedCubeMaterial);
 
-        TransformComponent t = new TransformComponent(Vector3u.up().mul(2f), Vector3u.zero(), 1f);
+        TransformComponent t = new TransformComponent(Vector3u.up().mul(1.5f), Vector3u.zero(), 1f);
         gameContext.createEntity(cubeRenderer);
         Entity e = gameContext.createEntity(t, cubeRenderer);
         System.out.println("eId = " + e.getId());

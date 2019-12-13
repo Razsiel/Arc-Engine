@@ -1,9 +1,9 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
 import nl.arkenbout.geoffrey.angel.engine.util.Utils;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
+import org.joml.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.Color;
 
@@ -59,8 +59,10 @@ public abstract class Shader {
         glShaderSource(shaderId, shaderCode);
         glCompileShader(shaderId);
 
-        if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == 0)
-            throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
+        if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == 0) {
+            String shaderTypeName = shaderType == GL_VERTEX_SHADER ? "VERTEX" : shaderType == GL_FRAGMENT_SHADER ? "FRAGMENT" : "UNKNOWN";
+            throw new Exception("Error compiling " + shaderTypeName + " Shader code: " + glGetShaderInfoLog(shaderId, 1024));
+        }
 
         glAttachShader(programId, shaderId);
 
@@ -73,6 +75,12 @@ public abstract class Shader {
             throw new Exception("Could not find uniform:" + uniformName);
         }
         uniforms.put(uniformName, uniformLocation);
+    }
+
+    public void createDirectionalLightUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".color");
+        createUniform(uniformName + ".direction");
+        createUniform(uniformName + ".intensity");
     }
 
     private void link() throws Exception {
@@ -111,12 +119,20 @@ public abstract class Shader {
         }
     }
 
+    public void setUniform(String uniformName, Vector3f value) {
+        glUniform3f(uniforms.get(uniformName), value.x(), value.y(), value.z());
+    }
+
     public void setUniform(String uniformName, Vector2f value) {
         glUniform2f(uniforms.get(uniformName), value.x(), value.y());
     }
 
     public void setUniform(String uniformName, int value) {
         glUniform1i(uniforms.get(uniformName), value);
+    }
+
+    public void setUniform(String uniformName, float value) {
+        glUniform1f(uniforms.get(uniformName), value);
     }
 
     public void setUniform(String uniformName, Color color) {
@@ -128,15 +144,19 @@ public abstract class Shader {
         glUniform4f(colorLocation, red, green, blue, alpha);
     }
 
-    protected void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Runnable shaderRenderer) {
+    public void setUniform(String uniformName, DirectionalLight directionalLight) {
+        setUniform(uniformName + ".color", directionalLight.getColor());
+        setUniform(uniformName + ".direction", directionalLight.getDirection());
+        setUniform(uniformName + ".intensity", directionalLight.getIntensity());
+    }
 
+    protected void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Runnable shaderRenderer) {
         // set uniform data
         setUniform("projectionMatrix", projectionMatrix);
         setUniform("modelViewMatrix", modelViewMatrix);
 
         shaderRenderer.run();
     }
-
 
     public void cleanup() {
         this.unbind();
@@ -156,7 +176,7 @@ public abstract class Shader {
     public abstract Map<VboType, Integer> prepareVertexBufferObjects(int vboIdIndex);
 
     public abstract void preRender(int vboLastIndex);
-    public abstract void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix);
+    public abstract void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix);
     public abstract void postRender(int vboLastIndex);
 }
 

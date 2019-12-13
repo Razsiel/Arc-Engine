@@ -2,9 +2,9 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector2u;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
+import org.joml.*;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,6 +26,7 @@ public class TexturedShader extends Shader {
         this.repeat = repeat;
         createUniform("texture_sampler");
         createUniform("texture_repeat");
+        createDirectionalLightUniform("directional_light");
     }
 
     @Override
@@ -46,13 +47,18 @@ public class TexturedShader extends Shader {
     }
 
     @Override
-    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix) {
-        super.render(projectionMatrix, modelViewMatrix, this::render);
+    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
+        super.render(projectionMatrix, modelViewMatrix,  () -> this.render(viewMatrix));
     }
 
-    private void render() {
+    private void render(Matrix4f viewMatrix) {
         setUniform("texture_sampler", 0);
         setUniform("texture_repeat", this.repeat);
+        DirectionalLight directionalLight = new DirectionalLight(Lights.getDirectionalLight());
+        Vector4f viewSpaceDirection = new Vector4f(directionalLight.getDirection(), 0f);
+        viewSpaceDirection.mul(viewMatrix);
+        directionalLight.setDirection(Vector4u.xyz(viewSpaceDirection));
+        setUniform("directional_light", directionalLight);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture.getId());
     }

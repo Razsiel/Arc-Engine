@@ -49,7 +49,7 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
 
             Matrix4f modelViewMatrix = Transformation.getModelViewMatrix(transformComponent, viewMatrix);
 
-            mesh.render(material, projectionMatrix, modelViewMatrix);
+            mesh.render(material, projectionMatrix, modelViewMatrix, viewMatrix);
         }
 
         // update the window render buffer
