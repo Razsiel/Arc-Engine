@@ -53,4 +53,18 @@ public class Transformation {
         return viewCurrent.mul(modelViewMatrix);
 
     }
+
+    public static Matrix4f getLightViewMatrix(Vector3f position, Vector3f rotation) {
+        var lightViewMatrix = new Matrix4f();
+        lightViewMatrix.rotate((float) Math.toRadians(rotation.x), Vector3u.right())
+                .rotate((float) Math.toRadians(rotation.y), Vector3u.up())
+                .translate(-position.x, -position.y, -position.z);
+        return lightViewMatrix;
+    }
+
+    public static Matrix4f getOrthoProjectionMatrix(float left, float right, float bottom, float top, float near, float far) {
+        var orthoMatrix = new Matrix4f();
+        orthoMatrix.setOrtho(left, right, bottom, top, near, far);
+        return orthoMatrix;
+    }
 }

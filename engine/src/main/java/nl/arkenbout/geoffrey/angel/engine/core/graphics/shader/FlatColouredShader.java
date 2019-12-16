@@ -14,16 +14,13 @@ public class FlatColouredShader extends Shader {
     public FlatColouredShader(ReadableColor color) throws Exception {
         super("flat");
         this.color = color;
+        createUniform("projectionMatrix");
+        createUniform("modelViewMatrix");
         createUniform("color");
-        setColor(color);
     }
 
-    public Color getColor() {
-        return super.getProperty("color");
-    }
-
-    public void setColor(ReadableColor color) {
-        this.setProperty("color", color);
+    public ReadableColor getColor() {
+        return color;
     }
 
     @Override
@@ -43,7 +40,7 @@ public class FlatColouredShader extends Shader {
 
     private void render() {
         // set uniforms
-        setUniform("color", getColor());
+        setUniform("color", color);
     }
 
     @Override

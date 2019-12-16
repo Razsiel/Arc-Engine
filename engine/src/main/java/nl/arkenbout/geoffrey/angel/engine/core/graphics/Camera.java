@@ -6,10 +6,16 @@ import org.joml.Vector3f;
 public class Camera {
     private Vector3f position;
     private Vector3f rotation;
+    private final float near;
+    private final float far;
+    private final float fov;
 
-    public Camera(Vector3f position, Vector3f rotation) {
+    public Camera(Vector3f position, Vector3f rotation, float near, float far, float fov) {
         this.position = position;
         this.rotation = rotation;
+        this.near = near;
+        this.far = far;
+        this.fov = fov;
         Cameras.addCamera(this);
     }
 
@@ -37,5 +43,17 @@ public class Camera {
         rotation.x += x;
         rotation.y += y;
         rotation.z += z;
+    }
+
+    public float getNear() {
+        return near;
+    }
+
+    public float getFar() {
+        return far;
+    }
+
+    public float getFov() {
+        return fov;
     }
 }

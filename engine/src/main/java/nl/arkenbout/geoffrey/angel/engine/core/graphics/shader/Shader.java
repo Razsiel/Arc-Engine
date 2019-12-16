@@ -5,9 +5,10 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLigh
 import nl.arkenbout.geoffrey.angel.engine.util.Utils;
 import org.joml.*;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.util.Color;
+import org.lwjgl.util.ReadableColor;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -18,7 +19,6 @@ public abstract class Shader {
     private final int fragmentShaderId;
 
     private final Map<String, Integer> uniforms;
-    protected Map<String, Object> properties = new HashMap<>();
 
     public Shader(String vertexShaderCode, String fragmentShaderCode) throws Exception {
         if (vertexShaderCode == null || vertexShaderCode.isEmpty())
@@ -39,9 +39,6 @@ public abstract class Shader {
         fragmentShaderId = createShader(fragmentShaderCode, GL_FRAGMENT_SHADER);
 
         this.link();
-
-        createUniform("projectionMatrix");
-        createUniform("modelViewMatrix");
     }
 
     public Shader(String name) throws Exception {
@@ -135,7 +132,7 @@ public abstract class Shader {
         glUniform1f(uniforms.get(uniformName), value);
     }
 
-    public void setUniform(String uniformName, Color color) {
+    public void setUniform(String uniformName, ReadableColor color) {
         Integer colorLocation = uniforms.get(uniformName);
         float red = color.getRed() / 255f;
         float green = color.getGreen() / 255f;
@@ -165,18 +162,12 @@ public abstract class Shader {
         }
     }
 
-    public <T> void setProperty(String propertyName, T value) {
-        this.properties.put(propertyName, value);
-    }
-
-    <T> T getProperty(String propertyName) {
-        return (T) properties.get(propertyName);
-    }
-
     public abstract Map<VboType, Integer> prepareVertexBufferObjects(int vboIdIndex);
 
     public abstract void preRender(int vboLastIndex);
+
     public abstract void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix);
+
     public abstract void postRender(int vboLastIndex);
 }
 

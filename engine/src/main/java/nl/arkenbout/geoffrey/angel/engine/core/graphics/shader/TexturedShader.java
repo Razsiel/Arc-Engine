@@ -24,9 +24,12 @@ public class TexturedShader extends Shader {
         super("textured");
         this.texture = texture;
         this.repeat = repeat;
+        createUniform("projectionMatrix");
+        createUniform("modelViewMatrix");
         createUniform("texture_sampler");
         createUniform("texture_repeat");
         createDirectionalLightUniform("directional_light");
+        createUniform("shadow");
     }
 
     @Override
@@ -54,6 +57,7 @@ public class TexturedShader extends Shader {
     private void render(Matrix4f viewMatrix) {
         setUniform("texture_sampler", 0);
         setUniform("texture_repeat", this.repeat);
+        setUniform("shadow", 1);
         DirectionalLight directionalLight = new DirectionalLight(Lights.getDirectionalLight());
         Vector4f viewSpaceDirection = new Vector4f(directionalLight.getDirection(), 0f);
         viewSpaceDirection.mul(viewMatrix);

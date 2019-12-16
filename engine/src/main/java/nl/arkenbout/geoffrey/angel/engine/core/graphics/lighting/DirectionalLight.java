@@ -1,8 +1,6 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting;
 
 import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.util.Color;
 import org.lwjgl.util.ReadableColor;
 
 public class DirectionalLight {
@@ -33,11 +31,11 @@ public class DirectionalLight {
         return direction;
     }
 
-    public float getIntensity() {
-        return intensity;
-    }
-
     public void setDirection(Vector3f direction) {
         this.direction = direction;
+    }
+
+    public float getIntensity() {
+        return intensity;
     }
 }

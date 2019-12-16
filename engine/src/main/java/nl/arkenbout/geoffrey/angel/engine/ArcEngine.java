@@ -37,14 +37,10 @@ public class ArcEngine {
         this.renderSystem = context.getComponentSystemRegistery().registerSystem(new RenderComponentSystem(window));
     }
 
-    public void start() throws Exception {
-        init();
-        run();
-    }
-
-    private void run() {
+    public void start() {
         try {
-            gameLoop();
+            init();
+            run();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -52,13 +48,18 @@ public class ArcEngine {
         }
     }
 
+    private void run() {
+        gameLoop();
+    }
+
     private void init() throws Exception {
         window.init();
+        renderSystem.init();
         mouseInput.init(window);
         keyboardInput.init(window);
         game.init();
         if (Cameras.main() == null) {
-            Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, -5f), Vector3u.up().mul(180));
+            Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, -5f), Vector3u.up().mul(180), 0.01f, 1000f, (float) Math.toRadians(60.0f));
             Cameras.addCamera(mainCamera);
             Cameras.setMainCamera(mainCamera);
         }

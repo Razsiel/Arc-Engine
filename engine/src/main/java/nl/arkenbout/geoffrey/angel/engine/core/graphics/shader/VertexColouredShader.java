@@ -15,6 +15,8 @@ import static org.lwjgl.opengl.GL20.*;
 public class VertexColouredShader extends Shader {
     public VertexColouredShader() throws Exception {
         super("vertex-coloured");
+        createUniform("projectionMatrix");
+        createUniform("modelViewMatrix");
     }
 
     @Override

@@ -8,18 +8,19 @@ import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Transformation;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.ShadowMap;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.*;
 import org.joml.Matrix4f;
 
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class RenderComponentSystem extends DualComponentSystem<RenderComponent, TransformComponent> {
-
-    private static final float FOV = (float) Math.toRadians(60.0f);
-    private static final float Z_NEAR = 0.01f;
-    private static final float Z_FAR = 1000.f;
     private final Window window;
+    private ShadowMap shadowMap;
+    private DepthShader depthShader;
 
     public RenderComponentSystem(Window window) {
         super(RenderComponent.class, TransformComponent.class);
@@ -28,7 +29,7 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
 
     @Override
     protected void doEachComponent(ComponentMatch match) {
-        // ignore because of render
+        // ignore because of render method
     }
 
     public void render(Camera mainCamera) {
@@ -37,8 +38,13 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Matrix4f projectionMatrix = Transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
+        // render depth map
+//        renderDepthMap(components);
+
+        glViewport(0, 0, window.getWidth(), window.getHeight());
+
         Matrix4f viewMatrix = Transformation.getViewMatrix(mainCamera);
+        Matrix4f projectionMatrix = Transformation.getProjectionMatrix(mainCamera.getFov(), window.getWidth(), window.getHeight(), mainCamera.getNear(), mainCamera.getFar());
 
         for (var match : components) {
             var renderComponent = match.getComponent(RenderComponent.class);
@@ -56,4 +62,19 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
         window.update();
     }
 
+    //TODO: Move to a rendering class
+    private void renderDepthMap(List<ComponentMatch> components) {
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getBufferId());
+        glViewport(0, 0, ShadowMap.WIDTH, ShadowMap.HEIGHT);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        depthShader.renderDepthMap(components);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    public void init() throws Exception {
+        this.shadowMap = new ShadowMap();
+        this.depthShader = new DepthShader();
+    }
 }
