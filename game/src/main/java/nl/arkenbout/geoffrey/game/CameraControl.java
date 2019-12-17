@@ -16,7 +16,6 @@ public class CameraControl implements MouseListener, KeyboardListener {
     private final Vector3f cameraDelta = Vector3u.zero();
 
     CameraControl() {
-        System.out.println("CAMERA SPEED = " + CAMERA_MOVE_SENSITIVITY);
     }
 
     @Override

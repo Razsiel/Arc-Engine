@@ -12,7 +12,7 @@ public class FloatArrayCollector {
 
     public void add(double d) {
         if (curr.length == size) {
-            curr = Arrays.copyOf(curr, size*2);
+            curr = Arrays.copyOf(curr, size * 2);
         }
         curr[size++] = (float) d;
     }

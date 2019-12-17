@@ -1,14 +1,18 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Triangle;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Vertex;
+import nl.arkenbout.geoffrey.angel.engine.util.FloatArrayCollector;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.*;
 
 import static nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -30,6 +34,27 @@ public class Mesh {
         this.vertices = vertices;
         this.normals = normals;
         this.textureCoords = textureCoords;
+    }
+
+    public Mesh(List<Vertex> vertices, List<Triangle> triangleIndices) {
+        this.vertices = vertices.stream()
+                .flatMap(Vertex::getPositionElements)
+                .collect(FloatArrayCollector::new, FloatArrayCollector::add, FloatArrayCollector::join)
+                .toArray();
+
+        this.indices = triangleIndices.stream()
+                .flatMapToInt(Triangle::getIndicesAsStream)
+                .toArray();
+
+        this.normals = this.vertices;
+
+
+        this.textureCoords = new float[vertices.size()];
+        for (int i = 0; i < vertices.size(); i += 3) {
+            textureCoords[i    ] = 0f;
+            textureCoords[i + 1] = 0f;
+            textureCoords[i + 2] = 0f;
+        }
     }
 
     public void prepare(Material material) {

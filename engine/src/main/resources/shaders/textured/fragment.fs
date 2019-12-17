@@ -57,5 +57,5 @@ void main()
     vec4 diffuseSpecular = calcDirectionalLight(directional_light, outPosition, outNormal);
 
     float shade = texture(shadow, outTextureCoordinate).x;
-    fragColor = ambient + diffuseSpecular * shade;
+    fragColor = ambient + diffuseSpecular + shade;
 }

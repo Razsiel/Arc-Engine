@@ -1,6 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.component;
 
 import nl.arkenbout.geoffrey.angel.ecs.Component;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import org.joml.Vector3f;
 
 public class TransformComponent implements Component {
@@ -9,7 +10,7 @@ public class TransformComponent implements Component {
     private float scale;
 
     public TransformComponent() {
-        this(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 1f);
+        this(Vector3u.zero(), Vector3u.zero(), 1f);
     }
 
     public TransformComponent(Vector3f position, Vector3f rotation, float scale) {
@@ -40,5 +41,9 @@ public class TransformComponent implements Component {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public static TransformComponent identity() {
+        return new TransformComponent();
     }
 }

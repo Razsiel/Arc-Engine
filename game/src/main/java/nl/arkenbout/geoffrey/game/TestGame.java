@@ -7,6 +7,7 @@ import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Icosahedron;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.*;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
 import nl.arkenbout.geoffrey.angel.engine.core.input.KeyboardInput;
@@ -76,6 +77,11 @@ public class TestGame implements Game {
         CameraControl cameraControl = new CameraControl();
         MouseInput.registerMouseListener(cameraControl);
         KeyboardInput.registerKeyboardListener(cameraControl);
+
+        var icoMesh = Icosahedron.create(0);
+        var icoRenderer = new RenderComponent(icoMesh, texturedCubeMaterial);
+        Entity icosahedron = gameContext.createEntity(TransformComponent.identity(), icoRenderer);
+        System.out.println("icosahedronId = " + icosahedron.getId());
     }
 
     @Override
