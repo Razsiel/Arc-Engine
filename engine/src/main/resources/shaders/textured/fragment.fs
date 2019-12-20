@@ -59,5 +59,4 @@ void main()
 
     float shade = texture(shadow, outTextureCoordinate).x;
     fragColor = ambient + diffuseSpecular + shade;
-//     fragColor = fragColor - fragColor + vec4(shade);
 }

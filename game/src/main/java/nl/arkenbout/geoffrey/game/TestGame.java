@@ -35,7 +35,9 @@ public class TestGame implements Game {
         var cubeRenderer = new RenderComponent(cubeMesh, texturedCubeMaterial);
 
         TransformComponent cubeTransform = new TransformComponent(Vector3u.up().mul(1.5f), Vector3u.up().mul(45), 1f);
-        Entity cube = gameContext.createEntity(cubeTransform, cubeRenderer);
+        RotatorComponent rotatorComponent = new RotatorComponent(50f, Vector3u.up());
+        ScalePingPongComponent scalePingPongComponent = new ScalePingPongComponent(1f, 0.3f, 1f);
+        Entity cube = gameContext.createEntity(cubeTransform, cubeRenderer, rotatorComponent, scalePingPongComponent);
         System.out.println("eId = " + cube.getId());
 
         for (int i = 0; i < 5; i++) {
