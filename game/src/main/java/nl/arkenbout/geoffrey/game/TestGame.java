@@ -29,7 +29,7 @@ public class TestGame implements Game {
         systemRegistry.registerSystem(new RotatorSystem());
 
         var gridTexture = new Texture("/textures/grid.png");
-        var texturedShader = new TexturedShader(gridTexture);
+        var texturedShader = new TexturedShader(gridTexture, Color.WHITE);
         var texturedCubeMaterial = new Material(texturedShader);
         var cubeMesh = PrimitiveMesh.createCube(1);
 
@@ -64,10 +64,11 @@ public class TestGame implements Game {
 
             var cubeEntity = gameContext.createEntity(transform, renderer, scalePingPong, bouncer, rotator);
             System.out.println("cubeId = " + cubeEntity.getId());
+            System.out.println(color);
         }
 
         var planeMesh = PrimitiveMesh.createPlane(4, 4);
-        var planeShader = new TexturedShader(gridTexture, Vector2u.one().mul(16));
+        var planeShader = new TexturedShader(gridTexture, Vector2u.one().mul(16), Color.WHITE);
         var planeMaterial = new Material(planeShader);
         var transform = new TransformComponent(Vector3u.zero(), Vector3u.zero(), 1f);
         var planeRenderer = new RenderComponent(planeMesh, planeMaterial);

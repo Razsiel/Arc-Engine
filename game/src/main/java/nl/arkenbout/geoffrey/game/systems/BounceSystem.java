@@ -19,7 +19,7 @@ public class BounceSystem extends DualComponentSystem<TransformComponent, Bounce
         var bouncer = match.getComponent(BounceComponent.class);
 
         var newY = (float) Math.abs(Math.sin(GameTimer.getInstance().getTimeSinceStart() + transform.getPosition().x()));
-        newY = MathUtils.remap(newY, -1, 1, bouncer.getMinHeight(), bouncer.getMaxHeight());
+        newY = MathUtils.remap(newY, 0, 1, bouncer.getMinHeight(), bouncer.getMaxHeight());
 
         transform.getPosition().y = newY;
     }

@@ -24,6 +24,7 @@ public class Window implements KeyboardListener {
     private double lastUpdateFps;
     private int fps;
     private boolean isMaximized;
+    private boolean isRenderingWireframe;
 
     public Window(String windowTitle, int width, int height, boolean vSync) {
         this.windowTitle = windowTitle;
@@ -176,6 +177,15 @@ public class Window implements KeyboardListener {
                 glfwRestoreWindow(windowHandle);
             } else {
                 glfwMaximizeWindow(windowHandle);
+            }
+        }
+        if (key == Key.F9) {
+            if (isRenderingWireframe) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                isRenderingWireframe = false;
+            } else {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                isRenderingWireframe = true;
             }
         }
     }

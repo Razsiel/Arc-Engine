@@ -13,10 +13,11 @@ struct DirectionalLight
     float intensity;
 };
 
-uniform sampler2D shadow;
 uniform sampler2D texture_sampler;
+uniform sampler2D shadow;
 uniform vec2 texture_repeat;
 uniform DirectionalLight directional_light;
+uniform vec4 color;
 
 vec4 ambient;
 vec4 diffuse;
@@ -52,10 +53,11 @@ void main()
 {
     diffuse = vec4(1, 1, 1, 0);
     specular = vec4(1, 1, 1, 1);
-    ambient = texture(texture_sampler, outTextureCoordinate * texture_repeat);
+    ambient = texture(texture_sampler, outTextureCoordinate * texture_repeat) * color;
 
     vec4 diffuseSpecular = calcDirectionalLight(directional_light, outPosition, outNormal);
 
     float shade = texture(shadow, outTextureCoordinate).x;
     fragColor = ambient + diffuseSpecular + shade;
+//     fragColor = fragColor - fragColor + vec4(shade);
 }

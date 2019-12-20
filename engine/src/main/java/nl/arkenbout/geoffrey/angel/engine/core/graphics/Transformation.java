@@ -14,6 +14,10 @@ public class Transformation {
         return projectionMatrix;
     }
 
+    public static Matrix4f getWorldMatrix(TransformComponent t) {
+        return getWorldMatrix(t.getPosition(), t.getRotation(), t.getScale());
+    }
+
     public static Matrix4f getWorldMatrix(Vector3f offset, Vector3f rotation, float scale) {
         var worldMatrix = new Matrix4f();
         worldMatrix.identity()

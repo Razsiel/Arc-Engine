@@ -5,6 +5,8 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
 import org.joml.*;
+import org.lwjgl.util.Color;
+import org.lwjgl.util.ReadableColor;
 
 import java.util.Collections;
 import java.util.Map;
@@ -14,22 +16,25 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class TexturedShader extends Shader {
     private final Vector2f repeat;
+    private final ReadableColor color;
     private final Texture texture;
 
-    public TexturedShader(Texture texture) throws Exception {
-        this(texture, Vector2u.one());
+    public TexturedShader(Texture texture, ReadableColor color) throws Exception {
+        this(texture, Vector2u.one(), color);
     }
 
-    public TexturedShader(Texture texture, Vector2f repeat) throws Exception {
+    public TexturedShader(Texture texture, Vector2f repeat, ReadableColor color) throws Exception {
         super("textured");
         this.texture = texture;
         this.repeat = repeat;
+        this.color = color;
         createUniform("projectionMatrix");
         createUniform("modelViewMatrix");
         createUniform("texture_sampler");
         createUniform("texture_repeat");
         createDirectionalLightUniform("directional_light");
         createUniform("shadow");
+        createUniform("color");
     }
 
     @Override
@@ -63,8 +68,11 @@ public class TexturedShader extends Shader {
         viewSpaceDirection.mul(viewMatrix);
         directionalLight.setDirection(Vector4u.xyz(viewSpaceDirection));
         setUniform("directional_light", directionalLight);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture.getId());
+        setUniform("color", color);
+        if (texture != null ) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
     }
 
     @Override

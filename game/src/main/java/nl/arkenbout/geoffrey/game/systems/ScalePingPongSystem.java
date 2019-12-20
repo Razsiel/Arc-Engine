@@ -20,8 +20,8 @@ public class ScalePingPongSystem extends DualComponentSystem<TransformComponent,
         var speed = pingpong.getSpeed();
 
         double timeSinceStart = GameTimer.getInstance().getTimeSinceStart();
-        var newScale = (float) Math.sin(timeSinceStart + transform.getPosition().x() * speed);
-        var remappedNewScale = MathUtils.remap(newScale, -1, 1, pingpong.getMinSize(), pingpong.getMaxSize());
+        var newScale = (float) Math.abs(Math.sin(timeSinceStart + transform.getPosition().x() * speed));
+        var remappedNewScale = MathUtils.remap(newScale, 0, 1, pingpong.getMinSize(), pingpong.getMaxSize());
 
         transform.setScale(remappedNewScale);
     }

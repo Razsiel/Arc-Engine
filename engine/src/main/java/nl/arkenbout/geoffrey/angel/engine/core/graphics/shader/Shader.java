@@ -14,13 +14,15 @@ import static org.lwjgl.opengl.GL20.*;
 
 public abstract class Shader {
 
+    private final String name;
     private final int programId;
     private final int vertexShaderId;
     private final int fragmentShaderId;
 
     private final Map<String, Integer> uniforms;
 
-    public Shader(String vertexShaderCode, String fragmentShaderCode) throws Exception {
+    public Shader(String name, String vertexShaderCode, String fragmentShaderCode) throws Exception {
+        this.name = name;
         if (vertexShaderCode == null || vertexShaderCode.isEmpty())
             throw new IllegalArgumentException("Vertex shader code must be provided");
 
@@ -43,6 +45,7 @@ public abstract class Shader {
 
     public Shader(String name) throws Exception {
         this(
+                name,
                 Utils.loadResource(String.format("/shaders/%s/vertex.vs", name)),
                 Utils.loadResource(String.format("/shaders/%s/fragment.fs", name))
         );
@@ -53,8 +56,12 @@ public abstract class Shader {
         if (shaderId == 0)
             throw new Exception("Error creating shader. Type: " + shaderType);
 
-        glShaderSource(shaderId, shaderCode);
-        glCompileShader(shaderId);
+        try {
+            glShaderSource(shaderId, shaderCode);
+            glCompileShader(shaderId);
+        } catch (IllegalStateException e) {
+            throw new Exception("Error compiling shader \"" + name + "\"", e);
+        }
 
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == 0) {
             String shaderTypeName = shaderType == GL_VERTEX_SHADER ? "VERTEX" : shaderType == GL_FRAGMENT_SHADER ? "FRAGMENT" : "UNKNOWN";
