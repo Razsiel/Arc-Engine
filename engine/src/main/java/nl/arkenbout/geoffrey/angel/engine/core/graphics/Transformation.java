@@ -44,15 +44,10 @@ public class Transformation {
     }
 
     public static Matrix4f getModelViewMatrix(TransformComponent transformComponent, Matrix4f viewMatrix) {
-        var componentRotation = transformComponent.getRotation();
-        var componentPosition = transformComponent.getPosition();
-        var modelViewMatrix = new Matrix4f();
-        modelViewMatrix.identity()
-                .translate(componentPosition)
-                .rotateX((float) Math.toRadians(-componentRotation.x()))
-                .rotateY((float) Math.toRadians(-componentRotation.y()))
-                .rotateZ((float) Math.toRadians(-componentRotation.z()))
-                .scale(transformComponent.getScale());
+        var modelViewMatrix = new Matrix4f().identity();
+
+        modelViewMatrix = transformComponent.getModelViewMatrix(modelViewMatrix);
+
         var viewCurrent = new Matrix4f(viewMatrix);
         return viewCurrent.mul(modelViewMatrix);
 

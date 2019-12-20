@@ -32,17 +32,15 @@ public class TestGame implements Game {
         var texturedShader = new TexturedShader(gridTexture, Color.WHITE);
         var texturedCubeMaterial = new Material(texturedShader);
         var cubeMesh = PrimitiveMesh.createCube(1);
-
         var cubeRenderer = new RenderComponent(cubeMesh, texturedCubeMaterial);
 
-        TransformComponent t = new TransformComponent(Vector3u.up().mul(1.5f), Vector3u.zero(), 1f);
-        gameContext.createEntity(cubeRenderer);
-        Entity e = gameContext.createEntity(t, cubeRenderer);
-        System.out.println("eId = " + e.getId());
+        TransformComponent cubeTransform = new TransformComponent(Vector3u.up().mul(1.5f), Vector3u.up().mul(45), 1f);
+        Entity cube = gameContext.createEntity(cubeTransform, cubeRenderer);
+        System.out.println("eId = " + cube.getId());
 
         for (int i = 0; i < 5; i++) {
             var x = MathUtils.remap(i, 0, 4, -2.5f, 2.5f);
-            var transform = new TransformComponent(new Vector3f(x, 0f, 0f), Vector3u.zero(), 1f);
+            var transform = new TransformComponent(new Vector3f(x, 0f, 0f), Vector3u.zero(), 1f, cubeTransform);
             var scalePingPong = new ScalePingPongComponent(1f, 0.3f, 0.7f);
             var bouncer = new BounceComponent(0f, 2f);
 
@@ -79,10 +77,10 @@ public class TestGame implements Game {
         MouseInput.registerMouseListener(cameraControl);
         KeyboardInput.registerKeyboardListener(cameraControl);
 
-        var icoMesh = Icosahedron.create(0);
-        var icoRenderer = new RenderComponent(icoMesh, texturedCubeMaterial);
-        Entity icosahedron = gameContext.createEntity(TransformComponent.identity(), icoRenderer);
-        System.out.println("icosahedronId = " + icosahedron.getId());
+//        var icoMesh = Icosahedron.create(0);
+//        var icoRenderer = new RenderComponent(icoMesh, texturedCubeMaterial);
+//        Entity icosahedron = gameContext.createEntity(TransformComponent.identity(), icoRenderer);
+//        System.out.println("icosahedronId = " + icosahedron.getId());
     }
 
     @Override
