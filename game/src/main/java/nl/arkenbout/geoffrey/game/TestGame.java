@@ -1,14 +1,13 @@
 package nl.arkenbout.geoffrey.game;
 
-import nl.arkenbout.geoffrey.angel.ecs.Entity;
-import nl.arkenbout.geoffrey.angel.ecs.GameContext;
+import nl.arkenbout.geoffrey.angel.ecs.*;
 import nl.arkenbout.geoffrey.angel.engine.Game;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Icosahedron;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.*;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.FlatColouredShader;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.TexturedShader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
 import nl.arkenbout.geoffrey.angel.engine.core.input.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.MouseInput;
@@ -23,7 +22,9 @@ public class TestGame implements Game {
     @Override
     public void init() throws Exception {
         var gameContext = GameContext.getInstance();
-        var systemRegistry = gameContext.getComponentSystemRegistery();
+        var scene = new SceneContext("", gameContext);
+
+        var systemRegistry = scene.getComponentSystemRegistery();
         systemRegistry.registerSystem(new ScalePingPongSystem());
         systemRegistry.registerSystem(new BounceSystem());
         systemRegistry.registerSystem(new RotatorSystem());
@@ -37,7 +38,7 @@ public class TestGame implements Game {
         TransformComponent cubeTransform = new TransformComponent(Vector3u.up().mul(1.5f), Vector3u.up().mul(45), 1f);
         RotatorComponent rotatorComponent = new RotatorComponent(50f, Vector3u.up());
         ScalePingPongComponent scalePingPongComponent = new ScalePingPongComponent(1f, 0.3f, 1f);
-        Entity cube = gameContext.createEntity(cubeTransform, cubeRenderer, rotatorComponent, scalePingPongComponent);
+        Entity cube = scene.createEntity(cubeTransform, cubeRenderer, rotatorComponent, scalePingPongComponent);
         System.out.println("eId = " + cube.getId());
 
         for (int i = 0; i < 5; i++) {
@@ -62,7 +63,7 @@ public class TestGame implements Game {
             var material = new Material(shader);
             var renderer = new RenderComponent(cubeMesh, material);
 
-            var cubeEntity = gameContext.createEntity(transform, renderer, scalePingPong, bouncer, rotator);
+            var cubeEntity = scene.createEntity(transform, renderer, scalePingPong, bouncer, rotator);
             System.out.println("cubeId = " + cubeEntity.getId());
             System.out.println(color);
         }
@@ -72,7 +73,7 @@ public class TestGame implements Game {
         var planeMaterial = new Material(planeShader);
         var transform = new TransformComponent(Vector3u.zero(), Vector3u.zero(), 1f);
         var planeRenderer = new RenderComponent(planeMesh, planeMaterial);
-        var plane = gameContext.createEntity(transform, planeRenderer);
+        var plane = scene.createEntity(transform, planeRenderer);
         System.out.println("planeId = " + plane.getId());
 
         CameraControl cameraControl = new CameraControl();
@@ -83,6 +84,8 @@ public class TestGame implements Game {
 //        var icoRenderer = new RenderComponent(icoMesh, texturedCubeMaterial);
 //        Entity icosahedron = gameContext.createEntity(TransformComponent.identity(), icoRenderer);
 //        System.out.println("icosahedronId = " + icosahedron.getId());
+
+        gameContext.setActiveSceneContext(scene);
     }
 
     @Override

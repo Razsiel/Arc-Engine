@@ -1,6 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine;
 
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
+import nl.arkenbout.geoffrey.angel.ecs.SceneContext;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
@@ -11,6 +12,8 @@ import nl.arkenbout.geoffrey.angel.engine.core.input.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.system.RenderComponentSystem;
 import org.joml.Vector3f;
 import org.lwjgl.Version;
+
+import java.util.stream.Stream;
 
 public class ArcEngine {
 
@@ -34,7 +37,8 @@ public class ArcEngine {
         this.timer = GameTimer.getInstance();
         this.context = GameContext.getInstance();
         this.window = new Window(windowTitle, width, height, vSync);
-        this.renderSystem = context.getComponentSystemRegistery().registerSystem(new RenderComponentSystem(window));
+        this.renderSystem = new RenderComponentSystem(window);
+        context.getComponentSystemRegistery().registerSystem(renderSystem);
     }
 
     public void start() {
@@ -111,11 +115,24 @@ public class ArcEngine {
     }
 
     private void update(float interval) {
-        var systems = context.getComponentSystemRegistery()
+        var globalSystems = context.getComponentSystemRegistery()
                 .getComponentSystems();
-        systems.stream()
-                .parallel()
-                .forEach(ComponentSystem::update);
+        SceneContext activeSceneContext = context.getActiveSceneContext();
+
+        if (activeSceneContext != null) {
+            this.renderSystem.updateActiveScene(activeSceneContext);
+            var sceneSystems = activeSceneContext.getComponentSystemRegistery()
+                    .getComponentSystems();
+
+            Stream.concat(globalSystems.stream(), sceneSystems.stream())
+                    .parallel()
+                    .forEach(ComponentSystem::update);
+        } else {
+            globalSystems.stream()
+                    .parallel()
+                    .forEach(ComponentSystem::update);
+        }
+
     }
 
     private void cleanup() {

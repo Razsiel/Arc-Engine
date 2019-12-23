@@ -3,7 +3,7 @@ package nl.arkenbout.geoffrey.angel.ecs;
 public class Entity {
 
     private String id;
-    private GameContext context;
+    private Context context;
 
     Entity(String id) {
         this.id = id;
@@ -13,11 +13,12 @@ public class Entity {
         return id;
     }
 
-    public void setContext(GameContext context) {
+    public void setContext(Context context) {
         this.context = context;
     }
 
     public void addComponent(Component component) {
-        this.context.getComponentRegistry().addComponent(this.id, component);
+        this.context.getComponentRegistry()
+                .addComponent(this.id, component);
     }
 }

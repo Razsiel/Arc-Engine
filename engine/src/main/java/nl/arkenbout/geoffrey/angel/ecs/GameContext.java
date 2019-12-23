@@ -2,12 +2,13 @@ package nl.arkenbout.geoffrey.angel.ecs;
 
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystemRegistry;
 
-public class GameContext {
+public class GameContext implements Context {
     private static GameContext instance;
 
     private final ComponentRegistry componentRegistry;
     private final ComponentSystemRegistry componentSystemRegistery;
     private final EntityRegistry entityRegistry;
+    private SceneContext activeSceneContext;
 
     private GameContext() {
         componentRegistry = new ComponentRegistry();
@@ -22,16 +23,13 @@ public class GameContext {
         return instance;
     }
 
+    @Override
     public ComponentRegistry getComponentRegistry() {
         return componentRegistry;
     }
 
     public ComponentSystemRegistry getComponentSystemRegistery() {
         return componentSystemRegistery;
-    }
-
-    public EntityRegistry getEntityRegistry() {
-        return entityRegistry;
     }
 
     public Entity createEntity(Component... components) {
@@ -42,6 +40,15 @@ public class GameContext {
             componentRegistry.addComponent(entity, component);
         }
         return entity;
+    }
+
+    public SceneContext getActiveSceneContext() {
+        return this.activeSceneContext;
+    }
+
+    public void setActiveSceneContext(SceneContext sceneContext) {
+        sceneContext.load();
+        this.activeSceneContext = sceneContext;
     }
 
     public static void cleanup() {

@@ -20,7 +20,7 @@ public abstract class ComponentSystem {
 
     protected abstract void doEachComponent(ComponentMatch match);
 
-    void setComponentRegistry(ComponentRegistry componentRegistry) {
+    protected void setComponentRegistry(ComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
     }
 

@@ -1,5 +1,6 @@
 package nl.arkenbout.geoffrey.angel.ecs.system;
 
+import nl.arkenbout.geoffrey.angel.ecs.Context;
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
 
 import java.lang.reflect.InvocationTargetException;
@@ -8,9 +9,9 @@ import java.util.*;
 public class ComponentSystemRegistry {
     private HashSet<ComponentSystem> componentSystems = new HashSet<>();
 
-    private GameContext context;
+    private Context context;
 
-    public ComponentSystemRegistry(GameContext context) {
+    public ComponentSystemRegistry(Context context) {
         this.context = context;
     }
 
