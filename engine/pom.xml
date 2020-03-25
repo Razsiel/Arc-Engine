@@ -6,6 +6,7 @@
         <artifactId>angel</artifactId>
         <groupId>nl.arkenbout.geoffrey</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,9 +14,45 @@
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
+    <profiles>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>windows</platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>macos</id>
+            <activation>
+                <os>
+                    <family>Mac</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>macos</platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>Linux</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>linux</platform>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
         <lwjgl.version>3.2.3</lwjgl.version>
-        <lwjgl.natives>natives-linux</lwjgl.natives>
+        <lwjgl.natives>natives-${platform}</lwjgl.natives>
         <joml.version>1.9.19</joml.version>
         <pngdecoder.version>1.0</pngdecoder.version>
 
@@ -23,13 +60,13 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.lwjglx</groupId>
-            <artifactId>lwjglx-debug</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>/home/garkenbout/Documents/Quintor/Projects/angel/Arc-Engine/engine/lwjglx-debug-1.0.0.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.lwjglx</groupId>-->
+<!--            <artifactId>lwjglx-debug</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>/home/garkenbout/Documents/Quintor/Projects/angel/Arc-Engine/engine/lwjglx-debug-1.0.0.jar</systemPath>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.lwjgl</groupId>
