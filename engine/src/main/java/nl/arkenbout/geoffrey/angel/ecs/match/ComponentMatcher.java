@@ -8,11 +8,9 @@ public class ComponentMatcher {
 
     private HashMap<Class<? extends Component>, List<Component>> matchedComponents = new HashMap<>();
 
-    public ComponentMatcher(Class... componentsToMatch) {
+    @SafeVarargs
+    public ComponentMatcher(Class<? extends Component>... componentsToMatch) {
         for (var componentClass : componentsToMatch) {
-            if (!Component.class.isAssignableFrom(componentClass))
-                throw new ClassCastException("Trying to use " + componentClass.getName() + " to match while it is not a Component type.");
-
             matchedComponents.put(componentClass, new ArrayList<>());
         }
     }

@@ -1,4 +1,4 @@
-package nl.arkenbout.geoffrey.angel.engine.core.input;
+package nl.arkenbout.geoffrey.angel.engine.core.input.mouse;
 
 import nl.arkenbout.geoffrey.angel.engine.Window;
 import org.joml.Vector2d;

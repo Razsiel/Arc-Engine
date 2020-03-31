@@ -1,15 +1,17 @@
-package nl.arkenbout.geoffrey.angel.engine.core.input;
+package nl.arkenbout.geoffrey.angel.engine.core.input.keyboard;
 
 import nl.arkenbout.geoffrey.angel.engine.Window;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyboardInput {
-    private static final List<KeyboardListener> callbacks = new ArrayList<>();
+    private static final Set<KeyboardListener> callbacks = new HashSet<>();
 
     private final List<Key> keysPressed = new ArrayList<>();
 

@@ -1,4 +1,4 @@
-package nl.arkenbout.geoffrey.angel.engine.core.input;
+package nl.arkenbout.geoffrey.angel.engine.core.input.keyboard;
 
 import java.util.HashMap;
 import java.util.Map;

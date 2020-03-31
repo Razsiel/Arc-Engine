@@ -3,7 +3,10 @@ package nl.arkenbout.geoffrey.game;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
-import nl.arkenbout.geoffrey.angel.engine.core.input.*;
+import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.Key;
+import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyModifier;
+import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardListener;
+import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseListener;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

@@ -1,7 +1,10 @@
 package nl.arkenbout.geoffrey.angel.engine;
 
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
-import nl.arkenbout.geoffrey.angel.engine.core.input.*;
+import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.Key;
+import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyModifier;
+import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
+import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardListener;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -11,7 +14,6 @@ import java.util.List;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window implements KeyboardListener {
