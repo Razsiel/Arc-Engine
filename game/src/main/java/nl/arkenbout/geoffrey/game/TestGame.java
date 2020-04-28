@@ -2,6 +2,7 @@ package nl.arkenbout.geoffrey.game;
 
 import nl.arkenbout.geoffrey.angel.ecs.*;
 import nl.arkenbout.geoffrey.angel.engine.Game;
+import nl.arkenbout.geoffrey.angel.engine.WindowInitializer;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
@@ -11,6 +12,8 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.TexturedShader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseInput;
+import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
+import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
 import nl.arkenbout.geoffrey.angel.engine.util.MathUtils;
 import nl.arkenbout.geoffrey.game.components.*;
 import nl.arkenbout.geoffrey.game.systems.*;
@@ -18,6 +21,8 @@ import org.joml.Vector3f;
 import org.lwjgl.util.Color;
 
 public class TestGame implements Game {
+
+
 
     @Override
     public void init() throws Exception {
@@ -91,5 +96,21 @@ public class TestGame implements Game {
     @Override
     public void cleanup() {
 
+    }
+
+    @Override
+    public WindowOptions getWindowOptions() {
+        return WindowOptions.of()
+                .title("TestGame")
+                .width(640)
+                .height(480)
+                .create();
+    }
+
+    @Override
+    public VideoOptions getVideoOptions() {
+        return VideoOptions.of()
+                .vSync(true)
+                .create();
     }
 }

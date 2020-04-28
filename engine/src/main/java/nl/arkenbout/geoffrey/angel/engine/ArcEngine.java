@@ -1,5 +1,6 @@
 package nl.arkenbout.geoffrey.angel.engine;
 
+import lombok.extern.java.Log;
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
 import nl.arkenbout.geoffrey.angel.ecs.SceneContext;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
@@ -9,12 +10,16 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseInput;
+import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
+import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
 import nl.arkenbout.geoffrey.angel.engine.system.RenderComponentSystem;
 import org.joml.Vector3f;
 import org.lwjgl.Version;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Stream;
 
+@Log
 public class ArcEngine {
 
     private static final int TARGET_FPS = 60;
@@ -29,19 +34,35 @@ public class ArcEngine {
 
     private final RenderComponentSystem renderSystem;
 
-    public ArcEngine(String windowTitle, int width, int height, boolean vSync, Game game) {
+    private ArcEngine(Window window, Game game) {
         System.out.println("Hello LWJGL" + Version.getVersion() + "!");
+        this.window = window;
         this.game = game;
-        this.mouseInput = new MouseInput();
-        this.keyboardInput = new KeyboardInput();
+        this.mouseInput = MouseInput.forWindow(window);
+        this.keyboardInput = KeyboardInput.forWindow(window);
         this.timer = GameTimer.getInstance();
         this.context = GameContext.getInstance();
-        this.window = new Window(windowTitle, width, height, vSync);
-        this.renderSystem = new RenderComponentSystem(window);
-        context.getComponentSystemRegistery().registerSystem(renderSystem);
+        this.renderSystem = RenderComponentSystem.forWindow(window);
+        this.context.registerSystem(this.renderSystem);
     }
 
-    public void start() {
+    public static void start(Class<? extends Game> gameClass) {
+        Game game = null;
+        try {
+            game = gameClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException("The passed in Game class (" + gameClass.getSimpleName() + ") does not have a parameterless constructor");
+        }
+
+        WindowOptions windowOptions = game.getWindowOptions();
+        VideoOptions videoOptions = game.getVideoOptions();
+        Window window = Window.fromWindowOptions(windowOptions, videoOptions);
+
+        ArcEngine engine = new ArcEngine(window, game);
+        engine.start();
+    }
+
+    private void start() {
         try {
             init();
             run();
@@ -59,8 +80,8 @@ public class ArcEngine {
     private void init() throws Exception {
         window.init();
         renderSystem.init();
-        mouseInput.init(window);
-        keyboardInput.init(window);
+        mouseInput.init();
+        keyboardInput.init();
         game.init();
         if (Cameras.main() == null) {
             Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, -5f), Vector3u.up().mul(180), 0.01f, 1000f, (float) Math.toRadians(60.0f));
@@ -103,7 +124,7 @@ public class ArcEngine {
         while (timer.getTime() < endTime) {
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
     }
@@ -136,11 +157,7 @@ public class ArcEngine {
     }
 
     private void cleanup() {
-        context.getComponentSystemRegistery()
-                .getComponentSystems()
-                .stream()
-                .parallel()
-                .forEach(ComponentSystem::cleanup);
+        context.cleanup();
         mouseInput.cleanup(window);
         keyboardInput.cleanup(window);
         window.cleanup();

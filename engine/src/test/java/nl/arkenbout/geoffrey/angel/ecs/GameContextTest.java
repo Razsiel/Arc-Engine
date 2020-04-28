@@ -26,7 +26,7 @@ public class GameContextTest {
 
     @AfterEach
     void after() {
-        GameContext.cleanup();
+        context.cleanup();
         context = null;
         systemRegistry = null;
         componentRegistry = null;

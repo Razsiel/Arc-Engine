@@ -9,6 +9,8 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.FlatColouredShader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.PrimitiveMesh;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
+import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
+import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
 import nl.arkenbout.geoffrey.game.components.RotatorComponent;
 import nl.arkenbout.geoffrey.game.systems.RotatorSystem;
 import org.lwjgl.util.Color;
@@ -37,5 +39,21 @@ public class OrbitalGame implements Game {
     @Override
     public void cleanup() {
 
+    }
+
+    @Override
+    public WindowOptions getWindowOptions() {
+        return WindowOptions.of()
+                .title("Orbital")
+                .width(640)
+                .height(480)
+                .create();
+    }
+
+    @Override
+    public VideoOptions getVideoOptions() {
+        return VideoOptions.of()
+                .vSync(true)
+                .create();
     }
 }

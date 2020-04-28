@@ -3,6 +3,7 @@ package nl.arkenbout.geoffrey.angel.engine.core.input.mouse;
 import nl.arkenbout.geoffrey.angel.engine.Window;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
+import org.lwjgl.input.Mouse;
 
 import java.util.*;
 
@@ -13,6 +14,7 @@ public class MouseInput {
     private final Vector2d currentPosition = new Vector2d(-1, -1);
     private final Vector2d previousPosition = new Vector2d(0, 0);
     private final Vector2f mouseDelta = new Vector2f();
+    private final Window window;
     private boolean inWindow;
 
     private boolean leftButtonPressed;
@@ -22,8 +24,16 @@ public class MouseInput {
 
     private static List<MouseListener> mouseListeners = new ArrayList<>();
 
-    public void init(Window window) {
-        long handle = window.getWindowHandle();
+    public MouseInput(Window window) {
+        this.window = window;
+    }
+
+    public static MouseInput forWindow(Window window) {
+        return new MouseInput(window);
+    }
+
+    public void init() {
+        long handle = this.window.getWindowHandle();
         glfwSetCursorPosCallback(handle, (windowHandle, x, y) -> {
             this.currentPosition.set(x, y);
         });

@@ -5,11 +5,14 @@ import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.Key;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyModifier;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardListener;
+import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
+import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -33,6 +36,10 @@ public class Window implements KeyboardListener {
         this.width = width;
         this.height = height;
         this.vSync = vSync;
+    }
+
+    public static Window fromWindowOptions(WindowOptions windowOptions, VideoOptions videoOptions) {
+        return new Window(windowOptions.getTitle(), windowOptions.getWidth(), windowOptions.getHeight(), videoOptions.isVSync());
     }
 
     public void init() {

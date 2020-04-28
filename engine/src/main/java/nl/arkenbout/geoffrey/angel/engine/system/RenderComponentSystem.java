@@ -1,6 +1,5 @@
 package nl.arkenbout.geoffrey.angel.engine.system;
 
-import nl.arkenbout.geoffrey.angel.ecs.ComponentRegistry;
 import nl.arkenbout.geoffrey.angel.ecs.SceneContext;
 import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatch;
 import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatcher;
@@ -11,22 +10,27 @@ import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Transformation;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.ShadowMap;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.*;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.DepthShader;
 import org.joml.Matrix4f;
 
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 public class RenderComponentSystem extends DualComponentSystem<RenderComponent, TransformComponent> {
     private final Window window;
     private ShadowMap shadowMap;
     private DepthShader depthShader;
 
-    public RenderComponentSystem(Window window) {
+    private RenderComponentSystem(Window window) {
         super(RenderComponent.class, TransformComponent.class);
         this.window = window;
+    }
+
+    public static RenderComponentSystem forWindow(Window window) {
+        return new RenderComponentSystem(window);
     }
 
     @Override

@@ -14,6 +14,11 @@ public class KeyboardInput {
     private static final Set<KeyboardListener> callbacks = new HashSet<>();
 
     private final List<Key> keysPressed = new ArrayList<>();
+    private Window window;
+
+    private KeyboardInput(Window window) {
+        this.window = window;
+    }
 
     public static boolean registerKeyboardListener(KeyboardListener callback) {
         if (callbacks.contains(callback)) {
@@ -22,8 +27,12 @@ public class KeyboardInput {
         return callbacks.add(callback);
     }
 
-    public void init(Window window) {
-        long handle = window.getWindowHandle();
+    public static KeyboardInput forWindow(Window window) {
+        return new KeyboardInput(window);
+    }
+
+    public void init() {
+        long handle = this.window.getWindowHandle();
         glfwSetKeyCallback(handle, (windowHandle, keycode, scancode, action, mods) -> {
             var key = Key.fromGlfwKeyCode(keycode);
             var modifiers = KeyModifier.fromGlfwModifierCode(mods);

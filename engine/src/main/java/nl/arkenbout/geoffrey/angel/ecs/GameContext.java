@@ -1,5 +1,6 @@
 package nl.arkenbout.geoffrey.angel.ecs;
 
+import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystemRegistry;
 
 public class GameContext implements Context {
@@ -51,7 +52,16 @@ public class GameContext implements Context {
         this.activeSceneContext = sceneContext;
     }
 
-    public static void cleanup() {
+    public void cleanup() {
         instance = null;
+        this.componentSystemRegistery
+                .getComponentSystems()
+                .stream()
+                .parallel()
+                .forEach(ComponentSystem::cleanup);
+    }
+
+    public ComponentSystem registerSystem(ComponentSystem system) {
+        return this.componentSystemRegistery.registerSystem(system);
     }
 }
