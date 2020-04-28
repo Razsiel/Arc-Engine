@@ -1,17 +1,20 @@
 package nl.arkenbout.geoffrey.angel.ecs;
 
+import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystemRegistry;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
-public class SceneContext implements Context {
+public class Scene implements Context {
     private final String name;
 
     private final ComponentRegistry sceneComponentRegistry;
     private final ComponentSystemRegistry sceneComponentSystemRegistery;
     private final EntityRegistry sceneEntityRegistry;
 
-    public SceneContext(String name, GameContext context) {
+    public Scene(String name) {
         this.name = name;
         this.sceneComponentRegistry = new ComponentRegistry();
         this.sceneComponentSystemRegistery = new ComponentSystemRegistry(this);
@@ -45,5 +48,13 @@ public class SceneContext implements Context {
 
     public void load() {
 
+    }
+
+    public void update(Set<ComponentSystem> globalSystems) {
+        var sceneSystems = this.getComponentSystemRegistery().getComponentSystems();
+
+        Stream.concat(globalSystems.stream(), sceneSystems.stream())
+                .parallel()
+                .forEach(ComponentSystem::update);
     }
 }

@@ -9,7 +9,7 @@ public class GameContext implements Context {
     private final ComponentRegistry componentRegistry;
     private final ComponentSystemRegistry componentSystemRegistery;
     private final EntityRegistry entityRegistry;
-    private SceneContext activeSceneContext;
+    private Scene activeScene;
 
     private GameContext() {
         componentRegistry = new ComponentRegistry();
@@ -43,13 +43,13 @@ public class GameContext implements Context {
         return entity;
     }
 
-    public SceneContext getActiveSceneContext() {
-        return this.activeSceneContext;
+    public Scene getActiveScene() {
+        return this.activeScene;
     }
 
-    public void setActiveSceneContext(SceneContext sceneContext) {
+    public void setActiveScene(Scene sceneContext) {
         sceneContext.load();
-        this.activeSceneContext = sceneContext;
+        this.activeScene = sceneContext;
     }
 
     public void cleanup() {
@@ -63,5 +63,9 @@ public class GameContext implements Context {
 
     public ComponentSystem registerSystem(ComponentSystem system) {
         return this.componentSystemRegistery.registerSystem(system);
+    }
+
+    public void update() {
+
     }
 }

@@ -1,33 +1,38 @@
 package nl.arkenbout.geoffrey.game;
 
-import nl.arkenbout.geoffrey.angel.ecs.*;
+import nl.arkenbout.geoffrey.angel.ecs.Entity;
+import nl.arkenbout.geoffrey.angel.ecs.GameContext;
+import nl.arkenbout.geoffrey.angel.ecs.Scene;
 import nl.arkenbout.geoffrey.angel.engine.Game;
-import nl.arkenbout.geoffrey.angel.engine.WindowInitializer;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.FlatColouredShader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.TexturedShader;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.PrimitiveMesh;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector2u;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
 import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
 import nl.arkenbout.geoffrey.angel.engine.util.MathUtils;
-import nl.arkenbout.geoffrey.game.components.*;
-import nl.arkenbout.geoffrey.game.systems.*;
+import nl.arkenbout.geoffrey.game.components.BounceComponent;
+import nl.arkenbout.geoffrey.game.components.RotatorComponent;
+import nl.arkenbout.geoffrey.game.components.ScalePingPongComponent;
+import nl.arkenbout.geoffrey.game.systems.BounceSystem;
+import nl.arkenbout.geoffrey.game.systems.RotatorSystem;
+import nl.arkenbout.geoffrey.game.systems.ScalePingPongSystem;
 import org.joml.Vector3f;
 import org.lwjgl.util.Color;
 
 public class TestGame implements Game {
 
-
-
     @Override
     public void init() throws Exception {
         var gameContext = GameContext.getInstance();
-        var scene = new SceneContext("", gameContext);
+        var scene = new Scene("");
 
         var systemRegistry = scene.getComponentSystemRegistery();
         systemRegistry.registerSystem(new ScalePingPongSystem());
@@ -90,7 +95,7 @@ public class TestGame implements Game {
 //        Entity icosahedron = gameContext.createEntity(TransformComponent.identity(), icoRenderer);
 //        System.out.println("icosahedronId = " + icosahedron.getId());
 
-        gameContext.setActiveSceneContext(scene);
+        gameContext.setActiveScene(scene);
     }
 
     @Override

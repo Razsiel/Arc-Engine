@@ -1,7 +1,7 @@
 package nl.arkenbout.geoffrey.game;
 
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
-import nl.arkenbout.geoffrey.angel.ecs.SceneContext;
+import nl.arkenbout.geoffrey.angel.ecs.Scene;
 import nl.arkenbout.geoffrey.angel.engine.Game;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
@@ -19,7 +19,7 @@ public class OrbitalGame implements Game {
     @Override
     public void init() throws Exception {
         var gameContext = GameContext.getInstance();
-        var scene = new SceneContext("", gameContext);
+        var scene = new Scene("");
         var systemRegistry = scene.getComponentSystemRegistery();
 
         systemRegistry.registerSystem(RotatorSystem.class);
@@ -33,7 +33,7 @@ public class OrbitalGame implements Game {
 
         scene.createEntity(sunRenderer, sunTransform, sunRotator);
 
-        gameContext.setActiveSceneContext(scene);
+        gameContext.setActiveScene(scene);
     }
 
     @Override

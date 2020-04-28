@@ -1,6 +1,6 @@
 package nl.arkenbout.geoffrey.angel.engine.system;
 
-import nl.arkenbout.geoffrey.angel.ecs.SceneContext;
+import nl.arkenbout.geoffrey.angel.ecs.Scene;
 import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatch;
 import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatcher;
 import nl.arkenbout.geoffrey.angel.ecs.system.DualComponentSystem;
@@ -88,7 +88,7 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
         this.depthShader = new DepthShader();
     }
 
-    public void updateActiveScene(SceneContext sceneContext) {
+    public void updateActiveScene(Scene sceneContext) {
         var sceneContextComponentRegistry = sceneContext.getComponentRegistry();
         if (this.componentRegistry != sceneContextComponentRegistry) {
             setComponentRegistry(sceneContextComponentRegistry);

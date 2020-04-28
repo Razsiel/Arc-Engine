@@ -2,7 +2,7 @@ package nl.arkenbout.geoffrey.angel.engine;
 
 import lombok.extern.java.Log;
 import nl.arkenbout.geoffrey.angel.ecs.GameContext;
-import nl.arkenbout.geoffrey.angel.ecs.SceneContext;
+import nl.arkenbout.geoffrey.angel.ecs.Scene;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
@@ -138,16 +138,13 @@ public class ArcEngine {
     private void update(float interval) {
         var globalSystems = context.getComponentSystemRegistery()
                 .getComponentSystems();
-        SceneContext activeSceneContext = context.getActiveSceneContext();
+        Scene activeScene = context.getActiveScene();
 
-        if (activeSceneContext != null) {
-            this.renderSystem.updateActiveScene(activeSceneContext);
-            var sceneSystems = activeSceneContext.getComponentSystemRegistery()
-                    .getComponentSystems();
+        if (activeScene != null) {
+            activeScene.update(globalSystems);
 
-            Stream.concat(globalSystems.stream(), sceneSystems.stream())
-                    .parallel()
-                    .forEach(ComponentSystem::update);
+
+            this.renderSystem.updateActiveScene(activeScene);
         } else {
             globalSystems.stream()
                     .parallel()

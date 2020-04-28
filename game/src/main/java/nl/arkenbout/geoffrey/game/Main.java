@@ -6,6 +6,6 @@ import nl.arkenbout.geoffrey.angel.engine.Game;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        ArcEngine.start(TestGame.class);
+        ArcEngine.start(OrbitalGame.class);
     }
 }
