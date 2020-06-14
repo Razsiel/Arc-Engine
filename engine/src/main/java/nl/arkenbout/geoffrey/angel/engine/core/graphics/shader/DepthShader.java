@@ -2,7 +2,7 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
 import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatch;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.Transformation;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.Matrices;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Lights;
@@ -28,14 +28,14 @@ public class DepthShader extends Shader {
         float lightAngleX = (float) Math.toDegrees(Math.acos(lightDirection.z()));
         float lightAngleY = (float) Math.toDegrees(Math.cos(lightDirection.x()));
         float lightAngleZ = 0;
-        var lightViewMatrix = Transformation.getLightViewMatrix(new Vector3f(lightDirection), new Vector3f(lightAngleX, lightAngleY, lightAngleZ));
-        var orthoProjectionMatrix = Transformation.getOrthoProjectionMatrix(-10f, 10f, -10f, 10f, 0.01f, 2000f);
+        var lightViewMatrix = Matrices.getLightViewMatrix(new Vector3f(lightDirection), new Vector3f(lightAngleX, lightAngleY, lightAngleZ));
+        var orthoProjectionMatrix = Matrices.getOrthoProjectionMatrix(-10f, 10f, -10f, 10f, 0.01f, 2000f);
 
         setUniform("orthoProjectionMatrix", orthoProjectionMatrix);
         for (var componentMatch : components) {
             var transform = componentMatch.getComponent(TransformComponent.class);
 
-            var modelLightViewMatrix = Transformation.getModelViewMatrix(transform, lightViewMatrix);
+            var modelLightViewMatrix = Matrices.getModelViewMatrix(transform, lightViewMatrix);
             setUniform("modelLightViewMatrix", modelLightViewMatrix);
         }
 

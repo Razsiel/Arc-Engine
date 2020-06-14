@@ -1,11 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Lights;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector4u;
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
 import org.lwjgl.util.ReadableColor;
 
 import java.util.Collections;

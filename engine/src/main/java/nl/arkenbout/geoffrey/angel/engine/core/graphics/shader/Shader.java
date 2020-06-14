@@ -2,7 +2,7 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
-import nl.arkenbout.geoffrey.angel.engine.util.Utils;
+import nl.arkenbout.geoffrey.angel.engine.util.ResourceUtils;
 import org.joml.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.ReadableColor;
@@ -46,8 +46,8 @@ public abstract class Shader {
     public Shader(String name) throws Exception {
         this(
                 name,
-                Utils.loadResource(String.format("/shaders/%s/vertex.vs", name)),
-                Utils.loadResource(String.format("/shaders/%s/fragment.fs", name))
+                ResourceUtils.load(String.format("/shaders/%s/vertex.vs", name)),
+                ResourceUtils.load(String.format("/shaders/%s/fragment.fs", name))
         );
     }
 

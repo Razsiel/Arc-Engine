@@ -1,7 +1,11 @@
 package nl.arkenbout.geoffrey.angel.ecs;
 
+import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatch;
+import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatcher;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystemRegistry;
+import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
+import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 
 import java.util.List;
 import java.util.Set;
@@ -56,5 +60,9 @@ public class Scene implements Context {
         Stream.concat(globalSystems.stream(), sceneSystems.stream())
                 .parallel()
                 .forEach(ComponentSystem::update);
+    }
+
+    public List<ComponentMatch> getRenderComponentMatches(ComponentMatcher renderMatcher) {
+        return sceneComponentRegistry.getComponents(renderMatcher);
     }
 }

@@ -45,27 +45,21 @@ public class ComponentRegistry {
                 .collect(Collectors.toList());
     }
 
+    //TODO: Optimize with caching
     public List<ComponentMatch> getComponents(ComponentMatcher matcher) {
-        List<ComponentMatch> matched = new ArrayList<>();
-        var match = matcher.getMatchTypes();
-        var matchSize = match.size();
-        for (var componentsByEntity : this.components.entrySet()) {
-            var components = componentsByEntity.getValue();
-            boolean matchesAll = false;
-            List<Component> matchedComponents = new ArrayList<>();
-            for (var component : components) {
-                var matches = match.contains(component.getClass());
-                if (matches) {
-                    matchedComponents.add(component);
-                    if (matchedComponents.size() == matchSize) {
-                        matchesAll = true;
-                        break;
-                    }
-                }
-            }
-            if (matchesAll)
-                matched.add(new ComponentMatch(componentsByEntity.getKey(), matchedComponents));
-        }
-        return matched;
+        var matchTypes = matcher.getMatchTypes();
+
+        // create a shadow map of the entities + the classed version of their components
+        var classedComponents = this.components.entrySet()
+                .parallelStream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream().map(Object::getClass).collect(Collectors.toSet())
+                ));
+
+        return this.components.entrySet().parallelStream()
+                .filter(entry -> classedComponents.get(entry.getKey()).containsAll(matchTypes))
+                .map(entitySetContainingComponents -> new ComponentMatch(entitySetContainingComponents.getKey(), entitySetContainingComponents.getValue()))
+                .collect(Collectors.toList());
     }
 }

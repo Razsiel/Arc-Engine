@@ -2,6 +2,7 @@ package nl.arkenbout.geoffrey.angel.engine.component;
 
 import nl.arkenbout.geoffrey.angel.ecs.Component;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
+import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -30,8 +31,12 @@ public class TransformComponent implements Component {
         this.parent = parent;
     }
 
-    public static TransformComponent identity() {
+    public static TransformComponent origin() {
         return new TransformComponent();
+    }
+
+    public static TransformComponent parented(TransformComponent parent) {
+        return new TransformComponent(parent);
     }
 
     public Vector3f getPosition() {
@@ -100,5 +105,12 @@ public class TransformComponent implements Component {
                 .rotateY((float) Math.toRadians(-rotation.y()))
                 .rotateZ((float) Math.toRadians(-rotation.z()))
                 .scale(scale);
+    }
+
+    public void move(Vector3f vector, float scalar) {
+        Vector3f offset = vector.mul(scalar);
+        Matrix4f translation = new Matrix4f().identity()
+                .translation(offset);
+        this.position = this.getPosition().mulDirection(translation);
     }
 }
