@@ -1,7 +1,7 @@
 package nl.arkenbout.geoffrey.game;
 
-import nl.arkenbout.geoffrey.angel.ecs.GameContext;
-import nl.arkenbout.geoffrey.angel.ecs.Scene;
+import nl.arkenbout.geoffrey.angel.ecs.context.GlobalContext;
+import nl.arkenbout.geoffrey.angel.ecs.context.Scene;
 import nl.arkenbout.geoffrey.angel.engine.Game;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
@@ -20,11 +20,10 @@ import org.lwjgl.util.Color;
 public class OrbitalGame implements Game {
     @Override
     public void init() throws Exception {
-        var gameContext = GameContext.getInstance();
+        var gameContext = GlobalContext.getInstance();
         var scene = new Scene("");
-        var systemRegistry = scene.getComponentSystemRegistery();
 
-        systemRegistry.registerSystem(RotatorSystem.class);
+        scene.registerSystem(RotatorSystem.class);
 
         final var speed = 10;
 
@@ -49,7 +48,7 @@ public class OrbitalGame implements Game {
         MouseInput.registerMouseListener(cameraControl);
         KeyboardInput.registerKeyboardListener(cameraControl);
 
-        gameContext.setActiveScene(scene);
+        gameContext.setActiveContext(scene);
     }
 
     @Override

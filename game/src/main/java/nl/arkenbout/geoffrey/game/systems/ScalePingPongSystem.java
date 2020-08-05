@@ -1,6 +1,7 @@
 package nl.arkenbout.geoffrey.game.systems;
 
-import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatch;
+import nl.arkenbout.geoffrey.angel.ecs.Entity;
+import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatch;
 import nl.arkenbout.geoffrey.angel.ecs.system.DualComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
@@ -13,10 +14,7 @@ public class ScalePingPongSystem extends DualComponentSystem<TransformComponent,
     }
 
     @Override
-    protected void doEachComponent(ComponentMatch match) {
-        var transform = match.getComponent(TransformComponent.class);
-        var pingpong = match.getComponent(ScalePingPongComponent.class);
-
+    protected void update(Entity entity, TransformComponent transform, ScalePingPongComponent pingpong) {
         var speed = pingpong.getSpeed();
 
         double timeSinceStart = GameTimer.getInstance().getTimeSinceStart();

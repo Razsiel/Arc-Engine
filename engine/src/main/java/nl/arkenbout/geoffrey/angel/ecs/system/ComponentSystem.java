@@ -1,38 +1,24 @@
 package nl.arkenbout.geoffrey.angel.ecs.system;
 
-import nl.arkenbout.geoffrey.angel.ecs.ComponentRegistry;
-import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatch;
-import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatcher;
+import nl.arkenbout.geoffrey.angel.ecs.Component;
+import nl.arkenbout.geoffrey.angel.ecs.Entity;
+import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatch;
+import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatcher;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 public abstract class ComponentSystem {
-    protected final ComponentMatcher componentMatcher;
-    protected ComponentRegistry componentRegistry;
+    protected final EntityComponentMatcher matcher;
+    protected Consumer<EntityComponentMatch> updater;
 
-    public ComponentSystem() {
-        this.componentMatcher = new ComponentMatcher();
+    @SafeVarargs
+    protected ComponentSystem(Class<? extends Component>... components) {
+        this.matcher = new EntityComponentMatcher(components);
     }
 
-    protected ComponentSystem(ComponentMatcher componentMatcher) {
-        this.componentMatcher = componentMatcher;
-    }
-
-    protected abstract void doEachComponent(ComponentMatch match);
-
-    protected void setComponentRegistry(ComponentRegistry componentRegistry) {
-        this.componentRegistry = componentRegistry;
-    }
-
-    public void update() {
-        List<ComponentMatch> components = getComponents(componentMatcher);
-        components.stream()
-                .parallel()
-                .forEach(this::doEachComponent);
-    }
-
-    protected final List<ComponentMatch> getComponents(ComponentMatcher matcher) {
-        return componentRegistry.getComponents(matcher);
+    public void update(Collection<Entity> entities) {
+        matcher.match(entities).forEach(match -> updater.accept(match));
     }
 
     public void cleanup() {

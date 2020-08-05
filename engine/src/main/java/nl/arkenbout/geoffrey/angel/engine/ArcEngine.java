@@ -1,23 +1,21 @@
 package nl.arkenbout.geoffrey.angel.engine;
 
 import lombok.extern.java.Log;
-import nl.arkenbout.geoffrey.angel.ecs.GameContext;
-import nl.arkenbout.geoffrey.angel.ecs.Scene;
-import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
+import nl.arkenbout.geoffrey.angel.ecs.context.GlobalContext;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.renderer.ForwardRenderer;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.renderer.Renderer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
 import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
-import nl.arkenbout.geoffrey.angel.engine.system.RenderComponentSystem;
 import org.joml.Vector3f;
 import org.lwjgl.Version;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.stream.Stream;
 
 @Log
 public class ArcEngine {
@@ -27,12 +25,11 @@ public class ArcEngine {
 
     private final Window window;
     private final GameTimer timer;
-    private final GameContext context;
+    private final GlobalContext globalContext;
     private final MouseInput mouseInput;
     private final KeyboardInput keyboardInput;
     private final Game game;
-
-    private final RenderComponentSystem renderSystem;
+    private final Renderer renderer;
 
     private ArcEngine(Window window, Game game) {
         System.out.println("Hello LWJGL" + Version.getVersion() + "!");
@@ -41,13 +38,12 @@ public class ArcEngine {
         this.mouseInput = MouseInput.forWindow(window);
         this.keyboardInput = KeyboardInput.forWindow(window);
         this.timer = GameTimer.getInstance();
-        this.context = GameContext.getInstance();
-        this.renderSystem = RenderComponentSystem.forWindow(window);
-        this.context.registerSystem(this.renderSystem);
+        this.globalContext = GlobalContext.getInstance();
+        this.renderer = new ForwardRenderer();
     }
 
     public static void start(Class<? extends Game> gameClass) {
-        Game game = null;
+        Game game;
         try {
             game = gameClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -79,7 +75,7 @@ public class ArcEngine {
 
     private void init() throws Exception {
         window.init();
-        renderSystem.init();
+//        renderer.init();
         mouseInput.init();
         keyboardInput.init();
         game.init();
@@ -110,7 +106,7 @@ public class ArcEngine {
 
             window.updateFps(timer);
 
-            renderSystem.render(Cameras.main());
+            renderer.render(window, globalContext.getActiveContext(), Cameras.main());
 
             if (!window.isvSync()) {
                 sync();
@@ -136,25 +132,19 @@ public class ArcEngine {
     }
 
     private void update(float interval) {
-        var globalSystems = context.getComponentSystemRegistery()
-                .getComponentSystems();
-        Scene activeScene = context.getActiveScene();
+        var activeContext = globalContext.getActiveContext();
 
-        if (activeScene != null) {
-            activeScene.update(globalSystems);
-
-
-            this.renderSystem.updateActiveScene(activeScene);
+        if (activeContext != null) {
+            var globalSystems = globalContext.getComponentSystemRegistery().getComponentSystems();
+            activeContext.update(globalSystems);
         } else {
-            globalSystems.stream()
-                    .parallel()
-                    .forEach(ComponentSystem::update);
+            globalContext.update(null);
         }
 
     }
 
     private void cleanup() {
-        context.cleanup();
+        globalContext.cleanup();
         mouseInput.cleanup(window);
         keyboardInput.cleanup(window);
         window.cleanup();

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
+    <parent>
         <artifactId>angel</artifactId>
         <groupId>nl.arkenbout.geoffrey</groupId>
         <version>1.0-SNAPSHOT</version>
@@ -62,13 +62,13 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.lwjglx</groupId>-->
-<!--            <artifactId>lwjglx-debug</artifactId>-->
-<!--            <version>1.0.0</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>/home/garkenbout/Documents/Quintor/Projects/angel/Arc-Engine/engine/lwjglx-debug-1.0.0.jar</systemPath>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.lwjglx</groupId>-->
+        <!--            <artifactId>lwjglx-debug</artifactId>-->
+        <!--            <version>1.0.0</version>-->
+        <!--            <scope>system</scope>-->
+        <!--            <systemPath>/home/garkenbout/Documents/Quintor/Projects/angel/Arc-Engine/engine/lwjglx-debug-1.0.0.jar</systemPath>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.lwjgl</groupId>
@@ -154,6 +154,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.dyn4j</groupId>
+            <artifactId>dyn4j</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -218,7 +224,7 @@
                 <plugin>
                     <groupId>org.pitest</groupId>
                     <artifactId>pitest-maven</artifactId>
-                    <version>1.4.10</version>
+                    <version>1.5.2</version>
                     <executions>
                         <execution>
                             <id>pit-report</id>
@@ -232,7 +238,7 @@
                         <dependency>
                             <groupId>org.pitest</groupId>
                             <artifactId>pitest-junit5-plugin</artifactId>
-                            <version>0.10</version>
+                            <version>0.12</version>
                         </dependency>
                     </dependencies>
                 </plugin>

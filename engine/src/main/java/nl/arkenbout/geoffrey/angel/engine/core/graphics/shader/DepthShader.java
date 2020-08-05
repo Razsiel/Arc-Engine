@@ -1,6 +1,6 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
-import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatch;
+import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatch;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Matrices;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
@@ -20,7 +20,7 @@ public class DepthShader extends Shader {
         createUniform("orthoProjectionMatrix");
     }
 
-    public void renderDepthMap(List<ComponentMatch> components) {
+    public void renderDepthMap(List<EntityComponentMatch> components) {
         bind();
         DirectionalLight directionalLight = Lights.getDirectionalLight();
         Vector3f lightDirection = directionalLight.getDirection();

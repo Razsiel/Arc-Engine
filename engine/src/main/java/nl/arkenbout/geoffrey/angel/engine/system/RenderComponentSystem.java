@@ -1,8 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.system;
 
-import nl.arkenbout.geoffrey.angel.ecs.Scene;
-import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatch;
-import nl.arkenbout.geoffrey.angel.ecs.match.ComponentMatcher;
+import nl.arkenbout.geoffrey.angel.ecs.Entity;
+import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatch;
 import nl.arkenbout.geoffrey.angel.ecs.system.DualComponentSystem;
 import nl.arkenbout.geoffrey.angel.engine.Window;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
@@ -13,11 +12,10 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.ShadowMap;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.DepthShader;
 import org.joml.Matrix4f;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 
 public class RenderComponentSystem extends DualComponentSystem<RenderComponent, TransformComponent> {
     private final Window window;
@@ -34,28 +32,29 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
     }
 
     @Override
-    protected void doEachComponent(ComponentMatch match) {
-        // ignore because of render method
+    protected void update(Entity entity, RenderComponent renderComponent, TransformComponent transformComponent) {
+        // empty for other render class
     }
 
-    public void render(Camera mainCamera) {
-        var matcher = new ComponentMatcher(RenderComponent.class, TransformComponent.class);
-        List<ComponentMatch> components = getComponents(matcher);
-
+    public void render(Camera camera, Collection<Entity> entities) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // render depth map
-//        renderDepthMap(components);
 
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
-        Matrix4f viewMatrix = Matrices.getViewMatrix(mainCamera);
-        Matrix4f projectionMatrix = Matrices.getProjectionMatrix(mainCamera.getFov(), window.getWidth(), window.getHeight(), mainCamera.getNear(), mainCamera.getFar());
+        Matrix4f viewMatrix = Matrices.getViewMatrix(camera);
+        Matrix4f projectionMatrix = Matrices.getProjectionMatrix(camera.getFov(), window.getWidth(), window.getHeight(), camera.getNear(), camera.getFar());
 
-        for (var match : components) {
+        matcher.match(entities).forEach(render(viewMatrix, projectionMatrix));
+
+        // update the window render buffer
+        window.update();
+    }
+
+    private Consumer<EntityComponentMatch> render(Matrix4f viewMatrix, Matrix4f projectionMatrix) {
+        return match -> {
+            var entity = match.getEntity();
             var renderComponent = match.getComponent(RenderComponent.class);
             var transformComponent = match.getComponent(TransformComponent.class);
-
             var material = renderComponent.getMaterial();
             var mesh = renderComponent.getMesh();
 
@@ -64,34 +63,24 @@ public class RenderComponentSystem extends DualComponentSystem<RenderComponent, 
             try {
                 mesh.render(material, projectionMatrix, modelViewMatrix, viewMatrix);
             } catch (IllegalStateException e) {
-                throw new RuntimeException("Error rendering entity \'" + match.getEntityId() + "\'", e);
+                throw new RuntimeException("Error rendering entity \'" + entity.getId() + "\'", e);
             }
-        }
-
-        // update the window render buffer
-        window.update();
+        };
     }
 
-    //TODO: Move to a rendering class
-    private void renderDepthMap(List<ComponentMatch> components) {
-        glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getBufferId());
-        glViewport(0, 0, ShadowMap.WIDTH, ShadowMap.HEIGHT);
-        glClear(GL_DEPTH_BUFFER_BIT);
+//    //TODO: Move to a rendering class
+//    private void renderDepthMap(List<EntityComponentMatch> components) {
+//        glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getBufferId());
+//        glViewport(0, 0, ShadowMap.WIDTH, ShadowMap.HEIGHT);
+//        glClear(GL_DEPTH_BUFFER_BIT);
+//
+//        depthShader.renderDepthMap(components);
+//
+//        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//    }
 
-        depthShader.renderDepthMap(components);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-
-    public void init() throws Exception {
-        this.shadowMap = new ShadowMap();
-        this.depthShader = new DepthShader();
-    }
-
-    public void updateActiveScene(Scene sceneContext) {
-        var sceneContextComponentRegistry = sceneContext.getComponentRegistry();
-        if (this.componentRegistry != sceneContextComponentRegistry) {
-            setComponentRegistry(sceneContextComponentRegistry);
-        }
-    }
+//    public void init() throws Exception {
+//        this.shadowMap = new ShadowMap();
+//        this.depthShader = new DepthShader();
+//    }
 }

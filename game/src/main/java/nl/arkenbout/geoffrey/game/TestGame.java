@@ -1,8 +1,8 @@
 package nl.arkenbout.geoffrey.game;
 
 import nl.arkenbout.geoffrey.angel.ecs.Entity;
-import nl.arkenbout.geoffrey.angel.ecs.GameContext;
-import nl.arkenbout.geoffrey.angel.ecs.Scene;
+import nl.arkenbout.geoffrey.angel.ecs.context.GlobalContext;
+import nl.arkenbout.geoffrey.angel.ecs.context.Scene;
 import nl.arkenbout.geoffrey.angel.engine.Game;
 import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
@@ -31,7 +31,7 @@ public class TestGame implements Game {
 
     @Override
     public void init() throws Exception {
-        var gameContext = GameContext.getInstance();
+        var gameContext = GlobalContext.getInstance();
         var scene = new Scene("");
 
         var systemRegistry = scene.getComponentSystemRegistery();
@@ -95,7 +95,7 @@ public class TestGame implements Game {
 //        Entity icosahedron = gameContext.createEntity(TransformComponent.identity(), icoRenderer);
 //        System.out.println("icosahedronId = " + icosahedron.getId());
 
-        gameContext.setActiveScene(scene);
+        gameContext.setActiveContext(scene);
     }
 
     @Override

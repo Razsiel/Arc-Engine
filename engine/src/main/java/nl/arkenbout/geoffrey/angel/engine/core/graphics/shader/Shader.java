@@ -3,7 +3,9 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
 import nl.arkenbout.geoffrey.angel.engine.util.ResourceUtils;
-import org.joml.*;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.ReadableColor;
 

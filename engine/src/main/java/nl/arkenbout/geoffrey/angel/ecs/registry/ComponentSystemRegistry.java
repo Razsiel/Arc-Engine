@@ -1,13 +1,13 @@
-package nl.arkenbout.geoffrey.angel.ecs.system;
+package nl.arkenbout.geoffrey.angel.ecs.registry;
 
-import nl.arkenbout.geoffrey.angel.ecs.Context;
-import nl.arkenbout.geoffrey.angel.ecs.GameContext;
+import nl.arkenbout.geoffrey.angel.ecs.context.Context;
+import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class ComponentSystemRegistry {
-    private HashSet<ComponentSystem> componentSystems = new HashSet<>();
+    private Set<ComponentSystem> componentSystems = new HashSet<>();
 
     private Context context;
 
@@ -32,19 +32,13 @@ public class ComponentSystemRegistry {
     }
 
     public <T extends ComponentSystem> T registerSystem(T newSystem) {
-        try {
-            addSystem(newSystem);
-            return newSystem;
-        } catch (Exception e) {
-            newSystem.setComponentRegistry(null);
-            throw e;
-        }
+        addSystem(newSystem);
+        return newSystem;
     }
 
     private void addSystem(ComponentSystem newComponentSystem) {
         if (newComponentSystem == null)
             throw new IllegalArgumentException("A system must be passed");
-        newComponentSystem.setComponentRegistry(context.getComponentRegistry());
         componentSystems.add(newComponentSystem);
     }
 
