@@ -3,6 +3,7 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Triangle;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Vertex;
+import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import nl.arkenbout.geoffrey.angel.engine.util.FloatArrayCollector;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL15;
@@ -19,7 +20,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.*;
 
-public class Mesh {
+public class Mesh implements Cleanup {
     private final float[] vertices;
     private final float[] normals;
     private final float[] textureCoords;
@@ -128,6 +129,7 @@ public class Mesh {
         glBindVertexArray(0);
     }
 
+    @Override
     public void cleanup() {
         glDisableVertexAttribArray(0);
 

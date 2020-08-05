@@ -2,11 +2,12 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.Shader;
+import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import org.joml.Matrix4f;
 
 import java.util.Map;
 
-public final class Material {
+public final class Material implements Cleanup {
     private final Shader shader;
 
     public Material(Shader shader) {
@@ -15,10 +16,6 @@ public final class Material {
 
     public void render(Matrix4f projectionMatrix, Matrix4f modelViewProjection, Matrix4f viewMatrix) {
         shader.render(projectionMatrix, modelViewProjection, viewMatrix);
-    }
-
-    public void cleanup() {
-        shader.cleanup();
     }
 
     public Map<VboType, Integer> prepare(int vboIdIndex) {
@@ -31,5 +28,10 @@ public final class Material {
 
     public void postRender(int vboLastIndex) {
         shader.postRender(vboLastIndex);
+    }
+
+    @Override
+    public void cleanup() {
+        shader.cleanup();
     }
 }

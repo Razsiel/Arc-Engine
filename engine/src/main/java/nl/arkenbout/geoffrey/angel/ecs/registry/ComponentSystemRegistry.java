@@ -1,18 +1,16 @@
 package nl.arkenbout.geoffrey.angel.ecs.registry;
 
-import nl.arkenbout.geoffrey.angel.ecs.context.Context;
 import nl.arkenbout.geoffrey.angel.ecs.system.ComponentSystem;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ComponentSystemRegistry {
     private Set<ComponentSystem> componentSystems = new HashSet<>();
 
-    private Context context;
-
-    public ComponentSystemRegistry(Context context) {
-        this.context = context;
+    public ComponentSystemRegistry() {
     }
 
     public <T extends ComponentSystem> T registerSystem(Class<T> newSystemClass) throws IllegalArgumentException, InvocationTargetException, InstantiationException {

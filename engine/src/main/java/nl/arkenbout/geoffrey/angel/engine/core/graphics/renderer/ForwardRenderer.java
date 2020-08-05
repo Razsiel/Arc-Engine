@@ -32,7 +32,7 @@ public class ForwardRenderer implements Renderer {
         var entities = activeContext.getEntities();
         var matches = renderMatcher.match(entities);
 
-        matches.forEach(render(viewMatrix, projectionMatrix));
+        matches.forEach(this.render(viewMatrix, projectionMatrix));
 
         window.update();
     }

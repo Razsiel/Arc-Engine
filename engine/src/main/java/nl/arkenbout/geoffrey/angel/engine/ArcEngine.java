@@ -12,13 +12,14 @@ import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
 import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
+import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import org.joml.Vector3f;
 import org.lwjgl.Version;
 
 import java.lang.reflect.InvocationTargetException;
 
 @Log
-public class ArcEngine {
+public class ArcEngine implements Cleanup {
 
     private static final int TARGET_FPS = 60;
     private static final int TARGET_UPS = 30;
@@ -75,7 +76,6 @@ public class ArcEngine {
 
     private void init() throws Exception {
         window.init();
-//        renderer.init();
         mouseInput.init();
         keyboardInput.init();
         game.init();
@@ -143,10 +143,11 @@ public class ArcEngine {
 
     }
 
-    private void cleanup() {
+    @Override
+    public void cleanup() {
         globalContext.cleanup();
-        mouseInput.cleanup(window);
-        keyboardInput.cleanup(window);
+        mouseInput.cleanup();
+        keyboardInput.cleanup();
         window.cleanup();
     }
 }

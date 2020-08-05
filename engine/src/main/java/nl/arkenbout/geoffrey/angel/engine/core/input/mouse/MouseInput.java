@@ -1,6 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.input.mouse;
 
 import nl.arkenbout.geoffrey.angel.engine.Window;
+import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.lwjgl.input.Mouse;
@@ -10,7 +11,7 @@ import java.util.*;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class MouseInput {
+public class MouseInput implements Cleanup {
     private final Vector2d currentPosition = new Vector2d(-1, -1);
     private final Vector2d previousPosition = new Vector2d(0, 0);
     private final Vector2f mouseDelta = new Vector2f();
@@ -98,7 +99,7 @@ public class MouseInput {
         return mouseListeners.remove(mouseListener);
     }
 
-    public void cleanup(Window window) {
+    public void cleanup() {
         glfwFreeCallbacks(window.getWindowHandle());
     }
 }

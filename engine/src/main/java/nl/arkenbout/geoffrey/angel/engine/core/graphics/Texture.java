@@ -1,6 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
+import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import org.joml.Vector2i;
 
 import java.io.InputStream;
@@ -10,7 +11,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
-public class Texture {
+public class Texture implements Cleanup {
 
     private final int id;
     private final int height;
@@ -67,6 +68,7 @@ public class Texture {
         return id;
     }
 
+    @Override
     public void cleanup() {
         glDeleteTextures(id);
     }

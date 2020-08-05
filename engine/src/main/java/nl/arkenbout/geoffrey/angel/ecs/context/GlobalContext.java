@@ -33,6 +33,7 @@ public class GlobalContext extends BaseContext {
         this.activeContext = sceneContext;
     }
 
+    @Override
     public void cleanup() {
         instance = null;
         super.cleanup();

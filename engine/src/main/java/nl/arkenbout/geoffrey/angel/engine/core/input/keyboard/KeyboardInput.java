@@ -1,6 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.input.keyboard;
 
 import nl.arkenbout.geoffrey.angel.engine.Window;
+import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,7 +11,7 @@ import java.util.Set;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class KeyboardInput {
+public class KeyboardInput implements Cleanup {
     private static final Set<KeyboardListener> callbacks = new HashSet<>();
 
     private final List<Key> keysPressed = new ArrayList<>();
@@ -53,7 +54,7 @@ public class KeyboardInput {
         callbacks.forEach(keyboardListener -> keyboardListener.onKeys(keysPressed, null));
     }
 
-    public void cleanup(Window window) {
+    public void cleanup() {
         glfwFreeCallbacks(window.getWindowHandle());
     }
 

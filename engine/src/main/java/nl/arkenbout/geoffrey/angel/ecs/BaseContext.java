@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class BaseContext implements Context {
 
@@ -19,7 +18,7 @@ public abstract class BaseContext implements Context {
 
     public BaseContext(String name) {
         this.name = name;
-        componentSystemRegistery = new ComponentSystemRegistry(this);
+        componentSystemRegistery = new ComponentSystemRegistry();
         entityRegistry = new EntityRegistry();
     }
 
