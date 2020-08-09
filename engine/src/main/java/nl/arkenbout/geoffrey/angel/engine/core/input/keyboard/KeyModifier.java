@@ -50,7 +50,7 @@ public enum KeyModifier {
 
     public static List<KeyModifier> fromGlfwModifierCode(int glfwModifierCode) {
         if (!keyModifierMap.containsKey(glfwModifierCode)) {
-            throw new IllegalArgumentException("Modifier code \'" + glfwModifierCode + "\' does not map to any modifier combinations");
+            throw new IllegalArgumentException("Modifier code '" + glfwModifierCode + "' does not map to any modifier combinations");
         }
         return keyModifierMap.get(glfwModifierCode);
     }

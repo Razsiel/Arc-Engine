@@ -23,9 +23,7 @@ public class ComponentSystemRegistry {
             addSystem(newSystem);
             return newSystem;
         } catch (IllegalAccessException | NoSuchMethodException e) {
-            throw new IllegalArgumentException("A componentSystem can not have a private constructor when calling the Class<> version of \'registerComponent()\'", e);
-        } catch (InvocationTargetException | InstantiationException e) {
-            throw e;
+            throw new IllegalArgumentException("A componentSystem can not have a private constructor when calling the Class<> version of 'registerComponent()'", e);
         }
     }
 

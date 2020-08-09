@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import static nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh implements Cleanup {

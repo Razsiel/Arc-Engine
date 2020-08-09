@@ -4,17 +4,10 @@ import nl.arkenbout.geoffrey.angel.ecs.test.AnotherTestComponent;
 import nl.arkenbout.geoffrey.angel.ecs.test.TestComponent;
 import nl.arkenbout.geoffrey.angel.ecs.test.YetAnotherTestComponent;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EntityTest {
 

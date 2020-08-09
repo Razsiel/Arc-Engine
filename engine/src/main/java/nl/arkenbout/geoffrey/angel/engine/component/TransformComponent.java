@@ -99,7 +99,7 @@ public class TransformComponent implements Component {
         }
 
         if (parent == this) {
-            throw new IllegalArgumentException("Parent cannot be \'this\'");
+            throw new IllegalArgumentException("Parent cannot be 'this'");
         }
 
         TransformComponent p = parent;

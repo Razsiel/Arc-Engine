@@ -77,9 +77,7 @@ public class Window implements KeyboardListener {
             this.resized = true;
         });
 
-        glfwSetWindowMaximizeCallback(windowHandle, (window, maximized) -> {
-            this.isMaximized = maximized;
-        });
+        glfwSetWindowMaximizeCallback(windowHandle, (window, maximized) -> this.isMaximized = maximized);
 
         // Setup a key callback to close the window on key ESCAPE released
         KeyboardInput.registerKeyboardListener(this);
@@ -168,7 +166,8 @@ public class Window implements KeyboardListener {
         glfwFreeCallbacks(windowHandle);
         glfwDestroyWindow(windowHandle);
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        var glfwErrorCallback = glfwSetErrorCallback(null);
+        if (glfwErrorCallback != null) glfwErrorCallback.free();
     }
 
     @Override

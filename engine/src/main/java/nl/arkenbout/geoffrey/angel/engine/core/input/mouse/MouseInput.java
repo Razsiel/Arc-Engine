@@ -73,9 +73,7 @@ public class MouseInput implements Cleanup {
 //            middleButtonPressed = middleButton && pressed;
 //            middleButtonReleased = middleButton && released;
         });
-        glfwSetScrollCallback(handle, (windowHandle, scrollX, scrollY) -> {
-            mouseListeners.forEach(mouseListener -> mouseListener.onScroll(scrollY));
-        });
+        glfwSetScrollCallback(handle, (windowHandle, scrollX, scrollY) -> mouseListeners.forEach(mouseListener -> mouseListener.onScroll(scrollY)));
     }
 
     public void input() {
