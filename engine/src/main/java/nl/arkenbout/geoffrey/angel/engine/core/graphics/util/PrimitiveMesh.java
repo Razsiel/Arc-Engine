@@ -2,13 +2,12 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.util;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Vertex;
-import nl.arkenbout.geoffrey.angel.engine.util.FloatArrayCollector;
 
 import java.util.stream.Stream;
 
 public class PrimitiveMesh {
-    public static Mesh createCube(float size) {
-        var vertices = new float[]{
+    public static Mesh createCube(double size) {
+        var vertices = new double[]{
                 // FRONT FACE
                 // F0VO
                 -1, 1, -1,
@@ -87,7 +86,7 @@ public class PrimitiveMesh {
                 // Back face
                 20, 21, 23, 23, 21, 22
         };
-        var normals = new float[]{
+        var normals = new double[]{
                 0, 0, -1,
                 0, 0, -1,
                 0, 0, -1,
@@ -118,7 +117,7 @@ public class PrimitiveMesh {
                 0, 0, 1,
                 0, 0, 1
         };
-        var texCoords = new float[]{
+        var texCoords = new double[]{
                 // Front face
                 0, 0,
                 1, 0,
@@ -153,10 +152,10 @@ public class PrimitiveMesh {
         return new Mesh(vertices, indices, normals, texCoords);
     }
 
-    public static Mesh createPlane(float width, float height) {
-        width /= 2;
-        height /= 2;
-        var vertices = new float[]{
+    public static Mesh createPlane(double width, double height) {
+        width /= 2d;
+        height /= 2d;
+        var vertices = new double[]{
                 -width, 0, -height,
                 width, 0, -height,
                 width, 0, height,
@@ -166,13 +165,13 @@ public class PrimitiveMesh {
                 0, 1, 3,
                 3, 1, 2
         };
-        var normals = new float[]{
+        var normals = new double[]{
                 0, 1, 0,
                 0, 1, 0,
                 0, 1, 0,
                 0, 1, 0
         };
-        var texCoords = new float[]{
+        var texCoords = new double[]{
                 0, 0,
                 0, 1,
                 1, 1,
@@ -190,8 +189,7 @@ public class PrimitiveMesh {
         }
 
         var vertices = Stream.of(verticesArray)
-                .flatMap(Vertex::getPositionElements)
-                .collect(FloatArrayCollector::new, FloatArrayCollector::add, FloatArrayCollector::join)
+                .flatMapToDouble(Vertex::getPositionElements)
                 .toArray();
 
         var triangles = new int[width * height * 6];
@@ -204,13 +202,13 @@ public class PrimitiveMesh {
             }
         }
 
-        var normals = new float[vertices.length];
+        var normals = new double[vertices.length];
         for (int i = 0; i < normals.length; i += 3) {
             normals[i] = 0;
             normals[i + 1] = 1;
             normals[i + 2] = 0;
         }
 
-        return new Mesh(vertices, triangles, normals, new float[]{});
+        return new Mesh(vertices, triangles, normals, new double[]{});
     }
 }

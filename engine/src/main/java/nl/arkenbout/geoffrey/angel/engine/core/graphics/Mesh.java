@@ -4,12 +4,11 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Triangle;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Vertex;
 import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
-import nl.arkenbout.geoffrey.angel.engine.util.FloatArrayCollector;
 import org.joml.Matrix4d;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.system.MemoryUtil;
 
-import java.nio.FloatBuffer;
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.List;
@@ -19,16 +18,16 @@ import static nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh implements Cleanup {
-    private final float[] vertices;
-    private final float[] normals;
-    private final float[] textureCoords;
+    private final double[] vertices;
+    private final double[] normals;
+    private final double[] textureCoords;
     private final int[] indices;
 
     private int vaoId;
     private Map<VboType, Integer> vboIds = new HashMap<>();
     private int vertexAttributesSize = 0;
 
-    public Mesh(float[] vertices, int[] indices, float[] normals, float[] textureCoords) {
+    public Mesh(double[] vertices, int[] indices, double[] normals, double[] textureCoords) {
         this.indices = indices;
         this.vertices = vertices;
         this.normals = normals;
@@ -37,8 +36,7 @@ public class Mesh implements Cleanup {
 
     public Mesh(List<Vertex> vertices, List<Triangle> triangleIndices) {
         this.vertices = vertices.stream()
-                .flatMap(Vertex::getPositionElements)
-                .collect(FloatArrayCollector::new, FloatArrayCollector::add, FloatArrayCollector::join)
+                .flatMapToDouble(Vertex::getPositionElements)
                 .toArray();
 
         this.indices = triangleIndices.stream()
@@ -48,7 +46,7 @@ public class Mesh implements Cleanup {
         this.normals = this.vertices;
 
 
-        this.textureCoords = new float[vertices.size()];
+        this.textureCoords = new double[vertices.size()];
         for (int i = 0; i < vertices.size(); i += 3) {
             textureCoords[i] = 0f;
             textureCoords[i + 1] = 0f;
@@ -57,10 +55,10 @@ public class Mesh implements Cleanup {
     }
 
     public void prepare(Material material) {
-        FloatBuffer positionBuffer = null;
+        DoubleBuffer positionBuffer = null;
         IntBuffer indicesBuffer = null;
-        FloatBuffer texCoordsBuffer = null;
-        FloatBuffer normalsBuffer = null;
+        DoubleBuffer texCoordsBuffer = null;
+        DoubleBuffer normalsBuffer = null;
 
         try {
             vaoId = glGenVertexArrays();
@@ -68,11 +66,11 @@ public class Mesh implements Cleanup {
 
             //VERTEX
             int positionVboId = glGenBuffers();
-            positionBuffer = MemoryUtil.memAllocFloat(vertices.length);
+            positionBuffer = MemoryUtil.memAllocDouble(vertices.length);
             positionBuffer.put(vertices).flip();
             glBindBuffer(GL_ARRAY_BUFFER, positionVboId);
             glBufferData(GL_ARRAY_BUFFER, positionBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(0, 3, GL_DOUBLE, false, 0, 0);
             vboIds.put(VERTEX, positionVboId);
             vertexAttributesSize = 0;
 
@@ -86,21 +84,21 @@ public class Mesh implements Cleanup {
 
             //TEXTURE COORDINATES
             int texCoordsVboId = glGenBuffers();
-            texCoordsBuffer = MemoryUtil.memAllocFloat(textureCoords.length);
+            texCoordsBuffer = MemoryUtil.memAllocDouble(textureCoords.length);
             texCoordsBuffer.put(textureCoords).flip();
             glBindBuffer(GL_ARRAY_BUFFER, texCoordsVboId);
             glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(1, 2, GL_DOUBLE, false, 0, 0);
             vboIds.put(TEXTURE_COORDS, texCoordsVboId);
             vertexAttributesSize += 1;
 
             //NORMALS
             int normalsVboId = glGenBuffers();
-            normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
+            normalsBuffer = MemoryUtil.memAllocDouble(normals.length);
             normalsBuffer.put(normals).flip();
             glBindBuffer(GL_ARRAY_BUFFER, normalsVboId);
             glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(2, 3, GL_DOUBLE, false, 0, 0);
             vboIds.put(NORMAL, normalsVboId);
             vertexAttributesSize += 1;
 

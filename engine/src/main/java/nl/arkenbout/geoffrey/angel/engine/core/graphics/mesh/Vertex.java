@@ -2,7 +2,7 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh;
 
 import org.joml.Vector3d;
 
-import java.util.stream.Stream;
+import java.util.stream.DoubleStream;
 
 public class Vertex {
     private final Vector3d position;
@@ -15,8 +15,8 @@ public class Vertex {
         return new Vertex(x, y, z);
     }
 
-    public static Stream<Float> getPositionElements(Vertex v) {
-        return Stream.of((float) v.getX(), (float) v.getY(), (float) v.getZ());
+    public static DoubleStream getPositionElements(Vertex v) {
+        return DoubleStream.of(v.getX(), v.getY(), v.getZ());
     }
 
     public double getX() {
