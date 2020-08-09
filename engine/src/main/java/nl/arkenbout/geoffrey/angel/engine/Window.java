@@ -7,12 +7,12 @@ import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardListener;
 import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
 import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
-import org.lwjgl.glfw.*;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -124,6 +124,10 @@ public class Window implements KeyboardListener {
         System.out.println(glfwGetVersionString());
     }
 
+    public boolean isvSync() {
+        return vSync;
+    }
+
     public void updateFps(GameTimer timer) {
         if (timer.getLastLoopTime() - lastUpdateFps > 1) {
             lastUpdateFps = timer.getLastLoopTime();
@@ -132,10 +136,6 @@ public class Window implements KeyboardListener {
             fps = 0;
         }
         fps++;
-    }
-
-    public boolean isvSync() {
-        return vSync;
     }
 
     public boolean shouldClose() {

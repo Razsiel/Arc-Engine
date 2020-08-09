@@ -2,7 +2,7 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class Icosahedron {
     @SuppressWarnings("SuspiciousNameCombination")

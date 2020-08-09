@@ -7,6 +7,7 @@ import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.Key;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyModifier;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardListener;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseListener;
+import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -28,7 +29,7 @@ public class CameraControl implements MouseListener, KeyboardListener {
     }
 
     @Override
-    public void onLeftUp() {
+    public void onLeftButtonUp() {
 
     }
 
@@ -38,7 +39,7 @@ public class CameraControl implements MouseListener, KeyboardListener {
     }
 
     @Override
-    public void onRightUp() {
+    public void onRightButtonUp() {
 
     }
 
@@ -55,7 +56,12 @@ public class CameraControl implements MouseListener, KeyboardListener {
     }
 
     @Override
-    public void onMouseMove(Vector2f mouseDelta) {
+    public void onMouseMove(Vector2d mouseDelta) {
+
+    }
+
+    @Override
+    public void onMouseEnter(Vector2d enterPosition) {
 
     }
 
@@ -102,5 +108,10 @@ public class CameraControl implements MouseListener, KeyboardListener {
         mainCamera.move(cameraDelta.x() * CAMERA_MOVE_SENSITIVITY,
                 cameraDelta.y() * CAMERA_MOVE_SENSITIVITY,
                 cameraDelta.z() * CAMERA_MOVE_SENSITIVITY);
+    }
+
+    @Override
+    public void cleanup() {
+
     }
 }

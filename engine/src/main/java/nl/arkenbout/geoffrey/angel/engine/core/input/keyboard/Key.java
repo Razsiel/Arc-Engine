@@ -34,6 +34,7 @@ public enum Key {
     KEY_UNKNOWN(-1);
 
     private static Map<Integer, Key> keyMap = new HashMap<>();
+
     static {
         for (Key key : values()) {
             keyMap.put(key.value, key);

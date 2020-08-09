@@ -24,6 +24,14 @@ public abstract class Shader implements Cleanup {
 
     private final Map<String, Integer> uniforms;
 
+    public Shader(String name) throws Exception {
+        this(
+                name,
+                ResourceUtils.load(String.format("/shaders/%s/vertex.vs", name)),
+                ResourceUtils.load(String.format("/shaders/%s/fragment.fs", name))
+        );
+    }
+
     public Shader(String name, String vertexShaderCode, String fragmentShaderCode) throws Exception {
         this.name = name;
         if (vertexShaderCode == null || vertexShaderCode.isEmpty())
@@ -44,14 +52,6 @@ public abstract class Shader implements Cleanup {
         fragmentShaderId = createShader(fragmentShaderCode, GL_FRAGMENT_SHADER);
 
         this.link();
-    }
-
-    public Shader(String name) throws Exception {
-        this(
-                name,
-                ResourceUtils.load(String.format("/shaders/%s/vertex.vs", name)),
-                ResourceUtils.load(String.format("/shaders/%s/fragment.fs", name))
-        );
     }
 
     private int createShader(String shaderCode, int shaderType) throws Exception {
@@ -76,20 +76,6 @@ public abstract class Shader implements Cleanup {
         return shaderId;
     }
 
-    public void createUniform(String uniformName) throws Exception {
-        int uniformLocation = glGetUniformLocation(programId, uniformName);
-        if (uniformLocation < 0) {
-            throw new Exception("Could not find uniform:" + uniformName);
-        }
-        uniforms.put(uniformName, uniformLocation);
-    }
-
-    public void createDirectionalLightUniform(String uniformName) throws Exception {
-        createUniform(uniformName + ".color");
-        createUniform(uniformName + ".direction");
-        createUniform(uniformName + ".intensity");
-    }
-
     private void link() throws Exception {
         glLinkProgram(programId);
         if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
@@ -109,25 +95,22 @@ public abstract class Shader implements Cleanup {
         }
     }
 
+    public void createDirectionalLightUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".color");
+        createUniform(uniformName + ".direction");
+        createUniform(uniformName + ".intensity");
+    }
+
+    public void createUniform(String uniformName) throws Exception {
+        int uniformLocation = glGetUniformLocation(programId, uniformName);
+        if (uniformLocation < 0) {
+            throw new Exception("Could not find uniform:" + uniformName);
+        }
+        uniforms.put(uniformName, uniformLocation);
+    }
+
     protected void bind() {
         glUseProgram(programId);
-    }
-
-    protected void unbind() {
-        glUseProgram(0);
-    }
-
-    public void setUniform(String uniformName, Matrix4f value) {
-        // Dump the matrix into a float buffer
-        try (var stack = MemoryStack.stackPush()) {
-            var fb = stack.mallocFloat(16);
-            value.get(fb);
-            glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
-        }
-    }
-
-    public void setUniform(String uniformName, Vector3f value) {
-        glUniform3f(uniforms.get(uniformName), value.x(), value.y(), value.z());
     }
 
     public void setUniform(String uniformName, Vector2f value) {
@@ -136,10 +119,6 @@ public abstract class Shader implements Cleanup {
 
     public void setUniform(String uniformName, int value) {
         glUniform1i(uniforms.get(uniformName), value);
-    }
-
-    public void setUniform(String uniformName, float value) {
-        glUniform1f(uniforms.get(uniformName), value);
     }
 
     public void setUniform(String uniformName, ReadableColor color) {
@@ -157,6 +136,14 @@ public abstract class Shader implements Cleanup {
         setUniform(uniformName + ".intensity", directionalLight.getIntensity());
     }
 
+    public void setUniform(String uniformName, Vector3f value) {
+        glUniform3f(uniforms.get(uniformName), value.x(), value.y(), value.z());
+    }
+
+    public void setUniform(String uniformName, float value) {
+        glUniform1f(uniforms.get(uniformName), value);
+    }
+
     protected void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Runnable shaderRenderer) {
         // set uniform data
         setUniform("projectionMatrix", projectionMatrix);
@@ -165,12 +152,25 @@ public abstract class Shader implements Cleanup {
         shaderRenderer.run();
     }
 
+    public void setUniform(String uniformName, Matrix4f value) {
+        // Dump the matrix into a float buffer
+        try (var stack = MemoryStack.stackPush()) {
+            var fb = stack.mallocFloat(16);
+            value.get(fb);
+            glUniformMatrix4fv(uniforms.get(uniformName), false, fb);
+        }
+    }
+
     @Override
     public void cleanup() {
         this.unbind();
         if (programId != 0) {
             glDeleteProgram(programId);
         }
+    }
+
+    protected void unbind() {
+        glUseProgram(0);
     }
 
     public abstract Map<VboType, Integer> prepareVertexBufferObjects(int vboIdIndex);

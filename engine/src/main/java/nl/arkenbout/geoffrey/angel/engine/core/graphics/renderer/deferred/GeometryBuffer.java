@@ -60,7 +60,7 @@ public class GeometryBuffer {
         glDeleteFramebuffers(bufferId);
 
         if (textureIds != null) {
-            for (int i=0; i<TOTAL_TEXTURES; i++) {
+            for (int i = 0; i < TOTAL_TEXTURES; i++) {
                 glDeleteTextures(textureIds[i]);
             }
         }

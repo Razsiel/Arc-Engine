@@ -7,16 +7,16 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Matrices {
+    public static Matrix4f getProjectionMatrix(Window window, Camera camera) {
+        return getProjectionMatrix(camera.getFov(), window.getWidth(), window.getHeight(), camera.getNear(), camera.getFar());
+    }
+
     public static Matrix4f getProjectionMatrix(float fov, float width, float height, float zNear, float zFar) {
         var projectionMatrix = new Matrix4f();
         float aspectRatio = width / height;
         projectionMatrix.identity();
         projectionMatrix.perspective(fov, aspectRatio, zNear, zFar);
         return projectionMatrix;
-    }
-
-    public static Matrix4f getProjectionMatrix(Window window, Camera camera) {
-        return getProjectionMatrix(camera.getFov(), window.getWidth(), window.getHeight(), camera.getNear(), camera.getFar());
     }
 
     public static Matrix4f getWorldMatrix(TransformComponent t) {

@@ -3,12 +3,15 @@ package nl.arkenbout.geoffrey.angel.ecs.registry;
 import nl.arkenbout.geoffrey.angel.ecs.Entity;
 import org.hashids.Hashids;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityRegistry {
 
-    private Map<String, Entity> entities = new HashMap<>();
     private static final Hashids HASHIDS = new Hashids(Long.toString(System.currentTimeMillis(), Character.MAX_RADIX), 8);
+    private Map<String, Entity> entities = new HashMap<>();
 
     public EntityRegistry() {
     }

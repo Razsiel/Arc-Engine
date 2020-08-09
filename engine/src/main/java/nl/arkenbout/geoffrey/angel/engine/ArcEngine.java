@@ -3,17 +3,14 @@ package nl.arkenbout.geoffrey.angel.engine;
 import lombok.extern.java.Log;
 import nl.arkenbout.geoffrey.angel.ecs.context.GlobalContext;
 import nl.arkenbout.geoffrey.angel.engine.core.GameTimer;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.renderer.ForwardRenderer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.renderer.Renderer;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardInput;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseInput;
 import nl.arkenbout.geoffrey.angel.engine.options.VideoOptions;
 import nl.arkenbout.geoffrey.angel.engine.options.WindowOptions;
 import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
-import org.joml.Vector3f;
 import org.lwjgl.Version;
 
 import java.lang.reflect.InvocationTargetException;
@@ -70,20 +67,26 @@ public class ArcEngine implements Cleanup {
         }
     }
 
-    private void run() {
-        gameLoop();
-    }
-
     private void init() throws Exception {
         window.init();
         mouseInput.init();
         keyboardInput.init();
         game.init();
         if (Cameras.main() == null) {
-            Camera mainCamera = new Camera(new Vector3f(0f, 1.5f, -5f), Vector3u.up().mul(180), 0.01f, 1000f, (float) Math.toRadians(60.0f));
-            Cameras.addCamera(mainCamera);
-            Cameras.setMainCamera(mainCamera);
+            Cameras.setMainCamera(Cameras.defaultCamera());
         }
+    }
+
+    private void run() {
+        gameLoop();
+    }
+
+    @Override
+    public void cleanup() {
+        globalContext.cleanup();
+        mouseInput.cleanup();
+        keyboardInput.cleanup();
+        window.cleanup();
     }
 
     private void gameLoop() {
@@ -114,17 +117,6 @@ public class ArcEngine implements Cleanup {
         }
     }
 
-    private void sync() {
-        float loopSlot = 1f / TARGET_FPS;
-        double endTime = timer.getLastLoopTime() + loopSlot;
-        while (timer.getTime() < endTime) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ignored) {
-            }
-        }
-    }
-
     private void input() {
         // handle input
         mouseInput.input();
@@ -143,11 +135,14 @@ public class ArcEngine implements Cleanup {
 
     }
 
-    @Override
-    public void cleanup() {
-        globalContext.cleanup();
-        mouseInput.cleanup();
-        keyboardInput.cleanup();
-        window.cleanup();
+    private void sync() {
+        float loopSlot = 1f / TARGET_FPS;
+        double endTime = timer.getLastLoopTime() + loopSlot;
+        while (timer.getTime() < endTime) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ignored) {
+            }
+        }
     }
 }

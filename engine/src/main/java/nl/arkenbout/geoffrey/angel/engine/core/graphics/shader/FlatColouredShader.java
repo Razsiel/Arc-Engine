@@ -23,11 +23,6 @@ public class FlatColouredShader extends Shader {
     }
 
     @Override
-    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
-        super.render(projectionMatrix, modelViewMatrix, this::render);
-    }
-
-    @Override
     public Map<VboType, Integer> prepareVertexBufferObjects(int vboIdIndex) {
         return Collections.emptyMap();
     }
@@ -35,6 +30,11 @@ public class FlatColouredShader extends Shader {
     @Override
     public void preRender(int vboLastIndex) {
         bind();
+    }
+
+    @Override
+    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
+        super.render(projectionMatrix, modelViewMatrix, this::render);
     }
 
     private void render() {

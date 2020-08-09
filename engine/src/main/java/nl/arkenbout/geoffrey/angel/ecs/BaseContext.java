@@ -28,6 +28,16 @@ public abstract class BaseContext implements Context {
     }
 
     @Override
+    public void load() {
+
+    }
+
+    @Override
+    public void unload() {
+
+    }
+
+    @Override
     public Entity createEntity(Component... components) {
         var entity = new Entity(entityRegistry.getNextEntityId(), Arrays.asList(components));
         return entityRegistry.addEntity(entity);
@@ -51,16 +61,6 @@ public abstract class BaseContext implements Context {
     @Override
     public <T extends ComponentSystem> T registerSystem(Class<T> system) throws InvocationTargetException, InstantiationException {
         return this.componentSystemRegistery.registerSystem(system);
-    }
-
-    @Override
-    public void load() {
-
-    }
-
-    @Override
-    public void unload() {
-
     }
 
     @Override

@@ -9,14 +9,14 @@ public class DirectionalLight {
     private Vector3f direction;
     private float intensity;
 
+    public DirectionalLight(ReadableColor color, Vector3f direction, float intensity) {
+        this(new Vector3f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f), direction, intensity);
+    }
+
     public DirectionalLight(Vector3f color, Vector3f direction, float intensity) {
         this.color = color;
         this.direction = direction;
         this.intensity = intensity;
-    }
-
-    public DirectionalLight(ReadableColor color, Vector3f direction, float intensity) {
-        this(new Vector3f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f), direction, intensity);
     }
 
     public DirectionalLight(DirectionalLight light) {

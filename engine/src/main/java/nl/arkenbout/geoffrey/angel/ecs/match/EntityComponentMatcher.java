@@ -17,10 +17,6 @@ public class EntityComponentMatcher {
                 .forEach(componentClass -> this.componentsToMatch.put(componentClass, new ArrayList<>()));
     }
 
-    public Set<Class<? extends Component>> getComponentTypes() {
-        return Collections.unmodifiableSet(componentsToMatch.keySet());
-    }
-
     public List<EntityComponentMatch> match(Collection<Entity> entities) {
         return entities.stream()
                 .filter(entity -> entity.hasComponents(this.getComponentTypes()))
@@ -32,7 +28,11 @@ public class EntityComponentMatcher {
                             .collect(Collectors.toUnmodifiableMap(Component::getClass, component -> component));
                     return new EntityComponentMatch(entity, matchedComponents);
                 })
-        .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public Set<Class<? extends Component>> getComponentTypes() {
+        return Collections.unmodifiableSet(componentsToMatch.keySet());
     }
 }
 

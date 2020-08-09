@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public interface SystemRegistryHolder {
     ComponentSystemRegistry getComponentSystemRegistery();
+
     ComponentSystem registerSystem(ComponentSystem system);
+
     <T extends ComponentSystem> T registerSystem(Class<T> system) throws InvocationTargetException, InstantiationException;
 }

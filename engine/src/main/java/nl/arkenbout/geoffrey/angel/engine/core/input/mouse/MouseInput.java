@@ -1,29 +1,30 @@
 package nl.arkenbout.geoffrey.angel.engine.core.input.mouse;
 
 import nl.arkenbout.geoffrey.angel.engine.Window;
+import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyModifier;
 import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
-import org.lwjgl.input.Mouse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput implements Cleanup {
+    private static List<MouseListener> mouseListeners = new ArrayList<>();
     private final Vector2d currentPosition = new Vector2d(-1, -1);
     private final Vector2d previousPosition = new Vector2d(0, 0);
     private final Vector2f mouseDelta = new Vector2f();
     private final Window window;
     private boolean inWindow;
-
     private boolean leftButtonPressed;
     private boolean leftButtonReleased;
     private boolean rightButtonPressed;
     private boolean rightButtonReleased;
-
-    private static List<MouseListener> mouseListeners = new ArrayList<>();
+    private boolean middleButtonPressed;
+    private boolean middleButtonReleased;
 
     public MouseInput(Window window) {
         this.window = window;
@@ -33,26 +34,45 @@ public class MouseInput implements Cleanup {
         return new MouseInput(window);
     }
 
+    public static boolean registerMouseListener(MouseListener mouseListener) {
+        return mouseListeners.add(mouseListener);
+    }
+
+    public static boolean unregisterMouseListener(MouseListener mouseListener) {
+        return mouseListeners.remove(mouseListener);
+    }
+
     public void init() {
         long handle = this.window.getWindowHandle();
         glfwSetCursorPosCallback(handle, (windowHandle, x, y) -> {
             this.currentPosition.set(x, y);
+            mouseListeners.forEach(mouseListener -> mouseListener.onMouseMove(new Vector2d(x, y)));
         });
         glfwSetCursorEnterCallback(handle, (windowHandle, entered) -> {
             this.inWindow = entered;
+            if (entered)
+                mouseListeners.forEach(mouseListener -> mouseListener.onMouseEnter(this.currentPosition));
         });
-        glfwSetMouseButtonCallback(handle, (windowHandle, button, action, mode) -> {
-            var leftButton = button == GLFW_MOUSE_BUTTON_1;
-            var rightButton = button == GLFW_MOUSE_BUTTON_2;
-
-            var pressed = action == GLFW_PRESS;
-            var released = action == GLFW_RELEASE;
-
-            leftButtonPressed = leftButton && pressed;
-            leftButtonReleased = leftButton && released;
-
-            rightButtonPressed = rightButton && pressed;
-            rightButtonReleased = rightButton && released;
+        glfwSetMouseButtonCallback(handle, (windowHandle, buttonCode, action, mods) -> {
+            var button = MouseButton.fromGlfwButtonCode(buttonCode);
+            var modifier = KeyModifier.fromGlfwModifierCode(mods);
+            System.out.println("Button " + buttonCode + "with " + modifier);
+            // TODO: Refactor to be more like Keyboard input
+//            var leftButton = button == GLFW_MOUSE_BUTTON_1;
+//            var rightButton = button == GLFW_MOUSE_BUTTON_2;
+//            var middleButton = button == GLFW_MOUSE_BUTTON_3;
+//
+//            var pressed = action == GLFW_PRESS;
+//            var released = action == GLFW_RELEASE;
+//
+//            leftButtonPressed = leftButton && pressed;
+//            leftButtonReleased = leftButton && released;
+//
+//            rightButtonPressed = rightButton && pressed;
+//            rightButtonReleased = rightButton && released;
+//
+//            middleButtonPressed = middleButton && pressed;
+//            middleButtonReleased = middleButton && released;
         });
         glfwSetScrollCallback(handle, (windowHandle, scrollX, scrollY) -> {
             mouseListeners.forEach(mouseListener -> mouseListener.onScroll((float) scrollY));
@@ -62,22 +82,6 @@ public class MouseInput implements Cleanup {
     public void input() {
         updateMouseDelta();
         updateMouseListeners();
-    }
-
-    private void updateMouseListeners() {
-        if (leftButtonPressed) {
-            mouseListeners.forEach(mouseListener -> mouseListener.onLeftButtonDown(mouseDelta));
-        }
-        if (leftButtonReleased) {
-            mouseListeners.forEach(MouseListener::onLeftUp);
-        }
-
-        if (rightButtonPressed) {
-            mouseListeners.forEach(mouseListener -> mouseListener.onRightButtonDown(mouseDelta));
-        }
-        if (rightButtonReleased) {
-            mouseListeners.forEach(MouseListener::onRightUp);
-        }
     }
 
     private void updateMouseDelta() {
@@ -91,15 +95,24 @@ public class MouseInput implements Cleanup {
         previousPosition.set(currentPosition);
     }
 
-    public static boolean registerMouseListener(MouseListener mouseListener) {
-        return mouseListeners.add(mouseListener);
-    }
+    private void updateMouseListeners() {
+        if (leftButtonPressed) {
+            mouseListeners.forEach(mouseListener -> mouseListener.onLeftButtonDown(mouseDelta));
+        }
+        if (leftButtonReleased) {
+            mouseListeners.forEach(MouseListener::onLeftButtonUp);
+        }
 
-    public static boolean unregisterMouseListener(MouseListener mouseListener) {
-        return mouseListeners.remove(mouseListener);
+        if (rightButtonPressed) {
+            mouseListeners.forEach(mouseListener -> mouseListener.onRightButtonDown(mouseDelta));
+        }
+        if (rightButtonReleased) {
+            mouseListeners.forEach(MouseListener::onRightButtonUp);
+        }
     }
 
     public void cleanup() {
+        mouseListeners.forEach(Cleanup::cleanup);
         glfwFreeCallbacks(window.getWindowHandle());
     }
 }

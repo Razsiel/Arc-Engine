@@ -14,6 +14,7 @@ public enum KeyModifier {
     NONE(0);
 
     private static Map<Integer, List<KeyModifier>> keyModifierMap = new HashMap<>();
+
     static {
         keyModifierMap.put(0, Collections.singletonList(NONE));
         for (int i = 1; i <= 32; i++) {
@@ -43,8 +44,8 @@ public enum KeyModifier {
             return Collections.singletonList(SHIFT);
         else
             return Arrays.stream(values())
-            .filter(value -> value.value < bitMask)
-            .collect(Collectors.toList());
+                    .filter(value -> value.value < bitMask)
+                    .collect(Collectors.toList());
     }
 
     public static List<KeyModifier> fromGlfwModifierCode(int glfwModifierCode) {

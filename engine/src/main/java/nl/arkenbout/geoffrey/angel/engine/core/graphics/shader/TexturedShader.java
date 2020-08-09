@@ -3,16 +3,20 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.*;
-import org.joml.*;
-import org.lwjgl.util.Color;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Lights;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector2u;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector4u;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector4f;
 import org.lwjgl.util.ReadableColor;
 
 import java.util.Collections;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
 public class TexturedShader extends Shader {
     private final Vector2f repeat;
@@ -56,7 +60,7 @@ public class TexturedShader extends Shader {
 
     @Override
     public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
-        super.render(projectionMatrix, modelViewMatrix,  () -> this.render(viewMatrix));
+        super.render(projectionMatrix, modelViewMatrix, () -> this.render(viewMatrix));
     }
 
     private void render(Matrix4f viewMatrix) {
@@ -69,7 +73,7 @@ public class TexturedShader extends Shader {
         directionalLight.setDirection(Vector4u.xyz(viewSpaceDirection));
         setUniform("directional_light", directionalLight);
         setUniform("color", color);
-        if (texture != null ) {
+        if (texture != null) {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture.getId());
         }

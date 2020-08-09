@@ -11,15 +11,15 @@ public class GameTimer {
         startTime = getTime();
     }
 
+    public double getTime() {
+        return System.nanoTime() / 1000_000_000.0;
+    }
+
     public static GameTimer getInstance() {
         if (instance == null) {
             instance = new GameTimer();
         }
         return instance;
-    }
-
-    public double getTime() {
-        return System.nanoTime() / 1000_000_000.0;
     }
 
     public float getElapsedTime() {

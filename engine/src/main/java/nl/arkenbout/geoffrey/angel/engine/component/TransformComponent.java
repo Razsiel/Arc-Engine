@@ -20,15 +20,15 @@ public class TransformComponent implements Component {
         this(Vector3u.zero(), Vector3u.zero(), 1f, parent);
     }
 
-    public TransformComponent(Vector3f position, Vector3f rotation, float scale) {
-        this(position, rotation, scale, null);
-    }
-
     public TransformComponent(Vector3f position, Vector3f rotation, float scale, TransformComponent parent) {
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
         this.parent = parent;
+    }
+
+    public TransformComponent(Vector3f position, Vector3f rotation, float scale) {
+        this(position, rotation, scale, null);
     }
 
     public static TransformComponent origin() {
@@ -37,14 +37,6 @@ public class TransformComponent implements Component {
 
     public static TransformComponent parented(TransformComponent parent) {
         return new TransformComponent(parent);
-    }
-
-    public Vector3f getPosition() {
-        return position;
-    }
-
-    public void setPosition(Vector3f position) {
-        this.position = position;
     }
 
     public Vector3f getRotation() {
@@ -67,11 +59,32 @@ public class TransformComponent implements Component {
         this.position.y = newY;
     }
 
-    public boolean hasParent() {
+    public Matrix4f getModelViewMatrix(Matrix4f modelViewMatrix) {
+        Matrix4f matrix = hasParent() ? parent.getModelViewMatrix(modelViewMatrix) : modelViewMatrix;
+        return new Matrix4f(matrix)
+                .translate(position)
+                .rotateX((float) Math.toRadians(-rotation.x()))
+                .rotateY((float) Math.toRadians(-rotation.y()))
+                .rotateZ((float) Math.toRadians(-rotation.z()))
+                .scale(scale);
+    }
+
+    public void move(Vector3f vector, float scalar) {
+        Vector3f offset = vector.mul(scalar);
+        Matrix4f translation = new Matrix4f().identity()
+                .translation(offset);
+        this.position = this.getPosition().mulDirection(translation);
+    }
+
+    public Vector3f getPosition() {
+        return position;
+    }    public boolean hasParent() {
         return parent != null;
     }
 
-    public TransformComponent getParent() {
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }    public TransformComponent getParent() {
         return parent;
     }
 
@@ -97,20 +110,7 @@ public class TransformComponent implements Component {
         this.parent = parent;
     }
 
-    public Matrix4f getModelViewMatrix(Matrix4f modelViewMatrix) {
-        Matrix4f matrix = hasParent() ? parent.getModelViewMatrix(modelViewMatrix) : modelViewMatrix;
-        return new Matrix4f(matrix)
-                .translate(position)
-                .rotateX((float) Math.toRadians(-rotation.x()))
-                .rotateY((float) Math.toRadians(-rotation.y()))
-                .rotateZ((float) Math.toRadians(-rotation.z()))
-                .scale(scale);
-    }
 
-    public void move(Vector3f vector, float scalar) {
-        Vector3f offset = vector.mul(scalar);
-        Matrix4f translation = new Matrix4f().identity()
-                .translation(offset);
-        this.position = this.getPosition().mulDirection(translation);
-    }
+
+
 }

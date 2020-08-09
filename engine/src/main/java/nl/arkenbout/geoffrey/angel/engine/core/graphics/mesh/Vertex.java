@@ -12,8 +12,12 @@ public class Vertex {
         position = new Vector3f(x, y, z);
     }
 
-    public Vector3d getPosition() {
-        return new Vector3d(position);
+    public static Vertex of(float x, float y, float z) {
+        return new Vertex(x, y, z);
+    }
+
+    public static Stream<Float> getPositionElements(Vertex v) {
+        return Stream.of(v.getX(), v.getY(), v.getZ());
     }
 
     public float getX() {
@@ -28,11 +32,7 @@ public class Vertex {
         return position.z();
     }
 
-    public static Vertex of(float x, float y, float z) {
-        return new Vertex(x, y, z);
-    }
-
-    public static Stream<Float> getPositionElements(Vertex v) {
-        return Stream.of(v.getX(), v.getY(), v.getZ());
+    public Vector3d getPosition() {
+        return new Vector3d(position);
     }
 }

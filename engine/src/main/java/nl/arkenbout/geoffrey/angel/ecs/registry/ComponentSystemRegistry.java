@@ -29,15 +29,15 @@ public class ComponentSystemRegistry {
         }
     }
 
-    public <T extends ComponentSystem> T registerSystem(T newSystem) {
-        addSystem(newSystem);
-        return newSystem;
-    }
-
     private void addSystem(ComponentSystem newComponentSystem) {
         if (newComponentSystem == null)
             throw new IllegalArgumentException("A system must be passed");
         componentSystems.add(newComponentSystem);
+    }
+
+    public <T extends ComponentSystem> T registerSystem(T newSystem) {
+        addSystem(newSystem);
+        return newSystem;
     }
 
     public Set<ComponentSystem> getComponentSystems() {

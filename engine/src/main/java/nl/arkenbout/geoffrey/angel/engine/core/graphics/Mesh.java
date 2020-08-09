@@ -11,9 +11,9 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -52,7 +52,7 @@ public class Mesh implements Cleanup {
 
         this.textureCoords = new float[vertices.size()];
         for (int i = 0; i < vertices.size(); i += 3) {
-            textureCoords[i    ] = 0f;
+            textureCoords[i] = 0f;
             textureCoords[i + 1] = 0f;
             textureCoords[i + 2] = 0f;
         }

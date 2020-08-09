@@ -8,16 +8,16 @@ public class Entity {
 
     private List<Component> components;
 
+    Entity(String id) {
+        this(id, null);
+    }
+
     Entity(String id, List<Component> components) {
         this.id = id;
         this.components = components;
         if (this.components == null) {
             this.components = new ArrayList<>();
         }
-    }
-
-    Entity(String id) {
-        this(id, null);
     }
 
     public void addComponent(Component component) {
