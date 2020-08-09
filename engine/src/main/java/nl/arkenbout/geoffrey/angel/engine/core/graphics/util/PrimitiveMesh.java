@@ -1,6 +1,10 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.util;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Vertex;
+import nl.arkenbout.geoffrey.angel.engine.util.FloatArrayCollector;
+
+import java.util.stream.Stream;
 
 public class PrimitiveMesh {
     public static Mesh createCube(float size) {
@@ -149,14 +153,14 @@ public class PrimitiveMesh {
         return new Mesh(vertices, indices, normals, texCoords);
     }
 
-    public static Mesh createPlane(float width, float depth) {
+    public static Mesh createPlane(float width, float height) {
         width /= 2;
-        depth /= 2;
+        height /= 2;
         var vertices = new float[]{
-                -width, 0, -depth,
-                width, 0, -depth,
-                width, 0, depth,
-                -width, 0, depth
+                -width, 0, -height,
+                width, 0, -height,
+                width, 0, height,
+                -width, 0, height
         };
         var indices = new int[]{
                 0, 1, 3,
@@ -175,5 +179,38 @@ public class PrimitiveMesh {
                 1, 0
         };
         return new Mesh(vertices, indices, normals, texCoords);
+    }
+
+    public static Mesh plane(int width, int height) {
+        var verticesArray = new Vertex[(width + 1) * (height + 1)];
+        for (int i = 0, z = 0; i <= height; z++) {
+            for (int x = 0; x < width; x++, i++) {
+                verticesArray[i] = Vertex.of(x, 0, z);
+            }
+        }
+
+        var vertices = Stream.of(verticesArray)
+                .flatMap(Vertex::getPositionElements)
+                .collect(FloatArrayCollector::new, FloatArrayCollector::add, FloatArrayCollector::join)
+                .toArray();
+
+        var triangles = new int[width * height * 6];
+        for (int triangleIndex = 0, vertexIndex = 0, y = 0; y < height; y++, vertexIndex++) {
+            for (int x = 0; x < width; x++, triangleIndex += 6, vertexIndex++) {
+                triangles[triangleIndex] = vertexIndex;
+                triangles[triangleIndex + 3] = triangles[triangleIndex + 2] = vertexIndex + 1;
+                triangles[triangleIndex + 4] = triangles[triangleIndex + 1] = vertexIndex + width + 1;
+                triangles[triangleIndex + 5] = vertexIndex + width + 2;
+            }
+        }
+
+        var normals = new float[vertices.length];
+        for (int i = 0; i < normals.length; i += 3) {
+            normals[i] = 0;
+            normals[i + 1] = 1;
+            normals[i + 2] = 0;
+        }
+
+        return new Mesh(vertices, triangles, normals, new float[]{});
     }
 }

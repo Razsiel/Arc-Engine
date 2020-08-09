@@ -8,7 +8,7 @@ import nl.arkenbout.geoffrey.angel.engine.component.RenderComponent;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Matrices;
-import org.joml.Matrix4f;
+import org.joml.Matrix4d;
 
 import java.util.function.Consumer;
 
@@ -26,8 +26,8 @@ public class ForwardRenderer implements Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
-        Matrix4f viewMatrix = Matrices.getViewMatrix(camera);
-        Matrix4f projectionMatrix = Matrices.getProjectionMatrix(window, camera);
+        var viewMatrix = Matrices.getViewMatrix(camera);
+        var projectionMatrix = Matrices.getProjectionMatrix(window, camera);
 
         var entities = activeContext.getEntities();
         var matches = renderMatcher.match(entities);
@@ -37,7 +37,7 @@ public class ForwardRenderer implements Renderer {
         window.update();
     }
 
-    private Consumer<EntityComponentMatch> render(Matrix4f viewMatrix, Matrix4f projectionMatrix) {
+    private Consumer<EntityComponentMatch> render(Matrix4d viewMatrix, Matrix4d projectionMatrix) {
         return match -> {
             var renderComponent = match.getComponent(RenderComponent.class);
             var transformComponent = match.getComponent(TransformComponent.class);
@@ -45,7 +45,7 @@ public class ForwardRenderer implements Renderer {
             var material = renderComponent.getMaterial();
             var mesh = renderComponent.getMesh();
 
-            Matrix4f modelViewMatrix = Matrices.getModelViewMatrix(transformComponent, viewMatrix);
+            var modelViewMatrix = Matrices.getModelViewMatrix(transformComponent, viewMatrix);
 
             try {
                 mesh.render(material, projectionMatrix, modelViewMatrix, viewMatrix);

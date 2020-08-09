@@ -6,9 +6,9 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLigh
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Lights;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector2u;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector4u;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector4f;
+import org.joml.Matrix4d;
+import org.joml.Vector2d;
+import org.joml.Vector4d;
 import org.lwjgl.util.ReadableColor;
 
 import java.util.Collections;
@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
 public class TexturedShader extends Shader {
-    private final Vector2f repeat;
+    private final Vector2d repeat;
     private final ReadableColor color;
     private final Texture texture;
 
@@ -27,7 +27,7 @@ public class TexturedShader extends Shader {
         this(texture, Vector2u.one(), color);
     }
 
-    public TexturedShader(Texture texture, Vector2f repeat, ReadableColor color) throws Exception {
+    public TexturedShader(Texture texture, Vector2d repeat, ReadableColor color) throws Exception {
         super("textured");
         this.texture = texture;
         this.repeat = repeat;
@@ -59,16 +59,16 @@ public class TexturedShader extends Shader {
     }
 
     @Override
-    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
+    public void render(Matrix4d projectionMatrix, Matrix4d modelViewMatrix, Matrix4d viewMatrix) {
         super.render(projectionMatrix, modelViewMatrix, () -> this.render(viewMatrix));
     }
 
-    private void render(Matrix4f viewMatrix) {
+    private void render(Matrix4d viewMatrix) {
         setUniform("texture_sampler", 0);
         setUniform("texture_repeat", this.repeat);
         setUniform("shadow", 1);
         DirectionalLight directionalLight = new DirectionalLight(Lights.getDirectionalLight());
-        Vector4f viewSpaceDirection = new Vector4f(directionalLight.getDirection(), 0f);
+        var viewSpaceDirection = new Vector4d(directionalLight.getDirection(), 0f);
         viewSpaceDirection.mul(viewMatrix);
         directionalLight.setDirection(Vector4u.xyz(viewSpaceDirection));
         setUniform("directional_light", directionalLight);

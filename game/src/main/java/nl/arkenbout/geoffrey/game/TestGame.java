@@ -10,6 +10,7 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Texture;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.FlatColouredShader;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.TexturedShader;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.PrimitiveMesh;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector2u;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
@@ -24,7 +25,7 @@ import nl.arkenbout.geoffrey.game.components.ScalePingPongComponent;
 import nl.arkenbout.geoffrey.game.systems.BounceSystem;
 import nl.arkenbout.geoffrey.game.systems.RotatorSystem;
 import nl.arkenbout.geoffrey.game.systems.ScalePingPongSystem;
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 import org.lwjgl.util.Color;
 
 public class TestGame implements Game {
@@ -34,10 +35,13 @@ public class TestGame implements Game {
         var gameContext = GlobalContext.getInstance();
         var scene = new Scene("");
 
-        var systemRegistry = scene.getComponentSystemRegistery();
-        systemRegistry.registerSystem(new ScalePingPongSystem());
-        systemRegistry.registerSystem(new BounceSystem());
-        systemRegistry.registerSystem(new RotatorSystem());
+        var camera = Cameras.defaultCamera();
+        camera.move(0d, 1.5d, 0d);
+        Cameras.setMainCamera(camera);
+
+        scene.registerSystem(new ScalePingPongSystem());
+        scene.registerSystem(new BounceSystem());
+        scene.registerSystem(new RotatorSystem());
 
         var gridTexture = new Texture("/textures/grid.png");
         var texturedShader = new TexturedShader(gridTexture, Color.WHITE);
@@ -53,7 +57,7 @@ public class TestGame implements Game {
 
         for (int i = 0; i < 5; i++) {
             var x = MathUtils.remap(i, 0, 4, -2.5f, 2.5f);
-            var transform = new TransformComponent(new Vector3f(x, 0f, 0f), Vector3u.zero(), 1f, cubeTransform);
+            var transform = new TransformComponent(new Vector3d(x, 0f, 0f), Vector3u.zero(), 1f, cubeTransform);
             var scalePingPong = new ScalePingPongComponent(1f, 0.3f, 0.7f);
             var bouncer = new BounceComponent(0f, 2f);
 
@@ -65,7 +69,7 @@ public class TestGame implements Game {
                 rotateY = 1;
                 rotateZ = 1;
             }
-            var axis = i > 3 ? Vector3u.zero() : i < 3 ? new Vector3f(rotateX, rotateY, rotateZ) : Vector3u.one();
+            var axis = i > 3 ? Vector3u.zero() : i < 3 ? new Vector3d(rotateX, rotateY, rotateZ) : Vector3u.one();
             var rotator = new RotatorComponent(100f, axis);
 
             var color = new Color(255 * rotateX, 255 * rotateY, 255 * rotateZ);

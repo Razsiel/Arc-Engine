@@ -1,7 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.shader;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
-import org.joml.Matrix4f;
+import org.joml.Matrix4d;
 import org.lwjgl.util.ReadableColor;
 
 import java.util.Collections;
@@ -33,7 +33,7 @@ public class FlatColouredShader extends Shader {
     }
 
     @Override
-    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
+    public void render(Matrix4d projectionMatrix, Matrix4d modelViewMatrix, Matrix4d viewMatrix) {
         super.render(projectionMatrix, modelViewMatrix, this::render);
     }
 

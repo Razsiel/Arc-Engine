@@ -22,9 +22,9 @@ public class GameTimer {
         return instance;
     }
 
-    public float getElapsedTime() {
-        double time = getTime();
-        float elapsedTime = (float) (time - lastLoopTime);
+    public double getElapsedTime() {
+        var time = getTime();
+        var elapsedTime = time - lastLoopTime;
         lastLoopTime = time;
         return elapsedTime;
     }

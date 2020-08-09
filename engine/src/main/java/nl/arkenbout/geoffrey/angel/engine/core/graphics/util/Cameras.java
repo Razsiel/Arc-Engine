@@ -1,7 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.util;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Camera;
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,6 @@ public class Cameras {
     }
 
     public static Camera defaultCamera() {
-        return new Camera(new Vector3f(0f, 0f, -5f), Vector3u.up().mul(180), 0.01f, 1000f, (float) Math.toRadians(60.0f), false);
+        return new Camera(new Vector3d(0d, 0d, -5d), Vector3u.up().mul(180), 0.01d, 1000d, Math.toRadians(60.0d), false);
     }
 }

@@ -2,17 +2,17 @@ package nl.arkenbout.geoffrey.game.components;
 
 import nl.arkenbout.geoffrey.angel.ecs.Component;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 
 public class RotatorComponent implements Component {
     private float speed;
-    private final Vector3f axis;
+    private final Vector3d axis;
 
     public RotatorComponent(float speed) {
         this(speed, Vector3u.one());
     }
 
-    public RotatorComponent(float speed, Vector3f axis) {
+    public RotatorComponent(float speed, Vector3d axis) {
         this.speed = speed;
         this.axis = axis;
     }
@@ -21,7 +21,7 @@ public class RotatorComponent implements Component {
         return speed;
     }
 
-    public Vector3f getAxis() {
+    public Vector3d getAxis() {
         return axis;
     }
 }

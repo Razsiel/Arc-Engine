@@ -1,34 +1,33 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh;
 
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import java.util.stream.Stream;
 
 public class Vertex {
-    private final Vector3f position;
+    private final Vector3d position;
 
-    public Vertex(float x, float y, float z) {
-        position = new Vector3f(x, y, z);
+    public Vertex(double x, double y, double z) {
+        position = new Vector3d(x, y, z);
     }
 
-    public static Vertex of(float x, float y, float z) {
+    public static Vertex of(double x, double y, double z) {
         return new Vertex(x, y, z);
     }
 
     public static Stream<Float> getPositionElements(Vertex v) {
-        return Stream.of(v.getX(), v.getY(), v.getZ());
+        return Stream.of((float) v.getX(), (float) v.getY(), (float) v.getZ());
     }
 
-    public float getX() {
+    public double getX() {
         return position.x();
     }
 
-    public float getY() {
+    public double getY() {
         return position.y();
     }
 
-    public float getZ() {
+    public double getZ() {
         return position.z();
     }
 

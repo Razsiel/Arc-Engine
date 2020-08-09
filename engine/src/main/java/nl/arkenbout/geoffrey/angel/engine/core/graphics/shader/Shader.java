@@ -4,9 +4,9 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
 import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import nl.arkenbout.geoffrey.angel.engine.util.ResourceUtils;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.Matrix4d;
+import org.joml.Vector2d;
+import org.joml.Vector3d;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.ReadableColor;
 
@@ -113,8 +113,8 @@ public abstract class Shader implements Cleanup {
         glUseProgram(programId);
     }
 
-    public void setUniform(String uniformName, Vector2f value) {
-        glUniform2f(uniforms.get(uniformName), value.x(), value.y());
+    public void setUniform(String uniformName, Vector2d value) {
+        glUniform2f(uniforms.get(uniformName), (float) value.x(), (float) value.y());
     }
 
     public void setUniform(String uniformName, int value) {
@@ -136,15 +136,15 @@ public abstract class Shader implements Cleanup {
         setUniform(uniformName + ".intensity", directionalLight.getIntensity());
     }
 
-    public void setUniform(String uniformName, Vector3f value) {
-        glUniform3f(uniforms.get(uniformName), value.x(), value.y(), value.z());
+    public void setUniform(String uniformName, Vector3d value) {
+        glUniform3f(uniforms.get(uniformName), (float) value.x(), (float) value.y(), (float) value.z());
     }
 
-    public void setUniform(String uniformName, float value) {
-        glUniform1f(uniforms.get(uniformName), value);
+    public void setUniform(String uniformName, double value) {
+        glUniform1f(uniforms.get(uniformName), (float) value);
     }
 
-    protected void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Runnable shaderRenderer) {
+    protected void render(Matrix4d projectionMatrix, Matrix4d modelViewMatrix, Runnable shaderRenderer) {
         // set uniform data
         setUniform("projectionMatrix", projectionMatrix);
         setUniform("modelViewMatrix", modelViewMatrix);
@@ -152,7 +152,7 @@ public abstract class Shader implements Cleanup {
         shaderRenderer.run();
     }
 
-    public void setUniform(String uniformName, Matrix4f value) {
+    public void setUniform(String uniformName, Matrix4d value) {
         // Dump the matrix into a float buffer
         try (var stack = MemoryStack.stackPush()) {
             var fb = stack.mallocFloat(16);
@@ -177,7 +177,7 @@ public abstract class Shader implements Cleanup {
 
     public abstract void preRender(int vboLastIndex);
 
-    public abstract void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix);
+    public abstract void render(Matrix4d projectionMatrix, Matrix4d modelViewMatrix, Matrix4d viewMatrix);
 
     public abstract void postRender(int vboLastIndex);
 }

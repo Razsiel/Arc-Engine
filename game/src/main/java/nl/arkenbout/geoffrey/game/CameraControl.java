@@ -8,22 +8,21 @@ import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyModifier;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardListener;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseListener;
 import org.joml.Vector2d;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 
 import java.util.List;
 
 public class CameraControl implements MouseListener, KeyboardListener {
-    private static final float MOUSE_SENSITIVITY = 0.2f;
-    private static float CAMERA_MOVE_SENSITIVITY = 0.1f;
+    private static final double MOUSE_SENSITIVITY = 0.2f;
+    private static double CAMERA_MOVE_SENSITIVITY = 0.1f;
 
-    private final Vector3f cameraDelta = Vector3u.zero();
+    private final Vector3d cameraDelta = Vector3u.zero();
 
     CameraControl() {
     }
 
     @Override
-    public void onLeftButtonDown(Vector2f mouseDelta) {
+    public void onLeftButtonDown(Vector2d mouseDelta) {
         Camera mainCamera = Cameras.main();
         mainCamera.rotate(mouseDelta.x() * MOUSE_SENSITIVITY, mouseDelta.y() * MOUSE_SENSITIVITY, 0);
     }
@@ -34,7 +33,7 @@ public class CameraControl implements MouseListener, KeyboardListener {
     }
 
     @Override
-    public void onRightButtonDown(Vector2f mouseDelta) {
+    public void onRightButtonDown(Vector2d mouseDelta) {
 
     }
 
@@ -44,7 +43,7 @@ public class CameraControl implements MouseListener, KeyboardListener {
     }
 
     @Override
-    public void onScroll(float scrollDelta) {
+    public void onScroll(double scrollDelta) {
         CAMERA_MOVE_SENSITIVITY = Math.abs(CAMERA_MOVE_SENSITIVITY + scrollDelta * 0.1f);
         if (CAMERA_MOVE_SENSITIVITY < 0.05f) {
             CAMERA_MOVE_SENSITIVITY = 0.05f;

@@ -90,9 +90,9 @@ public class ArcEngine implements Cleanup {
     }
 
     private void gameLoop() {
-        float elapsedTime;
-        float accumulator = 0f;
-        float interval = 1f / TARGET_UPS;
+        var elapsedTime = 0d;
+        var accumulator = 0d;
+        var interval = 1d / TARGET_UPS;
 
         while (!window.shouldClose()) {
 
@@ -123,7 +123,7 @@ public class ArcEngine implements Cleanup {
         keyboardInput.input();
     }
 
-    private void update(float interval) {
+    private void update(double interval) {
         var activeContext = globalContext.getActiveContext();
 
         if (activeContext != null) {
@@ -136,7 +136,7 @@ public class ArcEngine implements Cleanup {
     }
 
     private void sync() {
-        float loopSlot = 1f / TARGET_FPS;
+        var loopSlot = 1d / TARGET_FPS;
         double endTime = timer.getLastLoopTime() + loopSlot;
         while (timer.getTime() < endTime) {
             try {

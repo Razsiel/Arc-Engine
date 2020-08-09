@@ -5,7 +5,7 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Triangle;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.mesh.Vertex;
 import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import nl.arkenbout.geoffrey.angel.engine.util.FloatArrayCollector;
-import org.joml.Matrix4f;
+import org.joml.Matrix4d;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.system.MemoryUtil;
 
@@ -142,7 +142,7 @@ public class Mesh implements Cleanup {
         glDeleteVertexArrays(vaoId);
     }
 
-    public void render(Material material, Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
+    public void render(Material material, Matrix4d projectionMatrix, Matrix4d modelViewMatrix, Matrix4d viewMatrix) {
         glBindVertexArray(vaoId);
 
         for (int i = 0; i < vertexAttributesSize; i++) {

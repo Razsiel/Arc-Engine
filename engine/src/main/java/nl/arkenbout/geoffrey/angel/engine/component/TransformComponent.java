@@ -3,13 +3,13 @@ package nl.arkenbout.geoffrey.angel.engine.component;
 import nl.arkenbout.geoffrey.angel.ecs.Component;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import org.joml.Math;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.Matrix4d;
+import org.joml.Vector3d;
 
 public class TransformComponent implements Component {
-    private Vector3f position;
-    private Vector3f rotation;
-    private float scale;
+    private Vector3d position;
+    private Vector3d rotation;
+    private double scale;
     private TransformComponent parent;
 
     public TransformComponent() {
@@ -20,14 +20,14 @@ public class TransformComponent implements Component {
         this(Vector3u.zero(), Vector3u.zero(), 1f, parent);
     }
 
-    public TransformComponent(Vector3f position, Vector3f rotation, float scale, TransformComponent parent) {
+    public TransformComponent(Vector3d position, Vector3d rotation, double scale, TransformComponent parent) {
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
         this.parent = parent;
     }
 
-    public TransformComponent(Vector3f position, Vector3f rotation, float scale) {
+    public TransformComponent(Vector3d position, Vector3d rotation, double scale) {
         this(position, rotation, scale, null);
     }
 
@@ -39,52 +39,56 @@ public class TransformComponent implements Component {
         return new TransformComponent(parent);
     }
 
-    public Vector3f getRotation() {
+    public Vector3d getRotation() {
         return rotation;
     }
 
-    public void setRotation(Vector3f rotation) {
+    public void setRotation(Vector3d rotation) {
         this.rotation = rotation;
     }
 
-    public float getScale() {
+    public double getScale() {
         return scale;
     }
 
-    public void setScale(float scale) {
+    public void setScale(double scale) {
         this.scale = scale;
     }
 
-    public void setPositionY(float newY) {
+    public void setPositionY(double newY) {
         this.position.y = newY;
     }
 
-    public Matrix4f getModelViewMatrix(Matrix4f modelViewMatrix) {
-        Matrix4f matrix = hasParent() ? parent.getModelViewMatrix(modelViewMatrix) : modelViewMatrix;
-        return new Matrix4f(matrix)
+    public Matrix4d getModelViewMatrix(Matrix4d modelViewMatrix) {
+        Matrix4d matrix = hasParent() ? parent.getModelViewMatrix(modelViewMatrix) : modelViewMatrix;
+        return new Matrix4d(matrix)
                 .translate(position)
-                .rotateX((float) Math.toRadians(-rotation.x()))
-                .rotateY((float) Math.toRadians(-rotation.y()))
-                .rotateZ((float) Math.toRadians(-rotation.z()))
+                .rotateX(Math.toRadians(-rotation.x()))
+                .rotateY(Math.toRadians(-rotation.y()))
+                .rotateZ(Math.toRadians(-rotation.z()))
                 .scale(scale);
     }
 
-    public void move(Vector3f vector, float scalar) {
-        Vector3f offset = vector.mul(scalar);
-        Matrix4f translation = new Matrix4f().identity()
+    public void move(Vector3d vector, double scalar) {
+        Vector3d offset = vector.mul(scalar);
+        Matrix4d translation = new Matrix4d().identity()
                 .translation(offset);
         this.position = this.getPosition().mulDirection(translation);
     }
 
-    public Vector3f getPosition() {
+    public Vector3d getPosition() {
         return position;
-    }    public boolean hasParent() {
+    }
+
+    public boolean hasParent() {
         return parent != null;
     }
 
-    public void setPosition(Vector3f position) {
+    public void setPosition(Vector3d position) {
         this.position = position;
-    }    public TransformComponent getParent() {
+    }
+
+    public TransformComponent getParent() {
         return parent;
     }
 
@@ -109,8 +113,4 @@ public class TransformComponent implements Component {
 
         this.parent = parent;
     }
-
-
-
-
 }

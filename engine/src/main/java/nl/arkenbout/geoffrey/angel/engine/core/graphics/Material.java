@@ -3,7 +3,7 @@ package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.shader.Shader;
 import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
-import org.joml.Matrix4f;
+import org.joml.Matrix4d;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ public final class Material implements Cleanup {
         this.shader = shader;
     }
 
-    public void render(Matrix4f projectionMatrix, Matrix4f modelViewProjection, Matrix4f viewMatrix) {
+    public void render(Matrix4d projectionMatrix, Matrix4d modelViewProjection, Matrix4d viewMatrix) {
         shader.render(projectionMatrix, modelViewProjection, viewMatrix);
     }
 

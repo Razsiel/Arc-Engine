@@ -4,10 +4,9 @@ import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatch;
 import nl.arkenbout.geoffrey.angel.engine.component.TransformComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Matrices;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.gl.VboType;
-import nl.arkenbout.geoffrey.angel.engine.core.graphics.lighting.DirectionalLight;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Lights;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.Matrix4d;
+import org.joml.Vector3d;
 
 import java.util.List;
 import java.util.Map;
@@ -22,13 +21,13 @@ public class DepthShader extends Shader {
 
     public void renderDepthMap(List<EntityComponentMatch> components) {
         bind();
-        DirectionalLight directionalLight = Lights.getDirectionalLight();
-        Vector3f lightDirection = directionalLight.getDirection();
+        var directionalLight = Lights.getDirectionalLight();
+        var lightDirection = directionalLight.getDirection();
 
-        float lightAngleX = (float) Math.toDegrees(Math.acos(lightDirection.z()));
-        float lightAngleY = (float) Math.toDegrees(Math.cos(lightDirection.x()));
-        float lightAngleZ = 0;
-        var lightViewMatrix = Matrices.getLightViewMatrix(new Vector3f(lightDirection), new Vector3f(lightAngleX, lightAngleY, lightAngleZ));
+        var lightAngleX = Math.toDegrees(Math.acos(lightDirection.z()));
+        var lightAngleY = Math.toDegrees(Math.cos(lightDirection.x()));
+        var lightAngleZ = 0d;
+        var lightViewMatrix = Matrices.getLightViewMatrix(new Vector3d(lightDirection), new Vector3d(lightAngleX, lightAngleY, lightAngleZ));
         var orthoProjectionMatrix = Matrices.getOrthoProjectionMatrix(-10f, 10f, -10f, 10f, 0.01f, 2000f);
 
         setUniform("orthoProjectionMatrix", orthoProjectionMatrix);
@@ -54,7 +53,7 @@ public class DepthShader extends Shader {
     }
 
     @Override
-    public void render(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Matrix4f viewMatrix) {
+    public void render(Matrix4d projectionMatrix, Matrix4d modelViewMatrix, Matrix4d viewMatrix) {
 
     }
 

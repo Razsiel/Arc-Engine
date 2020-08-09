@@ -1,17 +1,17 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 
 public class Camera {
-    private final float near;
-    private final float far;
-    private final float fov;
-    private Vector3f position;
-    private Vector3f rotation;
+    private final double near;
+    private final double far;
+    private final double fov;
+    private Vector3d position;
+    private Vector3d rotation;
     private boolean isOrtho;
 
-    public Camera(Vector3f position, Vector3f rotation, float near, float far, float fov, boolean isOrtho) {
+    public Camera(Vector3d position, Vector3d rotation, double near, double far, double fov, boolean isOrtho) {
         this.position = position;
         this.rotation = rotation;
         this.near = near;
@@ -21,41 +21,41 @@ public class Camera {
         Cameras.addCamera(this);
     }
 
-    public Vector3f getPosition() {
+    public Vector3d getPosition() {
         return position;
     }
 
-    public Vector3f getRotation() {
+    public Vector3d getRotation() {
         return rotation;
     }
 
-    public void move(float x, float y, float z) {
+    public void move(double x, double y, double z) {
         if (z != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y)) * -1.0f * z;
-            position.z += (float) Math.cos(Math.toRadians(rotation.y)) * z;
+            position.x += Math.sin(Math.toRadians(rotation.y)) * -1.0f * z;
+            position.z += Math.cos(Math.toRadians(rotation.y)) * z;
         }
         if (x != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * x;
-            position.z += (float) Math.cos(Math.toRadians(rotation.y - 90)) * x;
+            position.x += Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * x;
+            position.z += Math.cos(Math.toRadians(rotation.y - 90)) * x;
         }
         position.y += y;
     }
 
-    public void rotate(float x, float y, int z) {
+    public void rotate(double x, double y, double z) {
         rotation.x += x;
         rotation.y += y;
         rotation.z += z;
     }
 
-    public float getNear() {
+    public double getNear() {
         return near;
     }
 
-    public float getFar() {
+    public double getFar() {
         return far;
     }
 
-    public float getFov() {
+    public double getFov() {
         return fov;
     }
 

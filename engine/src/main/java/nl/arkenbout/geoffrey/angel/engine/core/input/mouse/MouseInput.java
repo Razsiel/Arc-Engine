@@ -4,7 +4,6 @@ import nl.arkenbout.geoffrey.angel.engine.Window;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyModifier;
 import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import org.joml.Vector2d;
-import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class MouseInput implements Cleanup {
     private static List<MouseListener> mouseListeners = new ArrayList<>();
     private final Vector2d currentPosition = new Vector2d(-1, -1);
     private final Vector2d previousPosition = new Vector2d(0, 0);
-    private final Vector2f mouseDelta = new Vector2f();
+    private final Vector2d mouseDelta = new Vector2d();
     private final Window window;
     private boolean inWindow;
     private boolean leftButtonPressed;
@@ -75,7 +74,7 @@ public class MouseInput implements Cleanup {
 //            middleButtonReleased = middleButton && released;
         });
         glfwSetScrollCallback(handle, (windowHandle, scrollX, scrollY) -> {
-            mouseListeners.forEach(mouseListener -> mouseListener.onScroll((float) scrollY));
+            mouseListeners.forEach(mouseListener -> mouseListener.onScroll(scrollY));
         });
     }
 
@@ -87,9 +86,9 @@ public class MouseInput implements Cleanup {
     private void updateMouseDelta() {
         mouseDelta.set(0, 0);
         if (inWindow && previousPosition.x() > 0 && previousPosition.y() > 0) {
-            double deltaY = currentPosition.x() - previousPosition.x();
-            double deltaX = currentPosition.y() - previousPosition.y();
-            Vector2d delta = new Vector2d(deltaX, deltaY);
+            var deltaY = currentPosition.x() - previousPosition.x();
+            var deltaX = currentPosition.y() - previousPosition.y();
+            var delta = new Vector2d(deltaX, deltaY);
             mouseDelta.set(delta);
         }
         previousPosition.set(currentPosition);
