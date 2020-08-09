@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -199,7 +200,7 @@ public class Window implements KeyboardListener {
     }
 
     @Override
-    public void onKeys(List<Key> keys, List<KeyModifier> modifiers) {
+    public void onKeys(Set<Key> keys, List<KeyModifier> modifiers) {
 
     }
 }

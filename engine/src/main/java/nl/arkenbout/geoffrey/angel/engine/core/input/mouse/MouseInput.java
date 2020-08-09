@@ -6,7 +6,9 @@ import nl.arkenbout.geoffrey.angel.engine.util.Cleanup;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -18,12 +20,9 @@ public class MouseInput implements Cleanup {
     private final Vector2d mouseDelta = new Vector2d();
     private final Window window;
     private boolean inWindow;
-    private boolean leftButtonPressed;
-    private boolean leftButtonReleased;
-    private boolean rightButtonPressed;
-    private boolean rightButtonReleased;
-    private boolean middleButtonPressed;
-    private boolean middleButtonReleased;
+
+    private Set<MouseButton> buttonsPressed = new HashSet<>();
+    private List<KeyModifier> modifiers;
 
     public MouseInput(Window window) {
         this.window = window;
@@ -54,24 +53,15 @@ public class MouseInput implements Cleanup {
         });
         glfwSetMouseButtonCallback(handle, (windowHandle, buttonCode, action, mods) -> {
             var button = MouseButton.fromGlfwButtonCode(buttonCode);
-            var modifier = KeyModifier.fromGlfwModifierCode(mods);
-            System.out.println("Button " + buttonCode + "with " + modifier);
-            // TODO: Refactor to be more like Keyboard input
-//            var leftButton = button == GLFW_MOUSE_BUTTON_1;
-//            var rightButton = button == GLFW_MOUSE_BUTTON_2;
-//            var middleButton = button == GLFW_MOUSE_BUTTON_3;
-//
-//            var pressed = action == GLFW_PRESS;
-//            var released = action == GLFW_RELEASE;
-//
-//            leftButtonPressed = leftButton && pressed;
-//            leftButtonReleased = leftButton && released;
-//
-//            rightButtonPressed = rightButton && pressed;
-//            rightButtonReleased = rightButton && released;
-//
-//            middleButtonPressed = middleButton && pressed;
-//            middleButtonReleased = middleButton && released;
+            this.modifiers = KeyModifier.fromGlfwModifierCode(mods);
+
+            if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+                mouseListeners.forEach(mouseListener -> mouseListener.onMouseDown(button, modifiers, currentPosition));
+                this.buttonsPressed.add(button);
+            } else if (action == GLFW_RELEASE) {
+                mouseListeners.forEach(mouseListener -> mouseListener.onMouseUp(button, modifiers, currentPosition));
+                this.buttonsPressed.remove(button);
+            }
         });
         glfwSetScrollCallback(handle, (windowHandle, scrollX, scrollY) -> mouseListeners.forEach(mouseListener -> mouseListener.onScroll(scrollY)));
     }
@@ -79,6 +69,10 @@ public class MouseInput implements Cleanup {
     public void input() {
         updateMouseDelta();
         updateMouseListeners();
+    }
+
+    private void updateMouseListeners() {
+        mouseListeners.forEach(mouseListener -> mouseListener.onMouse(this.buttonsPressed, this.modifiers, mouseDelta, currentPosition));
     }
 
     private void updateMouseDelta() {
@@ -90,22 +84,6 @@ public class MouseInput implements Cleanup {
             mouseDelta.set(delta);
         }
         previousPosition.set(currentPosition);
-    }
-
-    private void updateMouseListeners() {
-        if (leftButtonPressed) {
-            mouseListeners.forEach(mouseListener -> mouseListener.onLeftButtonDown(mouseDelta));
-        }
-        if (leftButtonReleased) {
-            mouseListeners.forEach(MouseListener::onLeftButtonUp);
-        }
-
-        if (rightButtonPressed) {
-            mouseListeners.forEach(mouseListener -> mouseListener.onRightButtonDown(mouseDelta));
-        }
-        if (rightButtonReleased) {
-            mouseListeners.forEach(MouseListener::onRightButtonUp);
-        }
     }
 
     public void cleanup() {

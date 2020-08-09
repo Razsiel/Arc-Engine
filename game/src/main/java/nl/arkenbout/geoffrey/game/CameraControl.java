@@ -6,11 +6,13 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.Key;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyModifier;
 import nl.arkenbout.geoffrey.angel.engine.core.input.keyboard.KeyboardListener;
+import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseButton;
 import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseListener;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
 import java.util.List;
+import java.util.Set;
 
 public class CameraControl implements MouseListener, KeyboardListener {
     private static final double MOUSE_SENSITIVITY = 0.2f;
@@ -19,27 +21,6 @@ public class CameraControl implements MouseListener, KeyboardListener {
     private final Vector3d cameraDelta = Vector3u.zero();
 
     CameraControl() {
-    }
-
-    @Override
-    public void onLeftButtonDown(Vector2d mouseDelta) {
-        Camera mainCamera = Cameras.main();
-        mainCamera.rotate(mouseDelta.x() * MOUSE_SENSITIVITY, mouseDelta.y() * MOUSE_SENSITIVITY, 0);
-    }
-
-    @Override
-    public void onLeftButtonUp() {
-
-    }
-
-    @Override
-    public void onRightButtonDown(Vector2d mouseDelta) {
-
-    }
-
-    @Override
-    public void onRightButtonUp() {
-
     }
 
     @Override
@@ -65,6 +46,26 @@ public class CameraControl implements MouseListener, KeyboardListener {
     }
 
     @Override
+    public void onMouseDown(MouseButton button, List<KeyModifier> modifiers, Vector2d position) {
+
+    }
+
+    @Override
+    public void onMouseUp(MouseButton button, List<KeyModifier> modifiers, Vector2d position) {
+
+    }
+
+    @Override
+    public void onMouse(Set<MouseButton> buttonsPressed, List<KeyModifier> modifiers, Vector2d mouseDelta, Vector2d position) {
+        if (buttonsPressed == null || buttonsPressed.size() == 0)
+            return;
+        if (buttonsPressed.contains(MouseButton.LEFT)) {
+            Camera mainCamera = Cameras.main();
+            mainCamera.rotate(mouseDelta.x() * MOUSE_SENSITIVITY, mouseDelta.y() * MOUSE_SENSITIVITY, 0);
+        }
+    }
+
+    @Override
     public void onKeyDown(Key key, List<KeyModifier> modifiers) {
 
     }
@@ -75,7 +76,7 @@ public class CameraControl implements MouseListener, KeyboardListener {
     }
 
     @Override
-    public void onKeys(List<Key> keys, List<KeyModifier> modifiers) {
+    public void onKeys(Set<Key> keys, List<KeyModifier> modifiers) {
         if (keys == null || keys.size() == 0) {
             return;
         }
