@@ -7,18 +7,27 @@ import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatcher;
 
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public abstract class ComponentSystem {
     protected final EntityComponentMatcher matcher;
-    protected Consumer<EntityComponentMatch> updater;
+    protected final Predicate<Entity> predicate;
+    protected Consumer<EntityComponentMatch> update;
 
     @SafeVarargs
     protected ComponentSystem(Class<? extends Component>... components) {
+        this(null, components);
+    }
+
+    @SafeVarargs
+    protected ComponentSystem(Predicate<Entity> predicate, Class<? extends Component>... components) {
         this.matcher = new EntityComponentMatcher(components);
+        this.predicate = (predicate == null) ? (entity -> true) : predicate;
     }
 
     public void update(Collection<Entity> entities) {
-        matcher.match(entities).forEach(match -> updater.accept(match));
+        matcher.match(entities, predicate)
+                .forEach(update);
     }
 
     public void cleanup() {

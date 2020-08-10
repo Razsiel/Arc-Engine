@@ -1,10 +1,10 @@
 package nl.arkenbout.geoffrey.angel.engine.component;
 
-import nl.arkenbout.geoffrey.angel.ecs.Component;
+import nl.arkenbout.geoffrey.angel.ecs.BaseComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Material;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.Mesh;
 
-public class RenderComponent implements Component {
+public class RenderComponent extends BaseComponent {
     private Mesh mesh;
     private Material material;
 

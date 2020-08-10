@@ -42,24 +42,24 @@ public class CameraControl implements MouseListener, KeyboardListener {
 
     @Override
     public void onMouseEnter(Vector2d enterPosition) {
-
+        System.out.println("CameraControl.onMouseEnter: " + enterPosition);
     }
 
     @Override
     public void onMouseDown(MouseButton button, List<KeyModifier> modifiers, Vector2d position) {
-
+        System.out.println("CameraControl.onMouseDown: " + button + " coords: " + position);
     }
 
     @Override
     public void onMouseUp(MouseButton button, List<KeyModifier> modifiers, Vector2d position) {
-
+        System.out.println("CameraControl.onMouseUp: " + button + " coords: " + position);
     }
 
     @Override
-    public void onMouse(Set<MouseButton> buttonsPressed, List<KeyModifier> modifiers, Vector2d mouseDelta, Vector2d position) {
+    public void onMouseUpdate(Set<MouseButton> buttonsPressed, List<KeyModifier> modifiers, Vector2d mouseDelta, Vector2d position) {
         if (buttonsPressed == null || buttonsPressed.size() == 0)
             return;
-        if (buttonsPressed.contains(MouseButton.LEFT)) {
+        if (buttonsPressed.contains(MouseButton.RIGHT)) {
             Camera mainCamera = Cameras.main();
             mainCamera.rotate(mouseDelta.x() * MOUSE_SENSITIVITY, mouseDelta.y() * MOUSE_SENSITIVITY, 0);
         }
@@ -67,16 +67,16 @@ public class CameraControl implements MouseListener, KeyboardListener {
 
     @Override
     public void onKeyDown(Key key, List<KeyModifier> modifiers) {
-
+        System.out.println("CameraControl.onKeyDown: " + key);
     }
 
     @Override
     public void onKeyUp(Key key, List<KeyModifier> modifiers) {
-
+        System.out.println("CameraControl.onKeyUp: " + key);
     }
 
     @Override
-    public void onKeys(Set<Key> keys, List<KeyModifier> modifiers) {
+    public void onKeyboardUpdate(Set<Key> keys, List<KeyModifier> modifiers) {
         if (keys == null || keys.size() == 0) {
             return;
         }

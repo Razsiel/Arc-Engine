@@ -1,5 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics.renderer;
 
+import nl.arkenbout.geoffrey.angel.ecs.Component;
+import nl.arkenbout.geoffrey.angel.ecs.Entity;
 import nl.arkenbout.geoffrey.angel.ecs.context.Context;
 import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatch;
 import nl.arkenbout.geoffrey.angel.ecs.match.EntityComponentMatcher;
@@ -11,6 +13,7 @@ import nl.arkenbout.geoffrey.angel.engine.core.graphics.Matrices;
 import org.joml.Matrix4d;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -30,11 +33,16 @@ public class ForwardRenderer implements Renderer {
         var projectionMatrix = Matrices.getProjectionMatrix(window, camera);
 
         var entities = activeContext.getEntities();
-        var matches = renderMatcher.match(entities);
+        var matches = renderMatcher.match(entities, ifComponentsAreActive());
 
         matches.forEach(this.render(viewMatrix, projectionMatrix));
 
         window.update();
+    }
+
+    private Predicate<Entity> ifComponentsAreActive() {
+        return entity -> entity.getComponents().stream()
+                .anyMatch(Component::isEnabled);
     }
 
     private Consumer<EntityComponentMatch> render(Matrix4d viewMatrix, Matrix4d projectionMatrix) {

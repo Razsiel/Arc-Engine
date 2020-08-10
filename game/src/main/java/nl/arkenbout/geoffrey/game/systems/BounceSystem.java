@@ -15,9 +15,10 @@ public class BounceSystem extends DualComponentSystem<TransformComponent, Bounce
 
     @Override
     protected void update(Entity entity, TransformComponent transform, BounceComponent bouncer) {
-        var newY = (float) Math.abs(Math.sin(GameTimer.getInstance().getTimeSinceStart() + transform.getPosition().x()));
+        var position = transform.getPosition();
+        var newY = (float) Math.abs(Math.sin(GameTimer.getInstance().getTimeSinceStart() + position.x()));
         newY = MathUtils.remap(newY, 0, 1, bouncer.getMinHeight(), bouncer.getMaxHeight());
 
-        transform.setPositionY(newY);
+        transform.setPosition(position.x(), newY, position.z());
     }
 }

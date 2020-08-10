@@ -200,7 +200,7 @@ public class Window implements KeyboardListener {
     }
 
     @Override
-    public void onKeys(Set<Key> keys, List<KeyModifier> modifiers) {
+    public void onKeyboardUpdate(Set<Key> keys, List<KeyModifier> modifiers) {
 
     }
 }

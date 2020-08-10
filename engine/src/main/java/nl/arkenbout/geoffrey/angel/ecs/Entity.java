@@ -47,7 +47,7 @@ public class Entity {
         return this.components.stream().anyMatch(component -> component.getClass().equals(componentType));
     }
 
-    public Optional<Component> getComponent(Class<? extends Component> componentClass) {
+    public Optional<? extends Component> getComponent(Class<? extends Component> componentClass) {
         return this.components.stream()
                 .filter(component -> component.getClass().equals(componentClass))
                 .findFirst();

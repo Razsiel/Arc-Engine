@@ -72,7 +72,7 @@ public class MouseInput implements Cleanup {
     }
 
     private void updateMouseListeners() {
-        mouseListeners.forEach(mouseListener -> mouseListener.onMouse(this.buttonsPressed, this.modifiers, mouseDelta, currentPosition));
+        mouseListeners.forEach(mouseListener -> mouseListener.onMouseUpdate(this.buttonsPressed, this.modifiers, mouseDelta, currentPosition));
     }
 
     private void updateMouseDelta() {

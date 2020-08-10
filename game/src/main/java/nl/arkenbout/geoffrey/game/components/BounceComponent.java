@@ -1,8 +1,8 @@
 package nl.arkenbout.geoffrey.game.components;
 
-import nl.arkenbout.geoffrey.angel.ecs.Component;
+import nl.arkenbout.geoffrey.angel.ecs.BaseComponent;
 
-public class BounceComponent implements Component {
+public class BounceComponent extends BaseComponent {
 
     private float maxHeight;
     private float minHeight;

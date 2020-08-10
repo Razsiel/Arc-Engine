@@ -1,8 +1,8 @@
 package nl.arkenbout.geoffrey.game.components;
 
-import nl.arkenbout.geoffrey.angel.ecs.Component;
+import nl.arkenbout.geoffrey.angel.ecs.BaseComponent;
 
-public class ScalePingPongComponent implements Component {
+public class ScalePingPongComponent extends BaseComponent {
 
     private final float speed;
     private final float minSize;

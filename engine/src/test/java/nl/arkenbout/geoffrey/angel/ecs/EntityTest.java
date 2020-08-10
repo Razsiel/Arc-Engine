@@ -16,7 +16,7 @@ class EntityTest {
         var testComponent = new TestComponent();
         var anotherTestComponent = new AnotherTestComponent();
         var yetAnotherTestComponent = new YetAnotherTestComponent();
-        var components = List.of(testComponent, anotherTestComponent, yetAnotherTestComponent);
+        var components = List.<Component>of(testComponent, anotherTestComponent, yetAnotherTestComponent);
         var entity = new Entity("1", components);
 
         List<Class<? extends Component>> matcher = List.of(TestComponent.class, AnotherTestComponent.class);

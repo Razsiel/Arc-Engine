@@ -8,5 +8,5 @@ public interface KeyboardListener {
 
     void onKeyUp(Key key, List<KeyModifier> modifiers);
 
-    void onKeys(Set<Key> keys, List<KeyModifier> modifiers);
+    void onKeyboardUpdate(Set<Key> keys, List<KeyModifier> modifiers);
 }

@@ -1,10 +1,10 @@
 package nl.arkenbout.geoffrey.game.components;
 
-import nl.arkenbout.geoffrey.angel.ecs.Component;
+import nl.arkenbout.geoffrey.angel.ecs.BaseComponent;
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import org.joml.Vector3d;
 
-public class RotatorComponent implements Component {
+public class RotatorComponent extends BaseComponent {
     private float speed;
     private final Vector3d axis;
 
