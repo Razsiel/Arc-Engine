@@ -7,12 +7,18 @@ import org.joml.Matrix4d;
 import org.joml.Vector3d;
 
 public class Matrices {
+    public static Matrix4d viewMatrix = new Matrix4d();
+    public static Matrix4d projectionMatrix = new Matrix4d();
+    public static Matrix4d worldMatrix = new Matrix4d();
+    public static Matrix4d modelViewMatrix = new Matrix4d();
+    public static Matrix4d lightViewMatrix = new Matrix4d();
+    public static Matrix4d orthographicMatrix = new Matrix4d();
+
     public static Matrix4d getProjectionMatrix(Window window, Camera camera) {
         return getProjectionMatrix(camera.getFov(), window.getWidth(), window.getHeight(), camera.getNear(), camera.getFar());
     }
 
     public static Matrix4d getProjectionMatrix(double fov, double width, double height, double zNear, double zFar) {
-        var projectionMatrix = new Matrix4d();
         var aspectRatio = width / height;
         projectionMatrix.identity();
         projectionMatrix.perspective(fov, aspectRatio, zNear, zFar);
@@ -24,7 +30,6 @@ public class Matrices {
     }
 
     public static Matrix4d getWorldMatrix(Vector3d offset, Vector3d rotation, double scale) {
-        var worldMatrix = new Matrix4d();
         worldMatrix.identity()
                 .translate(offset)
                 .rotateX(Math.toRadians(rotation.x))
@@ -38,7 +43,6 @@ public class Matrices {
         var cameraPosition = camera.getPosition();
         var cameraRotation = camera.getRotation();
 
-        var viewMatrix = new Matrix4d();
         var cameraRotationXRadians = Math.toRadians(cameraRotation.x());
         var cameraRotationYRadians = Math.toRadians(cameraRotation.y());
         viewMatrix.identity()
@@ -49,8 +53,7 @@ public class Matrices {
     }
 
     public static Matrix4d getModelViewMatrix(TransformComponent transformComponent, Matrix4d viewMatrix) {
-        var modelViewMatrix = new Matrix4d().identity();
-
+        modelViewMatrix.identity();
         modelViewMatrix = transformComponent.getModelViewMatrix(modelViewMatrix);
 
         var viewCurrent = new Matrix4d(viewMatrix);
@@ -59,16 +62,18 @@ public class Matrices {
     }
 
     public static Matrix4d getLightViewMatrix(Vector3d position, Vector3d rotation) {
-        var lightViewMatrix = new Matrix4d();
-        lightViewMatrix.rotate(Math.toRadians(rotation.x), Vector3u.right())
+        lightViewMatrix
+                .identity()
+                .rotate(Math.toRadians(rotation.x), Vector3u.right())
                 .rotate(Math.toRadians(rotation.y), Vector3u.up())
                 .translate(-position.x, -position.y, -position.z);
         return lightViewMatrix;
     }
 
     public static Matrix4d getOrthoProjectionMatrix(double left, double right, double bottom, double top, double near, double far) {
-        var orthoMatrix = new Matrix4d();
-        orthoMatrix.setOrtho(left, right, bottom, top, near, far);
-        return orthoMatrix;
+        orthographicMatrix
+                .identity()
+                .setOrtho(left, right, bottom, top, near, far);
+        return orthographicMatrix;
     }
 }
