@@ -11,6 +11,7 @@ import nl.arkenbout.geoffrey.angel.engine.core.input.mouse.MouseListener;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +21,11 @@ public class CameraControl implements MouseListener, KeyboardListener {
 
     private final Vector3d cameraDelta = Vector3u.zero();
 
+    private final DecimalFormat df = new DecimalFormat("#");
+
     CameraControl() {
+        df.setMinimumIntegerDigits(1);
+        df.setMaximumFractionDigits(3);
     }
 
     @Override
@@ -42,21 +47,29 @@ public class CameraControl implements MouseListener, KeyboardListener {
 
     @Override
     public void onMouseEnter(Vector2d enterPosition) {
-        System.out.println("CameraControl.onMouseEnter: " + enterPosition);
+        System.out.println("CameraControl.onMouseEnter: " + asString(enterPosition));
     }
 
     @Override
     public void onMouseDown(MouseButton button, List<KeyModifier> modifiers, Vector2d position) {
-        System.out.println("CameraControl.onMouseDown: " + button + " coords: " + position);
+        System.out.println("CameraControl.onMouseDown: " + button + " coords: " + asString(position));
+        if (button == MouseButton.LEFT) {
+            var camera = Cameras.main();
+            System.out.println("CameraControl.update: " + camera.forward());
+        }
+    }
+
+    private String asString(Vector2d position) {
+        return "[" + df.format(position.x) + " : " + df.format(position.y) + "]";
     }
 
     @Override
     public void onMouseUp(MouseButton button, List<KeyModifier> modifiers, Vector2d position) {
-        System.out.println("CameraControl.onMouseUp: " + button + " coords: " + position);
+        System.out.println("CameraControl.onMouseUp: " + button + " coords: " + asString(position));
     }
 
     @Override
-    public void onMouseUpdate(Set<MouseButton> buttonsPressed, List<KeyModifier> modifiers, Vector2d mouseDelta, Vector2d position) {
+    public void update(Set<MouseButton> buttonsPressed, List<KeyModifier> modifiers, Vector2d mouseDelta, Vector2d position) {
         if (buttonsPressed == null || buttonsPressed.size() == 0)
             return;
         if (buttonsPressed.contains(MouseButton.RIGHT)) {
@@ -76,7 +89,7 @@ public class CameraControl implements MouseListener, KeyboardListener {
     }
 
     @Override
-    public void onKeyboardUpdate(Set<Key> keys, List<KeyModifier> modifiers) {
+    public void update(Set<Key> keys, List<KeyModifier> modifiers) {
         if (keys == null || keys.size() == 0) {
             return;
         }

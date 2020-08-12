@@ -46,8 +46,8 @@ public class KeyboardInput implements Cleanup {
         });
     }
 
-    public void input() {
-        keyboardListeners.forEach(keyboardListener -> keyboardListener.onKeyboardUpdate(keysPressed, null));
+    public void update() {
+        keyboardListeners.forEach(keyboardListener -> keyboardListener.update(keysPressed, null));
     }
 
     public void cleanup() {

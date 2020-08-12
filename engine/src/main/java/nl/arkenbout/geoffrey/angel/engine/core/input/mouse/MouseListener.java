@@ -18,5 +18,5 @@ public interface MouseListener extends Cleanup {
 
     void onMouseUp(MouseButton button, List<KeyModifier> modifiers, Vector2d position);
 
-    void onMouseUpdate(Set<MouseButton> buttonsPressed, List<KeyModifier> modifiers, Vector2d mouseDelta, Vector2d position);
+    void update(Set<MouseButton> buttonsPressed, List<KeyModifier> modifiers, Vector2d mouseDelta, Vector2d position);
 }

@@ -100,7 +100,7 @@ public class ArcEngine implements Cleanup {
             accumulator += elapsedTime;
 
             // handle input
-            input();
+            updateInput();
 
             while (accumulator >= interval) {
                 update(interval);
@@ -117,10 +117,10 @@ public class ArcEngine implements Cleanup {
         }
     }
 
-    private void input() {
+    private void updateInput() {
         // handle input
-        mouseInput.input();
-        keyboardInput.input();
+        mouseInput.update();
+        keyboardInput.update();
     }
 
     private void update(double interval) {

@@ -15,8 +15,9 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput implements Cleanup {
     private static List<MouseListener> mouseListeners = new ArrayList<>();
-    private final Vector2d currentPosition = new Vector2d(-1, -1);
-    private final Vector2d previousPosition = new Vector2d(0, 0);
+    private final Vector2d currentPosition = new Vector2d(-1);
+    private final Vector2d relativeScreenPos = new Vector2d();
+    private final Vector2d previousPosition = new Vector2d(0);
     private final Vector2d mouseDelta = new Vector2d();
     private final Window window;
     private boolean inWindow;
@@ -43,41 +44,46 @@ public class MouseInput implements Cleanup {
     public void init() {
         long handle = this.window.getWindowHandle();
         glfwSetCursorPosCallback(handle, (windowHandle, x, y) -> {
+            var screenX = (2 * x) / window.getWidth() - 1.0f;
+            var screenY = 1.0f - (2 * y) / window.getHeight();
+
             this.currentPosition.set(x, y);
+            this.relativeScreenPos.set(screenX, screenY);
+
             mouseListeners.forEach(mouseListener -> mouseListener.onMouseMove(new Vector2d(x, y)));
         });
         glfwSetCursorEnterCallback(handle, (windowHandle, entered) -> {
             this.inWindow = entered;
             if (entered)
-                mouseListeners.forEach(mouseListener -> mouseListener.onMouseEnter(this.currentPosition));
+                mouseListeners.forEach(mouseListener -> mouseListener.onMouseEnter(this.relativeScreenPos));
         });
         glfwSetMouseButtonCallback(handle, (windowHandle, buttonCode, action, mods) -> {
             var button = MouseButton.fromGlfwButtonCode(buttonCode);
             this.modifiers = KeyModifier.fromGlfwModifierCode(mods);
 
             if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-                mouseListeners.forEach(mouseListener -> mouseListener.onMouseDown(button, modifiers, currentPosition));
+                mouseListeners.forEach(mouseListener -> mouseListener.onMouseDown(button, modifiers, relativeScreenPos));
                 this.buttonsPressed.add(button);
             } else if (action == GLFW_RELEASE) {
-                mouseListeners.forEach(mouseListener -> mouseListener.onMouseUp(button, modifiers, currentPosition));
+                mouseListeners.forEach(mouseListener -> mouseListener.onMouseUp(button, modifiers, relativeScreenPos));
                 this.buttonsPressed.remove(button);
             }
         });
         glfwSetScrollCallback(handle, (windowHandle, scrollX, scrollY) -> mouseListeners.forEach(mouseListener -> mouseListener.onScroll(scrollY)));
     }
 
-    public void input() {
+    public void update() {
         updateMouseDelta();
         updateMouseListeners();
     }
 
     private void updateMouseListeners() {
-        mouseListeners.forEach(mouseListener -> mouseListener.onMouseUpdate(this.buttonsPressed, this.modifiers, mouseDelta, currentPosition));
+        mouseListeners.forEach(mouseListener -> mouseListener.update(this.buttonsPressed, this.modifiers, mouseDelta, relativeScreenPos));
     }
 
     private void updateMouseDelta() {
         mouseDelta.set(0, 0);
-        if (inWindow && previousPosition.x() > 0 && previousPosition.y() > 0) {
+        if (inWindow && currentPosition.x() > 0 && currentPosition.y() > 0) {
             var deltaY = currentPosition.x() - previousPosition.x();
             var deltaX = currentPosition.y() - previousPosition.y();
             var delta = new Vector2d(deltaX, deltaY);
