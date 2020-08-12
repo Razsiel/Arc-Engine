@@ -1,6 +1,7 @@
 package nl.arkenbout.geoffrey.angel.engine.core.graphics;
 
 import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Cameras;
+import nl.arkenbout.geoffrey.angel.engine.core.graphics.util.Vector3u;
 import org.joml.Vector3d;
 
 public class Camera {
@@ -61,5 +62,9 @@ public class Camera {
 
     public boolean isOrtho() {
         return this.isOrtho;
+    }
+
+    public Vector3d forward() {
+        return Matrices.getViewMatrix(this).invert().positiveZ(Vector3u.zero()).negate();
     }
 }
